@@ -1,0 +1,35 @@
+# TPP-Gaze Phase 2 config: ASD/TD-conditioned, one shared model.
+# Continues from the Phase 1 best checkpoint. Paths relative to the project root
+# are resolved by the trainer; images_dir is the absolute remote path.
+
+# start from the Phase 1 fine-tuned checkpoint (loaded into the base model)
+model_cfg_path: tppgaze/data/config.yaml
+checkpoint_path: training/runs/baseline/best_model.pth
+
+asd_json: processed_data/asd_scanpaths.json
+td_json:  processed_data/td_scanpaths.json
+images_dir: /home/user35/gaze-final-project/data/saliency4asd/TrainingData/Images
+image_ext: .png
+
+out_dir: training/runs/phase2_conditioned
+
+# reuse the EXACT Phase 1 split (loaded from this file; falls back to seeded split)
+split_json: training/runs/baseline/split.json
+
+seed: 0
+split: [0.70, 0.15, 0.15]
+
+batch_size: 128
+lr: 1.0e-3
+weight_decay: 1.0e-1
+max_epochs: 300
+patience: 20
+grad_clip: 5.0
+freeze_backbone: true
+cache_backbone: true
+num_workers: 0
+device: auto
+
+limit_images: null
+limit_train_batches: null
+limit_val_batches: null

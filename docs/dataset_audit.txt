@@ -1,0 +1,363 @@
+================================================================================
+                      SALIENCY4ASD DATASET AUDIT REPORT
+================================================================================
+Date of Inspection: October 2026
+Target Directory:   c:\Users\anish\OneDrive\Desktop\gaze-ag
+Dataset Name:       Saliency4ASD (Grand Challenge at IEEE ICME 2019)
+Stimuli Source:     MIT1003 Benchmark Dataset (Tilke Judd et al., ICCV 2009)
+Eye Tracking HW:    Tobii T120 (17-inch, 1280x1024 native resolution)
+================================================================================
+
+1. COMPLETE FOLDER AND FILE STRUCTURE
+--------------------------------------------------------------------------------
+The root folder contains two main unpacked directories ('TrainingData' and 'AdditionalData'),
+their respective 7-Zip compressed archives, the competition usage agreement, and a research paper.
+Note: Due to archive extraction, both directories contain a nested subdirectory with identical names.
+
+Directory Tree Breakdown:
+c:\Users\anish\OneDrive\Desktop\gaze-ag\
+├── AdditionalData.7z                                [511,983,151 bytes (~488.27 MB)]
+├── TrainingData.7z                                  [318,659,824 bytes (~303.90 MB)]
+├── UsageAgreement.txt                              [1,042 bytes]
+├── TPP-Gaze_Modelling_Gaze_Dynamics_... (2).pdf     [4,181,020 bytes (~3.99 MB)]
+│
+├── TrainingData/                                   [1,502 files total]
+│   └── TrainingData/
+│       ├── ICME_DataPreparation.m                  [3,529 bytes - MATLAB pre-processing script]
+│       ├── README.txt                              [2,228 bytes - dataset documentation]
+│       ├── Images/                                 [300 PNG images: 1.png - 300.png]
+│       ├── ASD/                                    [300 TXT scanpath files: ASD_scanpath_1.txt - ASD_scanpath_300.txt]
+│       ├── ASD_FixMaps/                            [300 PNG fixation maps: 1_s.png - 300_s.png]
+│       ├── TD/                                     [300 TXT scanpath files: TD_scanpath_1.txt - TD_scanpath_300.txt]
+│       └── TD_FixMaps/                             [300 PNG fixation maps: 1_s.png - 300_s.png]
+│
+└── AdditionalData/                                 [1,201 files total]
+    └── AdditionalData/
+        ├── ImageAnnotations.csv                    [105,691 bytes - 924 object bounding boxes across 289 images]
+        ├── ASD_FixPts/                             [300 PNG binary fixation point masks: 1_f.png - 300_f.png]
+        ├── ASD_HeatMaps/                           [300 PNG RGB heatmap visualizations: 1_h.png - 300_h.png]
+        ├── TD_FixPts/                              [300 PNG binary fixation point masks: 1_f.png - 300_f.png]
+        └── TD_HeatMaps/                            [300 PNG RGB heatmap visualizations: 1_h.png - 300_h.png]
+
+Total File Count across entire workspace: 2,707 files
+  - TrainingData directory:   1,502 files
+  - AdditionalData directory: 1,201 files
+  - Workspace root files:         4 files
+
+2. NUMBER OF IMAGES
+--------------------------------------------------------------------------------
+Total Number of Stimulus Images: 300 images
+Location:            TrainingData/TrainingData/Images/
+File Naming Pattern: <id>.png, where <id> ranges from 1 to 300
+Continuity:          Contiguous integer sequence [1, 2, 3, ..., 300] (0 missing images)
+Format & Color:      PNG format, 8-bit RGB color mode (3 channels)
+Dimensions:          70 unique resolutions (from MIT1003 natural scene dataset)
+  - Maximum dimension is 1024 pixels (landscape or portrait)
+  - Width range:  678 px to 1024 px
+  - Height range: 554 px to 1024 px
+  - Top 5 resolutions:
+      1024 x 768  : 115 images (38.3%)
+       768 x 1024 :  36 images (12.0%)
+      1024 x 683  :  33 images (11.0%)
+      1024 x 685  :  16 images (5.3%)
+      1024 x 681  :  12 images (4.0%)
+
+3. NUMBER OF ASD AND TD SCANPATH FILES
+--------------------------------------------------------------------------------
+ASD Scanpath Files:  300 files (TrainingData/TrainingData/ASD/ASD_scanpath_1.txt to ASD_scanpath_300.txt)
+TD Scanpath Files:   300 files (TrainingData/TrainingData/TD/TD_scanpath_1.txt to TD_scanpath_300.txt)
+Total Scanpath Files: 600 files
+Mapping:             Strict 1:1 mapping with the 300 images in the dataset.
+Format:              Comma-separated text file with header: 'Idx, x, y, duration'
+
+4. DETAILED SAMPLE SCANPATH ANALYSIS (3 ASD & 3 TD FILES)
+--------------------------------------------------------------------------------
+Each file contains sequential fixations across multiple participants who viewed that image.
+When a participant finishes, the index resets to '0', marking the beginning of the next participant's scanpath.
+
+================== SAMPLE 1: ASD GROUP - IMAGE 1 (File: ASD_scanpath_1.txt) ==================
+Total Fixation Rows:           160
+Number of Idx Resets / Segs:   13 segments
+Rows per Segment:              [11, 14, 10, 16, 16, 16, 11, 3, 14, 18, 10, 12, 9]
+Overall Duration (ms):         Min = 8.0 ms, Max = 999.0 ms, Mean = 231.78 ms
+Overall Coordinates:           X in [172.0, 929.0], Y in [7.0, 578.0]
+
+Segment-by-Segment Details:
+ Seg # | Rows | Idx Range | Duration (Min / Max / Mean)      | X Range (Min - Max) | Y Range (Min - Max)
+-------|------|-----------|----------------------------------|---------------------|--------------------
+  1    | 11   |  0 - 10   |    8.0 /  216.0 /  68.00 ms |   240.0 - 790.0   |   164.0 - 450.0  
+  2    | 14   |  0 - 13   |    8.0 /  375.0 /  90.86 ms |   258.0 - 848.0   |   352.0 - 568.0  
+  3    | 10   |  0 - 9    |  208.0 /  941.0 / 460.50 ms |   257.0 - 831.0   |    97.0 - 450.0  
+  4    | 16   |  0 - 15   |   42.0 /  591.0 / 268.00 ms |   230.0 - 929.0   |   225.0 - 460.0  
+  5    | 16   |  0 - 15   |   67.0 /  408.0 / 232.75 ms |   276.0 - 845.0   |     7.0 - 578.0  
+  6    | 16   |  0 - 15   |    8.0 /  558.0 / 232.25 ms |   291.0 - 881.0   |    13.0 - 443.0  
+  7    | 11   |  0 - 10   |   33.0 /  683.0 / 183.27 ms |   172.0 - 495.0   |   340.0 - 539.0  
+  8    | 3    |  0 - 2    |  458.0 /  766.0 / 633.00 ms |   260.0 - 448.0   |   385.0 - 421.0  
+  9    | 14   |  0 - 13   |    8.0 /  433.0 / 204.07 ms |   239.0 - 755.0   |   220.0 - 497.0  
+  10   | 18   |  0 - 17   |    8.0 /  466.0 / 148.39 ms |   231.0 - 623.0   |   136.0 - 570.0  
+  11   | 10   |  0 - 9    |    8.0 /  416.0 / 193.90 ms |   272.0 - 536.0   |   234.0 - 472.0  
+  12   | 12   |  0 - 11   |   67.0 /  999.0 / 375.92 ms |   196.0 - 525.0   |   236.0 - 510.0  
+  13   | 9    |  0 - 8    |    8.0 /  858.0 / 315.33 ms |   226.0 - 853.0   |   328.0 - 479.0  
+
+================== SAMPLE 2: ASD GROUP - IMAGE 2 (File: ASD_scanpath_2.txt) ==================
+Total Fixation Rows:           139
+Number of Idx Resets / Segs:   14 segments
+Rows per Segment:              [8, 4, 11, 10, 9, 8, 10, 3, 14, 16, 14, 15, 4, 13]
+Overall Duration (ms):         Min = 8.0 ms, Max = 1099.0 ms, Mean = 219.41 ms
+Overall Coordinates:           X in [221.0, 984.0], Y in [45.0, 652.0]
+
+Segment-by-Segment Details:
+ Seg # | Rows | Idx Range | Duration (Min / Max / Mean)      | X Range (Min - Max) | Y Range (Min - Max)
+-------|------|-----------|----------------------------------|---------------------|--------------------
+  1    | 8    |  0 - 7    |    8.0 /  158.0 /  46.75 ms |   403.0 - 533.0   |   184.0 - 334.0  
+  2    | 4    |  0 - 3    |    8.0 /  217.0 / 104.00 ms |   516.0 - 834.0   |   106.0 - 381.0  
+  3    | 11   |  0 - 10   |  117.0 /  824.0 / 495.18 ms |   377.0 - 924.0   |    97.0 - 469.0  
+  4    | 10   |  0 - 9    |   58.0 /  499.0 / 244.70 ms |   235.0 - 937.0   |    94.0 - 619.0  
+  5    | 9    |  0 - 8    |  117.0 /  633.0 / 381.33 ms |   429.0 - 651.0   |   197.0 - 428.0  
+  6    | 8    |  0 - 7    |    8.0 /  541.0 / 130.00 ms |   438.0 - 984.0   |    45.0 - 475.0  
+  7    | 10   |  0 - 9    |   50.0 /  683.0 / 234.00 ms |   221.0 - 927.0   |   150.0 - 652.0  
+  8    | 3    |  0 - 2    |   42.0 /   75.0 /  64.00 ms |   541.0 - 571.0   |   302.0 - 375.0  
+  9    | 14   |  0 - 13   |   92.0 / 1099.0 / 261.71 ms |   363.0 - 855.0   |   158.0 - 462.0  
+  10   | 16   |  0 - 15   |    8.0 /  358.0 / 135.25 ms |   407.0 - 652.0   |   256.0 - 453.0  
+  11   | 14   |  0 - 13   |    8.0 /  650.0 / 208.14 ms |   336.0 - 607.0   |   244.0 - 576.0  
+  12   | 15   |  0 - 14   |    8.0 /  799.0 / 229.73 ms |   227.0 - 451.0   |   137.0 - 607.0  
+  13   | 4    |  0 - 3    |    8.0 /    8.0 /   8.00 ms |   384.0 - 440.0   |   231.0 - 335.0  
+  14   | 13   |  0 - 12   |   42.0 /  375.0 / 199.23 ms |   249.0 - 568.0   |   138.0 - 432.0  
+
+================== SAMPLE 3: ASD GROUP - IMAGE 3 (File: ASD_scanpath_3.txt) ==================
+Total Fixation Rows:           149
+Number of Idx Resets / Segs:   14 segments
+Rows per Segment:              [8, 11, 6, 17, 13, 10, 2, 5, 15, 13, 11, 16, 10, 12]
+Overall Duration (ms):         Min = 8.0 ms, Max = 1041.0 ms, Mean = 182.50 ms
+Overall Coordinates:           X in [157.0, 764.0], Y in [139.0, 911.0]
+
+Segment-by-Segment Details:
+ Seg # | Rows | Idx Range | Duration (Min / Max / Mean)      | X Range (Min - Max) | Y Range (Min - Max)
+-------|------|-----------|----------------------------------|---------------------|--------------------
+  1    | 8    |  0 - 7    |    8.0 /  483.0 / 181.00 ms |   223.0 - 408.0   |   176.0 - 342.0  
+  2    | 11   |  0 - 10   |    8.0 /  350.0 /  93.82 ms |   250.0 - 591.0   |   236.0 - 904.0  
+  3    | 6    |  0 - 5    |   17.0 /  608.0 / 338.67 ms |   416.0 - 624.0   |   293.0 - 870.0  
+  4    | 17   |  0 - 16   |   25.0 /  733.0 / 154.29 ms |   376.0 - 690.0   |   139.0 - 911.0  
+  5    | 13   |  0 - 12   |    8.0 / 1041.0 / 397.77 ms |   347.0 - 728.0   |   256.0 - 869.0  
+  6    | 10   |  0 - 9    |    8.0 /  650.0 / 213.20 ms |   448.0 - 605.0   |   394.0 - 892.0  
+  7    | 2    |  0 - 1    |   58.0 /  233.0 / 145.50 ms |   486.0 - 492.0   |   791.0 - 840.0  
+  8    | 5    |  0 - 4    |  158.0 /  333.0 / 228.00 ms |   340.0 - 764.0   |   202.0 - 744.0  
+  9    | 15   |  0 - 14   |    8.0 /  358.0 / 119.13 ms |   157.0 - 750.0   |   342.0 - 872.0  
+  10   | 13   |  0 - 12   |    8.0 /  142.0 /  53.62 ms |   289.0 - 495.0   |   277.0 - 830.0  
+  11   | 11   |  0 - 10   |    8.0 /  583.0 / 132.36 ms |   346.0 - 494.0   |   284.0 - 844.0  
+  12   | 16   |  0 - 15   |    8.0 /  550.0 / 229.44 ms |   160.0 - 542.0   |   180.0 - 842.0  
+  13   | 10   |  0 - 9    |    8.0 /  391.0 / 164.80 ms |   159.0 - 754.0   |   196.0 - 686.0  
+  14   | 12   |  0 - 11   |   91.0 /  350.0 / 172.08 ms |   374.0 - 631.0   |   240.0 - 863.0  
+
+================== SAMPLE 4: TD GROUP - IMAGE 1 (File: TD_scanpath_1.txt) ==================
+Total Fixation Rows:           116
+Number of Idx Resets / Segs:   12 segments
+Rows per Segment:              [9, 8, 7, 6, 9, 8, 11, 20, 10, 9, 7, 12]
+Overall Duration (ms):         Min = 8.0 ms, Max = 2723.0 ms, Mean = 337.71 ms
+Overall Coordinates:           X in [138.0, 937.0], Y in [89.0, 663.0]
+
+Segment-by-Segment Details:
+ Seg # | Rows | Idx Range | Duration (Min / Max / Mean)      | X Range (Min - Max) | Y Range (Min - Max)
+-------|------|-----------|----------------------------------|---------------------|--------------------
+  1    | 9    |  0 - 8    |  217.0 /  908.0 / 493.00 ms |   208.0 - 535.0   |   148.0 - 541.0  
+  2    | 8    |  0 - 7    |   42.0 /  558.0 / 313.25 ms |   236.0 - 523.0   |   393.0 - 581.0  
+  3    | 7    |  0 - 6    |  167.0 /  799.0 / 468.71 ms |   213.0 - 765.0   |   369.0 - 637.0  
+  4    | 6    |  0 - 5    |  400.0 / 2723.0 / 1462.83 ms |   242.0 - 737.0   |   196.0 - 423.0  
+  5    | 9    |  0 - 8    |   17.0 /  641.0 / 195.22 ms |   213.0 - 891.0   |   344.0 - 487.0  
+  6    | 8    |  0 - 7    |   50.0 /  383.0 / 204.88 ms |   229.0 - 369.0   |   388.0 - 461.0  
+  7    | 11   |  0 - 10   |  125.0 /  716.0 / 393.55 ms |   138.0 - 867.0   |   302.0 - 604.0  
+  8    | 20   |  0 - 19   |   50.0 /  408.0 / 132.80 ms |   199.0 - 657.0   |   375.0 - 630.0  
+  9    | 10   |  0 - 9    |  167.0 /  766.0 / 344.80 ms |   205.0 - 892.0   |   362.0 - 656.0  
+  10   | 9    |  0 - 8    |   50.0 /  691.0 / 325.78 ms |   243.0 - 937.0   |   142.0 - 438.0  
+  11   | 7    |  0 - 6    |    8.0 /  108.0 /  27.14 ms |   202.0 - 818.0   |   362.0 - 423.0  
+  12   | 12   |  0 - 11   |   75.0 /  575.0 / 268.50 ms |   220.0 - 855.0   |    89.0 - 663.0  
+
+================== SAMPLE 5: TD GROUP - IMAGE 2 (File: TD_scanpath_2.txt) ==================
+Total Fixation Rows:           98
+Number of Idx Resets / Segs:   13 segments
+Rows per Segment:              [4, 8, 7, 8, 4, 9, 7, 6, 18, 3, 2, 7, 15]
+Overall Duration (ms):         Min = 8.0 ms, Max = 3822.0 ms, Mean = 450.21 ms
+Overall Coordinates:           X in [190.0, 955.0], Y in [113.0, 599.0]
+
+Segment-by-Segment Details:
+ Seg # | Rows | Idx Range | Duration (Min / Max / Mean)      | X Range (Min - Max) | Y Range (Min - Max)
+-------|------|-----------|----------------------------------|---------------------|--------------------
+  1    | 4    |  0 - 3    |   50.0 /  250.0 / 129.25 ms |   778.0 - 895.0   |   168.0 - 316.0  
+  2    | 8    |  0 - 7    |  258.0 /  924.0 / 516.12 ms |   257.0 - 955.0   |   166.0 - 599.0  
+  3    | 7    |  0 - 6    |   83.0 /  733.0 / 290.14 ms |   427.0 - 939.0   |   159.0 - 470.0  
+  4    | 8    |  0 - 7    |  183.0 / 1008.0 / 609.00 ms |   366.0 - 731.0   |   210.0 - 518.0  
+  5    | 4    |  0 - 3    | 1224.0 / 2814.0 / 2287.50 ms |   309.0 - 527.0   |   248.0 - 419.0  
+  6    | 9    |  0 - 8    |    8.0 /  858.0 / 315.44 ms |   225.0 - 593.0   |   286.0 - 493.0  
+  7    | 7    |  0 - 6    |   83.0 /  375.0 / 208.29 ms |   420.0 - 555.0   |   245.0 - 351.0  
+  8    | 6    |  0 - 5    |   67.0 /  616.0 / 271.83 ms |   393.0 - 917.0   |   215.0 - 556.0  
+  9    | 18   |  0 - 17   |   58.0 /  491.0 / 166.94 ms |   385.0 - 592.0   |   113.0 - 477.0  
+  10   | 3    |  0 - 2    |  250.0 / 3056.0 / 1185.33 ms |   190.0 - 446.0   |   266.0 - 437.0  
+  11   | 2    |  0 - 1    | 3822.0 / 3822.0 / 3822.00 ms |   555.0 - 683.0   |   408.0 - 579.0  
+  12   | 7    |  0 - 6    |    8.0 /  225.0 /  76.00 ms |   393.0 - 562.0   |   277.0 - 297.0  
+  13   | 15   |  0 - 14   |   67.0 /  316.0 / 183.80 ms |   398.0 - 667.0   |   225.0 - 592.0  
+
+================== SAMPLE 6: TD GROUP - IMAGE 3 (File: TD_scanpath_3.txt) ==================
+Total Fixation Rows:           107
+Number of Idx Resets / Segs:   12 segments
+Rows per Segment:              [11, 10, 10, 3, 8, 6, 8, 23, 5, 4, 8, 11]
+Overall Duration (ms):         Min = 8.0 ms, Max = 2739.0 ms, Mean = 343.74 ms
+Overall Coordinates:           X in [103.0, 727.0], Y in [118.0, 833.0]
+
+Segment-by-Segment Details:
+ Seg # | Rows | Idx Range | Duration (Min / Max / Mean)      | X Range (Min - Max) | Y Range (Min - Max)
+-------|------|-----------|----------------------------------|---------------------|--------------------
+  1    | 11   |  0 - 10   |  175.0 /  500.0 / 354.36 ms |   123.0 - 571.0   |   203.0 - 808.0  
+  2    | 10   |  0 - 9    |   50.0 /  408.0 / 212.30 ms |   295.0 - 580.0   |   219.0 - 833.0  
+  3    | 10   |  0 - 9    |   83.0 /  724.0 / 294.70 ms |   240.0 - 541.0   |   222.0 - 751.0  
+  4    | 3    |  0 - 2    |  400.0 / 2365.0 / 1166.00 ms |   344.0 - 465.0   |   240.0 - 531.0  
+  5    | 8    |  0 - 7    |   58.0 /  425.0 / 222.50 ms |   322.0 - 599.0   |   225.0 - 678.0  
+  6    | 6    |  0 - 5    |  375.0 / 1216.0 / 689.67 ms |   314.0 - 672.0   |   223.0 - 601.0  
+  7    | 8    |  0 - 7    |   92.0 /  525.0 / 291.50 ms |   104.0 - 727.0   |   190.0 - 828.0  
+  8    | 23   |  0 - 22   |   67.0 /  425.0 / 142.00 ms |   271.0 - 527.0   |   118.0 - 329.0  
+  9    | 5    |  0 - 4    |   50.0 / 2173.0 / 881.20 ms |   103.0 - 363.0   |   285.0 - 665.0  
+  10   | 4    |  0 - 3    |  550.0 / 2739.0 / 1142.75 ms |   284.0 - 618.0   |   276.0 - 557.0  
+  11   | 8    |  0 - 7    |    8.0 /  316.0 /  72.62 ms |   313.0 - 600.0   |   258.0 - 750.0  
+  12   | 11   |  0 - 10   |  183.0 /  500.0 / 294.55 ms |   352.0 - 705.0   |   215.0 - 590.0  
+
+Dataset-Wide Scanpath & Duration Comparison (ASD vs TD Across All 300 Images):
+--------------------------------------------------------------------------------
+Metric                                | ASD Group           | TD (Control) Group
+--------------------------------------|---------------------|---------------------
+Total Fixations Across Dataset        | 29,089 fixations    | 34,538 fixations
+Total Participant Segments (Trials)   | 3,761 segments      | 3,837 segments
+Segments per Image (Min / Max / Mean) | 8 / 17 / 12.54 segs | 9 / 15 / 12.79 segs
+Mean Fixations per Participant Trial  | 7.73 fixations      | 9.00 fixations
+Fixation Duration - Minimum           | 8.0 ms              | 8.0 ms
+Fixation Duration - Maximum           | 7,803.0 ms          | 11,483.0 ms
+Fixation Duration - Overall Mean      | 260.58 ms           | 318.23 ms
+Fixation Duration - Median            | 192.00 ms           | 233.00 ms
+Coordinate Range Validity             | 100% within bounds  | 100% within bounds
+
+Distribution of Segments (Participant Count per Image):
+ - ASD Group:  8 segs (2), 9 segs (9), 10 segs (19), 11 segs (39), 12 segs (66), 13 segs (81),
+               14 segs (64), 15 segs (17), 16 segs (2), 17 segs (1)
+ - TD Group:   9 segs (1), 10 segs (14), 11 segs (19), 12 segs (83), 13 segs (81), 14 segs (100), 15 segs (2)
+
+5. PARTICIPANT ID AUDIT (ARE PARTICIPANT IDS PRESENT ANYWHERE?)
+--------------------------------------------------------------------------------
+CONCLUSION: NO, explicit participant/subject IDs are NOT present anywhere in the dataset.
+
+Detailed Evidence and Audit Checklist:
+1. Scanpath Files (*.txt):
+   - Header in all 600 files is strictly: 'Idx, x, y, duration'
+   - No column exists for SubjectID, ParticipantID, Age, or Gender.
+   - Filenames denote Image IDs (e.g. 'ASD_scanpath_1.txt' = Image 1), NOT participant IDs.
+2. Within-File Structure:
+   - Scanpaths for an image contain concatenated sequences separated by Idx resets (Idx = 0).
+   - However, the order of segments is anonymous. There is NO metadata indicating which segment
+     corresponds to which child.
+3. Cross-Image Participant Tracking:
+   - Individual subjects CANNOT be tracked across different images.
+   - Segment #1 in Image 1 does NOT necessarily belong to the same child as Segment #1 in Image 2.
+   - Furthermore, as documented in README.txt, ASD children frequently looked away from the screen,
+     leading to missing recordings (segments per image vary between 8 and 17 for ASD and 9 to 15 for TD).
+   - Because missing trials are omitted without placeholders, alignment across images is mathematically impossible.
+4. ImageAnnotations.csv:
+   - Contains 6 columns: [Image_Path, x1, y1, x2, y2, Label].
+   - Contains purely semantic bounding boxes (face, people, car, etc.) - no participant information.
+5. Code and Documentation (README.txt, ICME_DataPreparation.m, UsageAgreement.txt):
+   - README.txt confirms children were aged 5-12 (mean age 8) and that 14 ASD and 14 TD children were recruited.
+   - No demographic table, mapping table, or subject identification matrix is provided.
+
+6. IMAGE DIMENSIONS VS FIXATION MAP DIMENSIONS
+--------------------------------------------------------------------------------
+A comprehensive audit was performed comparing the stimulus images with all generated maps:
+
+Category        | Location                  | Files | Mode | Dimensions vs Original Images
+----------------|---------------------------|-------|------|---------------------------------------------
+Stimulus Images | TrainingData/.../Images   | 300   | RGB  | 70 unique dimensions (max dim 1024 px)
+ASD FixMaps     | TrainingData/.../ASD_FixMaps | 300 | L   | EXACT MATCH (300/300 match image W x H)
+TD FixMaps      | TrainingData/.../TD_FixMaps  | 300 | L   | EXACT MATCH (300/300 match image W x H)
+ASD FixPts      | AdditionalData/.../ASD_FixPts | 300 | L  | EXACT MATCH (300/300 match image W x H)
+TD FixPts       | AdditionalData/.../TD_FixPts  | 300 | L  | EXACT MATCH (300/300 match image W x H)
+ASD HeatMaps    | AdditionalData/.../ASD_HeatMaps | 300 | RGB | MISMATCH (Enlarged due to MATLAB figure plot)
+TD HeatMaps     | AdditionalData/.../TD_HeatMaps  | 300 | RGB | MISMATCH (Enlarged due to MATLAB figure plot)
+
+Detailed Explanation of Dimension Behaviors:
+1. FixMaps (*_s.png) & FixPts (*_f.png):
+   - Exactly preserve the native stimulus dimensions of the corresponding image (e.g. 1024x681, 1024x768).
+   - Color mode is 8-bit single channel ('L' grayscale).
+   - FixPts contains binary coordinates: pixel values are strictly {0, 255}, where 255 marks a fixation center.
+   - FixMaps contains continuous density values [0, 255] produced by convolving FixPts with a 1-degree
+     Gaussian filter (kernel size 43*6 = 258, sigma = 43).
+2. HeatMaps (*_h.png):
+   - Dimensions do NOT match original images (e.g., Image 1 is 1024x681, but 1_h.png is 1869x1212).
+   - Cause: As verified in 'ICME_DataPreparation.m' lines 60-72 and 94-106, heatmaps were rendered using
+     MATLAB figure functions: figure(), imshow(Img), hold on, pcolor(meshX, meshY, FixationMap), colorbar,
+     shading interp, alpha(0.4), and saved using saveas(HeatMap, ...).
+   - This captured the MATLAB figure window GUI canvas (including axes, padding, and the colorbar) rather
+     than exporting a raw image matrix.
+
+7. COMPREHENSIVE EXPLANATION OF WHAT EACH DATASET FOLDER CONTAINS
+--------------------------------------------------------------------------------
+1. TrainingData/TrainingData/Images/
+   - Contains 300 natural images in PNG format (1.png to 300.png).
+   - Origin: Subsampled from the benchmark MIT1003 dataset.
+   - Content: Varied natural indoor and outdoor scenes containing people, faces, objects, animals, and text.
+   - Role: The visual stimuli shown to children during the eye-tracking experiment.
+
+2. TrainingData/TrainingData/ASD/
+   - Contains 300 plain text files (ASD_scanpath_1.txt to ASD_scanpath_300.txt).
+   - Content: Raw fixation scanpaths recorded from children diagnosed with Autism Spectrum Disorder (ASD).
+   - Columns: Idx (fixation sequence index, resets to 0 for each new participant trial),
+              x (horizontal pixel coordinate),
+              y (vertical pixel coordinate),
+              duration (fixation duration in milliseconds).
+
+3. TrainingData/TrainingData/TD/
+   - Contains 300 plain text files (TD_scanpath_1.txt to TD_scanpath_300.txt).
+   - Content: Raw fixation scanpaths recorded from Typically Developing (TD) control children.
+   - Columns: Idx, x, y, duration (identical structure to the ASD scanpath files).
+
+4. TrainingData/TrainingData/ASD_FixMaps/
+   - Contains 300 grayscale PNG saliency maps (1_s.png to 300_s.png).
+   - Content: Continuous 2D fixation probability density maps for the ASD group.
+   - Generation: Generated by convolving aggregated ASD fixation points with a 1° visual angle Gaussian kernel.
+   - Normalized to grayscale range [0, 255].
+
+5. TrainingData/TrainingData/TD_FixMaps/
+   - Contains 300 grayscale PNG saliency maps (1_s.png to 300_s.png).
+   - Content: Continuous 2D fixation probability density maps for the TD control group.
+   - Generation: Generated by convolving aggregated TD fixation points with a 1° visual angle Gaussian kernel.
+
+6. AdditionalData/AdditionalData/ASD_FixPts/
+   - Contains 300 binary PNG images (1_f.png to 300_f.png).
+   - Content: Sparse binary fixation point matrices for the ASD group.
+   - Background is 0 (black); pixels where an ASD child fixated are set to 255 (white).
+
+7. AdditionalData/AdditionalData/TD_FixPts/
+   - Contains 300 binary PNG images (1_f.png to 300_f.png).
+   - Content: Sparse binary fixation point matrices for the TD control group.
+   - Background is 0 (black); pixels where a TD child fixated are set to 255 (white).
+
+8. AdditionalData/AdditionalData/ASD_HeatMaps/
+   - Contains 300 RGB PNG visualization images (1_h.png to 300_h.png).
+   - Content: Pseudo-color thermal saliency overlay (jet/parula colormap with 40% transparency) overlaid
+     on top of the original stimulus image for qualitative visualization of ASD viewing patterns.
+
+9. AdditionalData/AdditionalData/TD_HeatMaps/
+   - Contains 300 RGB PNG visualization images (1_h.png to 300_h.png).
+   - Content: Pseudo-color thermal saliency overlay overlaid on top of the original stimulus image for TD viewing.
+
+10. AdditionalData/AdditionalData/ImageAnnotations.csv
+    - Contains 924 manually labeled object bounding boxes across 289 images.
+    - Columns: [Full_Image_Path, x1, y1, x2, y2, Semantic_Category_Label]
+    - Categories (15 total): people (245), face (224), object (112), animal (70), hand (55), building (53),
+      people group (34), car (32), plant (29), text (27), people background (14), food (13), ship (8),
+      train (4), plane (4).
+    - Role: Used to evaluate semantic attention differences (e.g. reduced face/eye gaze vs object bias in ASD).
+
+11. Additional Files:
+    - ICME_DataPreparation.m: Official MATLAB script used by dataset authors to generate FixPts, FixMaps, and HeatMaps.
+    - README.txt: Official dataset specifications, subject age (5-12 yrs, mean 8), Tobii T120 hardware setup, and task protocols.
+    - UsageAgreement.txt: Terms of use and competition restrictions for the ICME 2019 Grand Challenge.
+    - TrainingData.7z & AdditionalData.7z: Official compressed distribution archives.
+    - TPP-Gaze_...pdf: Academic research paper detailing Neural Temporal Point Processes for gaze modeling.
+================================================================================
+                              END OF AUDIT REPORT
+================================================================================

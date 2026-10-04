@@ -1,0 +1,42 @@
+TPP-GAZE ASD/TD - MAIN FINDINGS
+(Only results directly supported by the experiments. Categories kept distinct.)
+
+A) MODEL LIKELIHOOD IMPROVEMENT (held-out test negative log-likelihood; lower=better)
+   Saliency4ASD test (45 images, 903 scanpaths):
+     Pretrained (ref, overall):        -0.1665
+     Phase 1 (fine-tuned):   overall -0.4957  ASD -0.3164  TD -0.6276
+     Phase 2 (ASD/TD cond.): overall -0.5030  ASD -0.3250  TD -0.6341
+   Phase 2 improves over Phase 1: overall +0.0073 (+1.48%),
+     ASD +0.0086 (+2.71%), TD +0.0064 (+1.03%).
+   Phase 2 adds only 1,024 trainable params (2x512 group embedding); base frozen.
+   -> Conditioning gives a small but consistent in-domain likelihood gain.
+
+B) BEHAVIORAL DIRECTION MATCHING (generated ASD vs TD vs real ASD vs TD)
+   Generated scanpaths reproduce the DIRECTION of the real ASD-vs-TD difference in
+   4 of 5 metrics: fixation duration (ASD<TD), saccade amplitude (ASD>TD),
+   spatial dispersion (ASD>TD), revisit rate (ASD<TD).
+   It does NOT reproduce fixation-count direction (real ASD<TD, generated ASD>TD),
+   and it over-produces fixation counts overall.
+
+C) STATISTICAL SIGNIFICANCE (Gaze4ASD, participant-level REAL; image-level paired GEN; EXPLORATORY)
+   Real significant group effects: spatial dispersion (Hedges g=+0.65, p<.01),
+     revisit rate (g=-1.04, p<.01, largest), saccade amplitude (g=+0.46, p<.05).
+   Real NOT significant: fixation duration (g=-0.14) and fixation count (g=-0.21).
+   Generated, matching direction AND significant: spatial dispersion (dz=+0.80, p<.01),
+     saccade amplitude (dz=+0.38, p<.05).
+   Generated mismatch/weak: duration dz=-0.58 (p<.01) but real ns (model exaggerates);
+     revisit dz=-0.14 (ns) vs real large (model under-reproduces);
+     fixation count wrong direction.
+   p-values are exploratory (Bonferroni alpha for 5 tests = 0.01; no pre-registration).
+
+D) EXTERNAL GENERALIZATION (Gaze4ASD, frozen model, no tuning)
+   Duration likelihood transfers (duration NLL ~ -0.40 vs -0.46 in-domain).
+   Position likelihood does NOT transfer (position NLL +1.44 Policy A / +0.91 Policy B
+     vs -0.04 in-domain) -> spatial domain gap.
+   Overall NLL: Policy A +1.0393, Policy B +0.5283
+     vs Saliency4ASD test -0.5030.
+   Scanpath structure stays plausible (MultiMatch real-vs-generated ~ real-vs-real).
+   ASD-vs-TD behavioral direction partly generalizes (spatial effects strongest).
+
+No clinical validity is claimed. These are computational modeling results on
+group-labeled gaze data; they are not a diagnostic or individual-level tool.

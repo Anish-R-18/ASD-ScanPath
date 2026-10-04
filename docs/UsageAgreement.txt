@@ -1,0 +1,10 @@
+The usage of the dataset should be done under certain restrictions, such as:
+- The dataset is made available to interested parties in participating in the Grand Challnege Saliency4ASD at ICME2019. Thus, its usage is restricted for training and tuning the models that may be submitted to the competition, until the dataset is later published and available for the reserch community.  
+- No part of the database nor any copy thereof shall be:
+   (i) shared or disclosed in any way by Licensee or any employee, student assistant, on site consultant and/or on site contractor of Licensee to any third party;
+   (ii) used for a commercial purpose. For the avoidance of doubt, a commercial purpose includes, but is not limited to:
+        - proving the efficiency of commercial systems,
+        - training or testing of commercial systems,
+        - using screenshots of data from the database in advertisements of any kind, including public service advertisement,
+        - selling data from the database,
+        - creating military applications.

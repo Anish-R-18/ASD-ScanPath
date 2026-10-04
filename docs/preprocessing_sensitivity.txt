@@ -1,0 +1,53 @@
+PREPROCESSING SENSITIVITY ANALYSIS
+==================================
+
+Variant A: min_len = 4
+----------------------------------------
+Metric                    | ASD             | TD             
+------------------------------------------------------------
+Valid Scanpaths           | 2335            | 2958           
+% Retained                | 62.08           | 77.09          
+Total Fixations           | 16505           | 22417          
+Median Fix Duration (s)   | 0.2330          | 0.2410         
+Mean Fix Duration (s)     | 0.2810          | 0.2894         
+Median Scanpath Length    | 7.0             | 7.0            
+Valid in All 300 Images   | Yes             | Yes            
+
+Retention Gap (TD - ASD): 15.01%
+
+Variant B: min_len = 3
+----------------------------------------
+Metric                    | ASD             | TD             
+------------------------------------------------------------
+Valid Scanpaths           | 2669            | 3209           
+% Retained                | 70.97           | 83.63          
+Total Fixations           | 17507           | 23170          
+Median Fix Duration (s)   | 0.2330          | 0.2410         
+Mean Fix Duration (s)     | 0.2835          | 0.2941         
+Median Scanpath Length    | 6.0             | 7.0            
+Valid in All 300 Images   | Yes             | Yes            
+
+Retention Gap (TD - ASD): 12.67%
+
+Variant C: min_len = 2
+----------------------------------------
+Metric                    | ASD             | TD             
+------------------------------------------------------------
+Valid Scanpaths           | 2974            | 3427           
+% Retained                | 79.07           | 89.31          
+Total Fixations           | 18117           | 23606          
+Median Fix Duration (s)   | 0.2330          | 0.2410         
+Mean Fix Duration (s)     | 0.2848          | 0.2963         
+Median Scanpath Length    | 6.0             | 7.0            
+Valid in All 300 Images   | Yes             | Yes            
+
+Retention Gap (TD - ASD): 10.24%
+
+RECOMMENDATION
+--------------
+Variant B (min_len = 3) is recommended.
+Reasoning:
+- Variant A (min_len = 4) has a severe 15% retention gap (TD 77% vs ASD 62%), which introduces strong group bias into the dataset.
+- Variant B (min_len = 3) substantially reduces this gap while still providing enough temporal context (3 fixations) for the TPP-Gaze transformer to learn sequence dynamics.
+- Variant C (min_len = 2) minimizes the gap further, but sequences of length 2 offer very little temporal history for a point process model, severely limiting the transformer's ability to capture complex spatial-temporal gaze patterns.
+- All variants preserve valid scanpaths across all 300 images for both groups.

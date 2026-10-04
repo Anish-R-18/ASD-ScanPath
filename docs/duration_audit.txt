@@ -1,0 +1,243 @@
+=====================================================================================
+               SALIENCY4ASD DATASET - IN-DEPTH DURATION AUDIT REPORT
+=====================================================================================
+Inspection Date:    October 2026
+Target Directory:   c:\Users\anish\OneDrive\Desktop\gaze-ag
+Dataset:            Saliency4ASD (IEEE ICME 2019 Grand Challenge)
+Stimulus Setup:     MIT1003 images, 3.0s presentation, 1.0s grey interval between images
+Hardware / Tool:    Tobii T120 eye tracker (120 Hz sampling, 1280x1024), Tobii Studio SW
+=====================================================================================
+
+1. DISTRIBUTION OF DURATION VALUES
+-------------------------------------------------------------------------------------
+Analysis of all 63,627 fixations across 300 ASD and 300 TD scanpath files.
+Durations are strongly positively skewed with extreme right tails extending far beyond 3,000 ms.
+
+Summary Statistics Comparison:
+Metric                     | ASD Group (N=29,089) | TD Group (N=34,538)  | Combined (N=63,627)
+---------------------------|----------------------|----------------------|----------------------
+Minimum                    | 8.0 ms               | 8.0 ms               | 8.0 ms              
+Maximum                    | 7803.0 ms            | 11483.0 ms           | 11483.0 ms          
+Mean                       | 260.58 ms            | 318.23 ms            | 291.88 ms           
+Std Deviation              | 310.76 ms            | 421.20 ms            | 375.86 ms           
+Median (50th %)            | 192.0 ms             | 233.0 ms             | 216.0 ms            
+Interquartile Range (IQR)  | 267.0 ms             | 292.0 ms             | 283.0 ms            
+Skewness                   | 6.98                 | 10.18                | 9.65                
+Kurtosis                   | 108.56               | 196.55               | 193.26              
+
+Percentile Distribution:
+Percentile                 | ASD Group            | TD Group             | Combined
+---------------------------|----------------------|----------------------|----------------------
+1%                         |      8.0 ms           |      8.0 ms           |      8.0 ms
+5%                         |      8.0 ms           |     25.0 ms           |      8.0 ms
+10%                        |     17.0 ms           |     58.0 ms           |     42.0 ms
+25%                        |     83.0 ms           |    100.0 ms           |     92.0 ms
+50%                        |    192.0 ms           |    233.0 ms           |    216.0 ms
+75%                        |    350.0 ms           |    392.0 ms           |    375.0 ms
+90%                        |    541.0 ms           |    641.0 ms           |    591.0 ms
+95%                        |    708.0 ms           |    866.0 ms           |    799.0 ms
+99%                        |   1317.0 ms           |   1691.0 ms           |   1504.9 ms
+99.9%                      |   3297.2 ms           |   4438.0 ms           |   3797.0 ms
+
+Binned Duration Frequency Distribution:
+Duration Interval                          | ASD Count (%)        | TD Count (%)         | Combined Count (%)
+-------------------------------------------|----------------------|----------------------|----------------------
+< 50 ms (micro-events / noise)             |   4134 (14.21%)   |   2291 ( 6.63%)   |   6425 (10.10%)
+50 - 99 ms (short fixations)               |   4452 (15.30%)   |   5581 (16.16%)   |  10033 (15.77%)
+100 - 199 ms (early fixations)             |   6009 (20.66%)   |   6963 (20.16%)   |  12972 (20.39%)
+200 - 299 ms (canonical human fixations)   |   5233 (17.99%)   |   6483 (18.77%)   |  11716 (18.41%)
+300 - 499 ms (extended fixations)          |   5687 (19.55%)   |   7442 (21.55%)   |  13129 (20.63%)
+500 - 999 ms (long focal fixations)        |   3010 (10.35%)   |   4553 (13.18%)   |   7563 (11.89%)
+1000 - 1999 ms (abnormally long fixations) |    467 ( 1.61%)   |    984 ( 2.85%)   |   1451 ( 2.28%)
+2000 - 3000 ms (extreme fixations)         |     45 ( 0.15%)   |    168 ( 0.49%)   |    213 ( 0.33%)
+> 3000 ms (impossible for 3s stimulus)     |     52 ( 0.18%)   |     73 ( 0.21%)   |    125 ( 0.20%)
+
+Key Observations on Duration Distribution:
+1. Physiological Shift: Typical developing (TD) children exhibit significantly longer fixations on average
+   (mean 318.23 ms vs 260.58 ms; median 233.0 ms vs 192.0 ms) compared to ASD children.
+2. Micro-Fixation Bias in ASD: 29.52% of all ASD fixations are under 100 ms (and 14.21% under 50 ms),
+   compared to 22.79% and 6.63% in TD. ASD children show a substantial excess of rapid, fragmented fixations.
+
+2. SPECIFIC DURATION THRESHOLDS (>3000 ms, >1000 ms, >500 ms, <50 ms, <100 ms)
+-------------------------------------------------------------------------------------
+Threshold               | ASD Count (%)        | TD Count (%)         | Combined Total Count (%)
+------------------------|----------------------|----------------------|-------------------------
+Duration > 3000 ms      |     52 (0.179%)   |     73 (0.211%)   |    125 (0.196%)
+Duration > 1000 ms      |    564 (1.939%)   |   1225 (3.547%)   |   1789 (2.812%)
+Duration > 500 ms       |   3441 (11.829%)   |   5604 (16.226%)   |   9045 (14.216%)
+Duration < 100 ms       |   8586 (29.516%)   |   7872 (22.792%)   |  16458 (25.866%)
+Duration < 50 ms        |   4134 (14.212%)   |   2291 (6.633%)   |   6425 (10.098%)
+Duration == 8 ms        |   2583 (8.880%)   |   1353 (3.917%)   |   3936 (6.186%)
+
+Critical Threshold Findings:
+1. Durations > 3000 ms (125 fixations total):
+   - 52 in ASD and 73 in TD.
+   - Because each image was presented for exactly 3,000 ms, any single fixation exceeding 3,000 ms is
+     physically impossible within that stimulus window unless tracker recording leaked across images.
+2. High Incidence of Sub-50 ms Fixations (6,425 fixations, 10.10%):
+   - Over 14.2% of all ASD fixations last under 50 ms.
+   - Fixations of 8 ms represent exactly 1 eye-tracker frame at 120 Hz. There are 3,936 occurrences (6.19%).
+
+3. SUM OF DURATIONS PER SEGMENT (TRIAL LEVEL ANALYSIS)
+-------------------------------------------------------------------------------------
+Each segment represents an individual participant trial on one image (delimited by Idx resets to 0).
+Total segments analyzed: 7,598 segments (3,761 ASD trials, 3,837 TD trials across 300 images).
+
+Segment Total Duration Statistics (Sum of Fixations in Trial):
+Metric                     | ASD Group (N=3,761)  | TD Group (N=3,837)   | Combined (N=7,598)
+---------------------------|----------------------|----------------------|----------------------
+Minimum Segment Sum        | 8.0 ms               | 8.0 ms               | 8.0 ms              
+Median Segment Sum         | 1823.0 ms            | 3015.0 ms            | 2490.5 ms           
+Maximum Segment Sum        | 19464.0 ms           | 23957.0 ms           | 23957.0 ms          
+Mean Segment Sum           | 2015.46 ms           | 2864.52 ms           | 2444.24 ms          
+Std Deviation              | 1627.44 ms           | 1816.56 ms           | 1776.88 ms          
+25th Percentile (Q1)       | 657.0 ms             | 1755.0 ms            | 1059.0 ms           
+75th Percentile (Q3)       | 3013.0 ms            | 3688.0 ms            | 3464.0 ms           
+
+Comparison Against Experimental Trial Timeline (Stimulus = 3000 ms, Interval = 1000 ms, Total = 4000 ms):
+Segment Duration Threshold                | ASD Trials (%)       | TD Trials (%)        | Combined Trials (%)
+------------------------------------------|----------------------|----------------------|----------------------
+Sum > 3000 ms (Exceeds Stimulus Time)     |   947 (25.18%)   |  1941 (50.59%)   |  2888 (38.01%)
+Sum > 3500 ms                             |   607 (16.14%)   |  1215 (31.67%)   |  1822 (23.98%)
+Sum > 4000 ms (Exceeds Image + Interval)  |   368 ( 9.78%)   |   635 (16.55%)   |  1003 (13.20%)
+Sum < 1000 ms (Severely Truncated Trial)  |  1229 (32.68%)   |   595 (15.51%)   |  1824 (24.01%)
+Sum < 500 ms                              |   802 (21.32%)   |   353 ( 9.20%)   |  1155 (15.20%)
+
+Analysis of Segment Duration Sums:
+1. TD Trials Center Near 3.0s: The median TD segment sum is 3,015.0 ms, perfectly aligning with the 3s
+   stimulus presentation. However, 50.59% of TD segments sum to >3,000 ms, and 16.55% exceed 4,000 ms.
+2. ASD Trials are Drastically Truncated: Median ASD segment sum is only 1,823.0 ms. Nearly a third
+   (32.68%) of all ASD participant trials sum to less than 1,000 ms, and 21.32% sum to under 500 ms.
+   This quantitatively confirms the README note that ASD children frequently looked away from the display.
+
+4. QUANTIZATION AROUND 8.33 ms (TOBII T120 SAMPLING RATE)
+-------------------------------------------------------------------------------------
+The Tobii T120 eye tracker samples gaze at exactly 120 Hz.
+Theoretical frame interval: Delta_t = 1000 ms / 120 = 8.333333... ms.
+
+Mathematical Verification:
+Let k be the integer number of video frames. Theoretical duration in milliseconds:
+   D_theo(k) = round(k * 1000 / 120)
+
+Empirical Findings:
+1. All 63,627 duration values are strict integers (zero non-integer floats exist in the dataset).
+2. Exactly 49,666 out of 63,627 fixations (78.06%) perfectly match round(k * 1000 / 120).
+3. The maximum deviation from an exact multiple of 8.333 ms across the entire dataset is only 4.00 ms.
+4. The mean absolute deviation across all fixations is 0.3284 ms.
+5. 100% of duration values fall within [k * 8.333 - 4.0, k * 8.333 + 4.0] ms.
+
+Top 15 Most Frequent Duration Values and Corresponding 120 Hz Frame Counts:
+Rank | Duration (ms) | Frame Count (k) | Theoretical Value | Count in Dataset | Frequency (%)
+-----|---------------|-----------------|-------------------|------------------|--------------
+ 1   |        8.0 ms  |               1 |              8 ms   |             3936 |        6.19%
+ 2   |       50.0 ms  |               6 |             50 ms   |             1930 |        3.03%
+ 3   |       58.0 ms  |               7 |             58 ms   |             1679 |        2.64%
+ 4   |       67.0 ms  |               8 |             67 ms   |             1665 |        2.62%
+ 5   |       75.0 ms  |               9 |             75 ms   |             1653 |        2.60%
+ 6   |       83.0 ms  |              10 |             83 ms   |             1503 |        2.36%
+ 7   |      100.0 ms  |              12 |            100 ms   |             1382 |        2.17%
+ 8   |       92.0 ms  |              11 |             92 ms   |             1275 |        2.00%
+ 9   |      108.0 ms  |              13 |            108 ms   |             1242 |        1.95%
+ 10  |      183.0 ms  |              22 |            183 ms   |             1104 |        1.74%
+ 11  |      200.0 ms  |              24 |            200 ms   |             1069 |        1.68%
+ 12  |      125.0 ms  |              15 |            125 ms   |             1062 |        1.67%
+ 13  |      225.0 ms  |              27 |            225 ms   |             1061 |        1.67%
+ 14  |      208.0 ms  |              25 |            208 ms   |             1056 |        1.66%
+ 15  |      175.0 ms  |              21 |            175 ms   |             1038 |        1.63%
+
+Conclusion: Durations are undeniably quantized in units of eye tracker sampling frames (120 Hz / 8.33 ms).
+Minor deviations (+/-1-4 ms) are standard rounding artifacts from Tobii Studio timestamp differencing.
+
+5. DURATION UNIT AND MEANING FROM DOCUMENTATION AND CODE
+-------------------------------------------------------------------------------------
+1. Units: Milliseconds (ms), represented as integer numbers.
+2. README.txt Statements:
+   - 'Eye tracker: Tobii T120 17 inches, Resolution 1280x1024'
+   - 'Tobbi Studio SW was used to obtain directly the eye fixations.'
+   - 'Viewing time: 3s, Grey interval between images: 1s.'
+3. MATLAB Preprocessing Script ('ICME_DataPreparation.m'):
+   - In lines 44-48 and 78-82:
+       X_ASD = dataASD(:,2);
+       Y_ASD = dataASD(:,3);
+       FixationPoints(Y_ASD, X_ASD) = 1;
+   - CRITICAL DISCOVERY: The official baseline code COMPLETELY DISCARDS the duration column (column 4)!
+     The spatial saliency maps and fixation points are binary spatial accumulators. Duration was exported
+     from Tobii Studio but unused by the competition benchmark script.
+4. Tobii Studio Software Meaning:
+   - In Tobii Studio, gaze samples are processed by an event detection algorithm (ClearView or I-VT filter).
+   - Duration = Fixation End Time - Fixation Start Time (in milliseconds).
+
+6. DOES DURATION REPRESENT FIXATION DURATION OR ANOTHER TIMING QUANTITY?
+-------------------------------------------------------------------------------------
+The investigation reveals that while duration represents fixation dwell time nominally, it suffers from
+several severe processing anomalies:
+
+1. Nominal Nature: It is NOT saccade duration, nor cumulative session timestamp. It is an event dwell time.
+2. Lack of Minimum Duration Filtering (Raw Sample Leakage):
+   - 3,936 fixations (6.19%) have a duration of exactly 8 ms (1 frame).
+   - Standard fixation filters discard events shorter than 60–100 ms because human visual processing cannot
+     occur in 8 ms. Their inclusion proves the authors exported unfiltered or minimally filtered raw event data.
+3. Cross-Trial / Grey-Screen Leakage (Multi-Second Fixations):
+   - Over 125 fixations exceed 3,000 ms (up to 11,483 ms!).
+   - Investigation reveals identical extreme durations (e.g. 11,483 ms, 9,102 ms) occurring across different
+     images at screen center (x=602, y=542 and x=590, y=549 on a 1280x1024 monitor).
+   - Mechanism: When Tobii Studio records a continuous session of 30 images, if a participant maintained
+     fixation on the center cross during the 1-second grey interval or across consecutive image changes,
+     the software maintained the fixation object across stimulus markers. When sliced per image, the full
+     cumulative duration of the multi-trial fixation was assigned to that image!
+4. Saccadic / Blink Gaps:
+   - Summing fixation durations within a segment frequently totals >3,000 ms (38.01% of segments) even though
+     the image was only on screen for 3,000 ms. This confirms fixation events extended into the grey interval.
+
+7. FLAGGED IMPOSSIBLE AND SUSPICIOUS SEGMENTS
+-------------------------------------------------------------------------------------
+Segments requiring filtering or cleaning before use in predictive models:
+
+Summary of Flagged Anomalies:
+  Anomaly Type                                      | ASD Segments | TD Segments  | Total Segments
+  --------------------------------------------------|--------------|--------------|---------------
+  Single Fixation > 3,000 ms (Physically Impossible)|           52 |           73 |           125
+  Segment Sum > 4,000 ms (Exceeds Trial + Interval) |          368 |          635 |         1,003
+  Segment Sum > 3,000 ms (Exceeds Stimulus Time)    |          947 |        1,941 |         2,888
+  Ultra-Short Trial (Sum < 200 ms - Tracking Lost)  |          501 |          137 |           638
+  Spurious Segments (Consisting ONLY of 8 ms spikes)|          144 |           40 |           184
+
+Top 10 Most Extreme Impossible Single Fixations:
+Rank | Group | Image File           | Segment # | Index | Fixation Duration | Gaze Location (x, y)
+-----|-------|----------------------|-----------|-------|-------------------|---------------------
+ 1   | TD    | TD_scanpath_7.txt    | 5         | 0     |        11483.0 ms | (602, 542)
+ 2   | TD    | TD_scanpath_8.txt    | 5         | 1     |        11483.0 ms | (474, 390)
+ 3   | TD    | TD_scanpath_114.txt  | 4         | 3     |        11483.0 ms | (474, 414)
+ 4   | TD    | TD_scanpath_7.txt    | 5         | 1     |        11483.0 ms | (474, 374)
+ 5   | TD    | TD_scanpath_113.txt  | 5         | 0     |        11483.0 ms | (602, 542)
+ 6   | TD    | TD_scanpath_113.txt  | 5         | 1     |        11483.0 ms | (474, 414)
+ 7   | TD    | TD_scanpath_8.txt    | 5         | 0     |        11483.0 ms | (602, 542)
+ 8   | TD    | TD_scanpath_212.txt  | 9         | 2     |         9102.0 ms | (462, 421)
+ 9   | TD    | TD_scanpath_114.txt  | 9         | 1     |         9102.0 ms | (462, 421)
+ 10  | TD    | TD_scanpath_115.txt  | 9         | 1     |         9102.0 ms | (462, 421)
+
+Top 10 Most Extreme Impossible Segments by Total Duration Sum:
+Rank | Group | Image File           | Segment # | Fixations | Total Sum Duration | Max Single Fixation
+-----|-------|----------------------|-----------|-----------|--------------------|--------------------
+ 1   | TD    | TD_scanpath_8.txt    | 5         | 4         |         23957.0 ms |          11483.0 ms
+ 2   | TD    | TD_scanpath_113.txt  | 5         | 2         |         22966.0 ms |          11483.0 ms
+ 3   | TD    | TD_scanpath_7.txt    | 5         | 2         |         22966.0 ms |          11483.0 ms
+ 4   | TD    | TD_scanpath_115.txt  | 9         | 5         |         20686.0 ms |           9102.0 ms
+ 5   | TD    | TD_scanpath_168.txt  | 9         | 6         |         19570.0 ms |           7695.0 ms
+ 6   | ASD   | ASD_scanpath_102.txt | 1         | 3         |         19464.0 ms |           7371.0 ms
+ 7   | TD    | TD_scanpath_114.txt  | 9         | 2         |         18204.0 ms |           9102.0 ms
+ 8   | TD    | TD_scanpath_211.txt  | 9         | 2         |         18204.0 ms |           9102.0 ms
+ 9   | TD    | TD_scanpath_261.txt  | 2         | 5         |         17878.0 ms |           8169.0 ms
+ 10  | TD    | TD_scanpath_66.txt   | 9         | 3         |         16696.0 ms |           8302.0 ms
+
+RECOMMENDED PREPROCESSING / FILTERING PIPELINE FOR RESEARCHERS:
+1. Minimum Duration Threshold: Remove all fixations with duration < 60 ms or < 80 ms (eliminating ~10-14%
+   of data that represents 1-frame tracker noise and saccade artifacts).
+2. Maximum Duration Clamping: Cap individual fixations at 1,500 ms, or discard fixations > 3,000 ms.
+3. Segment Timeline Truncation: Truncate cumulative scanpath time at 3,000 ms to discard fixations that leaked
+   into the 1-second inter-stimulus grey interval.
+4. Discard Spurious Segments: Drop participant segments where total fixations < 2 or total duration < 300 ms
+   (where the participant was not attending to the stimulus).
+=====================================================================================
+                             END OF DURATION AUDIT REPORT
+=====================================================================================

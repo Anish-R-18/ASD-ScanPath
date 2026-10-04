@@ -1,0 +1,42 @@
+TPP-GAZE ASD/TD - LIMITATIONS
+
+1. No participant IDs in Saliency4ASD.
+   The Saliency4ASD processing has no per-observer identifiers, so conditioning
+   and all in-domain analyses use the GROUP label only (ASD/TD). Participant-level
+   statistics were therefore only possible on the external Gaze4ASD data.
+
+2. Gaze4ASD Policy-A clipping.
+   Policy A clips out-of-bounds fixations to the image border (+/-1), piling points
+   on edges that are very unlikely under the model and inflating the position NLL
+   (Policy A overall 1.04 vs Policy B, which removes out-of-bounds, 0.53).
+   Policy A is reported as primary per the request, but Policy B is the fairer NLL.
+
+3. Generated fixation-count overproduction.
+   The TPP sampler fills the 3 s window and generates more fixations than humans
+   (generated ~10 vs real ~6-7), and it reverses the (weak, non-significant) real
+   ASD-vs-TD fixation-count direction. Fixation count is the least reliable output.
+
+4. Weak revisit-rate reproduction.
+   Revisit rate is the LARGEST real ASD-vs-TD effect (g=-1.04) but the generated
+   model barely separates the groups on it (dz=-0.14, ns). Direction matches,
+   magnitude does not.
+
+5. External spatial domain gap.
+   Position likelihood and absolute spatial scale do not transfer to Gaze4ASD
+   (different stimuli; DenseNet/positional priors tuned to Saliency4ASD). Generated
+   saccade amplitude / dispersion are ~half of real on Gaze4ASD. Temporal (duration)
+   behavior transfers better than spatial behavior.
+
+6. Exploratory statistical analysis.
+   Permutation/bootstrap tests are two-sided and exploratory; there was no
+   pre-registration and no formal multiple-comparison control beyond a reported
+   Bonferroni reference (alpha=0.01 for 5 tests). The ASD/TD groups are also
+   imbalanced (Gaze4ASD: 33 ASD vs 133 TD participants). Results should be read as
+   effect-direction/size evidence, not confirmatory hypothesis tests.
+
+Additional notes:
+- Architectural quirk (documented): the released TPP-Gaze transformer encoder mixes
+  over the batch dimension, so results depend on batch composition; this is inherent
+  to the pretrained weights and was reproduced faithfully, not "fixed".
+- The ASD/TD conditioning is a 1,024-parameter additive embedding; its effect is
+  small by design, which bounds how strongly the model can separate the groups.
