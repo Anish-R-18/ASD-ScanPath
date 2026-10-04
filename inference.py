@@ -144,7 +144,8 @@ def main():
     ap = argparse.ArgumentParser(description="ASD/TD-conditioned TPP-Gaze inference + visualization")
     ap.add_argument("--image", required=True)
     ap.add_argument("--condition", choices=["ASD", "TD", "both"], default="both")
-    ap.add_argument("--out-dir", default=os.path.join(_ROOT, "outputs"))
+    ap.add_argument("--out-dir", default=os.path.join(_ROOT, "test", "outputs"),
+                    help="parent output dir; a per-image subfolder (named after the image stem) is created inside it")
     ap.add_argument("--checkpoint", default="training/runs/phase2_embedding_only/best_model_conditioned.pth")
     ap.add_argument("--base-cfg", default="tppgaze/data/config.yaml")
     ap.add_argument("--stats-json", default="training/runs/phase2_embedding_only/summary_full.json")
@@ -156,7 +157,10 @@ def main():
 
     device = torch.device(("cuda" if torch.cuda.is_available() else "cpu")
                           if args.device in (None, "auto") else args.device)
-    os.makedirs(args.out_dir, exist_ok=True)
+    # per-image output folder (named after the image stem) inside the parent --out-dir
+    stem = os.path.splitext(os.path.basename(args.image))[0]
+    out_dir = os.path.join(args.out_dir, stem)
+    os.makedirs(out_dir, exist_ok=True)
     mean, std = load_stats(args.stats_json)
     print(f"[inference] device={device}  stats(mean/std log-inter)={mean:.4f}/{std:.4f}")
     cmodel = load_model(args.checkpoint, args.base_cfg, mean, std, device)
@@ -166,16 +170,15 @@ def main():
     for cond in conditions:
         im, W, H, sppx, spn = predict(cmodel, args.image, cond, device,
                                       n_sim=args.n_sim, temperature=args.temperature, seed=args.seed)
-        png = os.path.join(args.out_dir, f"{cond.lower()}_scanpath.png")
-        js = os.path.join(args.out_dir, f"{cond.lower()}_scanpath.json")
+        png = os.path.join(out_dir, f"{cond.lower()}_scanpath.png")
+        js = os.path.join(out_dir, f"{cond.lower()}_scanpath.json")
         save_single(im, sppx, cond, png)
         save_json(js, cond, args.image, W, H, sppx, spn, args.temperature, args.seed)
         results[cond] = (im, sppx, png, js)
         print(f"[inference] {cond}: {len(sppx)} fixations  total={sppx[:,2].sum():.2f}s  -> {png}  {js}")
 
     if args.condition == "both":
-        stem = os.path.splitext(os.path.basename(args.image))[0]
-        side = os.path.join(args.out_dir, f"{stem}_asd_vs_td.png")
+        side = os.path.join(out_dir, f"{stem}_asd_vs_td.png")
         fig, axs = plt.subplots(1, 2, figsize=(18, 8))
         for ax, cond in zip(axs, ["ASD", "TD"]):
             draw(ax, results[cond][0], results[cond][1], cond)
