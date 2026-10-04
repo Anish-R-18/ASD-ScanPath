@@ -1,0 +1,37 @@
+# TPP-Gaze fine-tuning config (Phase 1 baseline: combined ASD + TD, no conditioning).
+# Paths are relative to the gaze-ag project root (where you launch train_tpp.py from),
+# or absolute. train_tpp.py resolves them against the project root by default.
+
+# --- original TPP-Gaze assets (source of truth; not modified) ---
+model_cfg_path: tppgaze/data/config.yaml
+checkpoint_path: tppgaze/data/model_transformer.pth
+
+# --- our processed data ---
+asd_json: processed_data/asd_scanpaths.json
+td_json:  processed_data/td_scanpaths.json
+images_dir: TrainingData/TrainingData/Images
+image_ext: .png
+
+# --- outputs ---
+out_dir: training/runs/baseline
+
+# --- reproducibility / split ---
+seed: 0
+split: [0.70, 0.15, 0.15]   # train / val / test, image-level
+
+# --- optimisation (matches paper: AdamW, wd=1e-1, lr=1e-3) ---
+batch_size: 128
+lr: 1.0e-3
+weight_decay: 1.0e-1
+max_epochs: 300
+patience: 20                # early stopping: epochs w/o val improvement
+grad_clip: 5.0
+freeze_backbone: true
+cache_backbone: true        # cache frozen DenseNet features (fast fine-tuning)
+num_workers: 0
+device: auto                # auto -> cuda if available else cpu
+
+# --- short-test knobs (ignored by full training unless set) ---
+limit_images: null          # use only the first N train/val images (short test)
+limit_train_batches: null
+limit_val_batches: null

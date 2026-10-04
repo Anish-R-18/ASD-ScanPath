@@ -1,0 +1,204 @@
+=====================================================================================
+           TPP-GAZE REPOSITORY AUDIT & SALIENCY4ASD COMPATIBILITY REPORT
+=====================================================================================
+Inspection Date:    October 2026
+Target Repository:  https://github.com/phuselab/tppgaze (WACV 2025)
+Target Dataset:     Saliency4ASD (IEEE ICME 2019 Grand Challenge)
+Audit Focus:        Model inputs, coordinate normalization, temporal representations,
+                    loss formulation, training availability, and dataset conversion pipeline.
+=====================================================================================
+
+1. EXACT INPUT FORMAT FOR A TRAINING SCANPATH
+-------------------------------------------------------------------------------------
+According to the TPP-Gaze architecture (tppgaze/tppgaze.py, tppgaze/utils.py, and paper Section 3):
+
+Each training instance corresponds to an observer's scanpath on an image stimulus, represented
+by four synchronized tensor structures:
+
+1. 'inter_times' Tensor:
+   - Shape: (batch_size, seq_len), dtype: torch.float32.
+   - Content: Fixation duration / inter-event time between consecutive fixations (tau_n = t_n - t_{n-1}).
+   - Unit: SECONDS (e.g., 220 ms is passed as 0.220).
+
+2. 'marks' Tensor:
+   - Shape: (batch_size, seq_len, 2), dtype: torch.float32.
+   - Content: Two-dimensional spatial fixation coordinates (x, y).
+   - Range: Normalized to [-1.0, 1.0].
+
+3. 'images' Tensor:
+   - Shape: (batch_size, 3, 512, 512), dtype: torch.float32.
+   - Content: RGB image stimulus resized to 512x512 and normalized with ImageNet statistics:
+     mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225].
+
+4. Sequence Masking and Padding:
+   - Variable-length scanpaths within a batch are padded with 0.0.
+   - A boolean/float non-padding mask tensor (batch_size, seq_len) masks out loss on padded steps.
+
+5. Initial Fixation Pruning Rule:
+   - As explicitly specified in paper Section 4.1 ('Implementation and Training Details'):
+     'Following previous literature, during training and evaluation, we discard the first fixation
+      and removed all scanpaths containing less than four fixations.'
+   - The initial fixation (at stimulus onset) is dropped to prevent center-bias memorization.
+
+2. COORDINATE NORMALIZATION AND PREPROCESSING
+-------------------------------------------------------------------------------------
+1. Spatial Coordinate Normalization (Marks):
+   - In tppgaze/tppgaze.py (lines 47-48), predictions in [-1.0, 1.0] are mapped to image pixels using:
+       X_pixel = rescale(-1.0, 1.0, 0, W - 1, mark_x)
+       Y_pixel = rescale(-1.0, 1.0, 0, H - 1, mark_y)
+   - Therefore, training coordinates must be normalized from raw image pixel space [0, W-1] x [0, H-1]
+     into the bounded interval [-1.0, 1.0]:
+       x_norm = 2.0 * (x / (W - 1)) - 1.0
+       y_norm = 2.0 * (y / (H - 1)) - 1.0
+   - Both x_norm and y_norm must be clamped to [-1.0, 1.0].
+
+2. Image Stimulus Preprocessing:
+   - Implemented in tppgaze/utils.py (lines 91-97):
+       transforms.Compose([
+           transforms.Resize((512, 512)),
+           transforms.ToTensor(),
+           transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+       ])
+   - Images are resized to 512x512 square before feeding to the DenseNet201 + CoordConv backbone.
+   - CoordConv (tppgaze/models/coordconv.py) appends spatial coordinate maps [-1, 1] to convolutional
+     feature maps, allowing convolutional layers to maintain spatial coordinate awareness.
+
+3. EXACT TIME AND DURATION UNIT EXPECTED BY THE MODEL
+-------------------------------------------------------------------------------------
+Expected Unit: SECONDS (floating point, e.g., 0.250s = 250 ms).
+
+Direct Technical Proofs from Code and Config:
+1. In tppgaze/tppgaze.py (line 46):
+     T = (inter_times_batch * 1000).cpu().detach().numpy()
+   The internal model output 'inter_times_batch' is multiplied by 1000 to convert from seconds to ms.
+2. In data/config.yaml (lines 4-5):
+     mean_log_inter_times: -1.512609601020813
+     std_log_inter_times: 0.5891745090484619
+   Notice that exp(-1.5126) = 0.2203 seconds = 220.3 ms (the exact canonical human fixation duration).
+   If the unit were milliseconds, ln(220) would be +5.39.
+3. In tppgaze/models/transformer_encoder.py (lines 140-143):
+     features = torch.log(inter_times + 1e-8).unsqueeze(-1)
+     features = (features - self.mean_log_inter_time) / self.std_log_inter_time
+   Input durations are transformed via natural logarithm and standardized using the log-second stats.
+
+4. HOW SCANPATH END TIME IS HANDLED
+-------------------------------------------------------------------------------------
+1. Fixed Temporal Horizon (t_end):
+   - The generative sampling process is bounded by a maximum time parameter 't_end'
+     (e.g., sample_duration = 3.0s for 3-second stimulus presentation).
+2. Generation Stopping Criterion:
+   - In tppgaze/tppgaze.py (lines 96-107):
+     Fixations are sampled auto-regressively until the cumulative sum of inter-event times reaches t_end:
+       with torch.no_grad():
+           generated = inter_times.sum(-1).min() >= t_end
+3. Clamping and Masking:
+   - In tppgaze/tppgaze.py (lines 122-127):
+       arrival_times = inter_times.cumsum(-1)                  # Cumulative arrival timestamps
+       inter_times = diff(arrival_times.clamp(max=t_end), -1)   # Truncate final fixation at t_end
+       mask = (arrival_times <= t_end).float()                 # Zero out events beyond t_end
+       marks = marks * torch.stack([mask, mask], dim=2)
+4. Training Implication:
+   - Training scanpaths MUST NOT exceed t_end = 3.0s.
+   - Fixations leaking past 3,000 ms into the grey screen interval must be truncated or clamped.
+
+5. HOW FIXATION DURATION IS REPRESENTED IN THE LOSS
+-------------------------------------------------------------------------------------
+1. Probabilistic Formulation:
+   - TPP-Gaze models duration tau as a continuous random variable governed by a Log-Gaussian Mixture
+     Model (LGMM) with K = 4 mixture components (tppgaze/distributions/log_normal_mixture.py).
+   - Mathematical model (paper Eq. 6 & 7):
+       log(tau) ~ Sum_{k=1}^K w_k * Normal(m_k, s_k^2)
+       tau ~ LogNormalMixture(weights=w, means=m, stds=s)
+   - The context vector c_{j,n} = [h_n || z_j] (history + image features) predicts mixture weights w,
+     component means m, and scales s via an affine projection.
+2. Loss Function Formulation (paper Eq. 10):
+   - The overall objective is the Joint Negative Log-Likelihood (NLL) of the Neural TPP:
+       L(theta) = - Sum [ log p*(tau_n | c_{j,n}) + log p*(r_{F_n} | c_{j,n}) ]
+   - Duration Loss Component:
+       L_duration = - log p*(tau_n | c_{j,n})
+   - Implemented in PyTorch as: -inter_time_dist.log_prob(inter_times).
+   - Spatial Position Loss Component:
+       L_position = - log p*(r_{F_n} | c_{j,n})
+   - Implemented as: -marks_dist.log_prob(marks) using a 2D Gaussian Mixture Model (16 components).
+
+6. WHETHER TRAINING / FINE-TUNING CODE ACTUALLY EXISTS
+-------------------------------------------------------------------------------------
+AUDIT VERDICT: NO, training and fine-tuning code does NOT exist in the repository.
+
+Evidence:
+1. Repository Manifest:
+   - The cloned repo contains ONLY inference files: demo.py, download_models.sh, data/config.yaml,
+     and the model definition package 'tppgaze/'.
+2. Commit History:
+   - Commit 3779245 is titled: 'Inference code released'.
+   - No subsequent commits added training routines.
+3. Missing Components:
+   - No 'train.py', 'finetune.py', 'trainer.py', or 'dataset.py'.
+   - In tppgaze/distributions/log_normal_mixture.py line 71, docstrings cite
+     'tppgaze.data.dataset.get_inter_time_statistics', but 'tppgaze.data' was completely stripped.
+4. Required Solution:
+   - We must provide a standalone training/fine-tuning script ('train_tpp.py') implementing:
+     a) A PyTorch Dataset for scanpaths and stimuli.
+     b) Forward feature extraction and context-shifting logic.
+     c) Loss computation: -(inter_time_dist.log_prob(tau) + marks_dist.log_prob(marks)).mean().
+     d) Optimizer loop (AdamW, lr=1e-3 or 1e-4 for fine-tuning, weight_decay=0.1, batch_size=128).
+
+7. RELEVANT CONFIG.YAML SETTINGS
+-------------------------------------------------------------------------------------
+File: data/config.yaml
+
+Setting                     | Value                | Explanation & Saliency4ASD Adaptation
+----------------------------|----------------------|----------------------------------------------------------
+seed                        | 0                    | Random seed for reproducibility
+mean_log_inter_times        | -1.512609601020813   | ln(mean duration in sec). Recompute for ASD (-1.347) / TD (-1.146)
+std_log_inter_times         | 0.5891745090484619   | std of ln(duration in sec). Recompute on training split
+temperature                 | 2                    | Sampling temperature for 2D GMM coordinates
+distributions               | mixture              | Mixture model heads (LGMM for time, GMM for marks)
+context.type                | transformer          | Sequence model: 'transformer' (TransformerEncoderContext)
+context.size                | 256                  | Embedding dimension of temporal history (h_n)
+metadata.type               | densenet             | Image feature extractor: DenseNet201 + CoordConv
+metadata.size               | 256                  | Output dimension of visual semantics (z_j)
+merge                       | cat                  | Concatenates context + metadata -> 512-dim input vector
+dropout                     | 0.4                  | Dropout regularization probability
+marks_dist_components       | 16                   | Number of 2D Gaussian components for fixation positions
+durations_dist_components   | 4                    | Number of 1D Log-Gaussian components for fixation durations
+
+8. WHICH PRETRAINED CHECKPOINT WE SHOULD START FROM
+-------------------------------------------------------------------------------------
+Available Checkpoints (from download_models.sh / GitHub release v1.0.0):
+1. 'model_transformer.pth' (TransformerEncoderContext + DenseNet201)
+2. 'model_rnn.pth' (GRU + DenseNet201)
+
+RECOMMENDATION: Start from 'model_transformer.pth'.
+
+Reasons:
+1. Direct Domain Match with Saliency4ASD:
+   - Both models were pretrained on COCO-FreeView and MIT1003.
+   - As documented in Saliency4ASD README.txt, ALL 300 Saliency4ASD images were drawn from MIT1003!
+   - The visual backbone and history representations are already primed on this exact image distribution.
+2. Superior Performance:
+   - In paper Table 1, the Transformer architecture outperformed RNN in MultiMatch (0.012 vs 0.014 KL-Div)
+     and String Edit Distance (17.03 vs 17.57).
+3. Native Configuration Alignment:
+   - The released config.yaml defaults to context.type: transformer and size: 256.
+
+9. COMPARISON WITH SALIENCY4ASD DATA & REQUIRED CONVERSION PIPELINE
+-------------------------------------------------------------------------------------
+Dimension            | TPP-Gaze Requirement           | Saliency4ASD Raw Data       | Action Required
+---------------------|--------------------------------|-----------------------------|--------------------------------------------
+Duration Unit        | Seconds (float, e.g. 0.220s)   | Milliseconds (int, e.g. 220)| Divide duration by 1000.0 (dur / 1000.0).
+Coordinates (Marks)  | Normalized [-1.0, 1.0]         | Raw pixels [1, W] x [1, H]  | x_norm = 2.0 * ((x - 1) / (W - 1)) - 1.0
+                     |                                |                             | y_norm = 2.0 * ((y - 1) / (H - 1)) - 1.0
+Image Dimensions     | (3, 512, 512) normalized tensor| Variable (678-1024 px PNG)  | Resize to 512x512, apply ImageNet norm.
+Initial Fixation     | Discarded (onset bias removal) | Present (Idx = 0 on screen) | Drop the first fixation (Idx = 0) of trial.
+Minimum Scanpath Len | >= 4 fixations                 | 1 to 33 fixations           | Prune all scanpaths with < 4 fixations.
+Temporal Horizon     | Hard limit at t_end = 3.0s     | Leaks up to 23.9s in grey   | Truncate cumulative scanpath at sum <= 3.0s.
+Physiological Noise  | Minimum >= 60-80 ms            | 6.19% are 8 ms (1 frame)    | Discard or merge fixations < 60 ms.
+Outlier Durations    | Validated probability range    | Fixations up to 11.48s      | Clamp fixations to <= 1.5s or drop > 3.0s.
+Participant Grouping | Monolithic cohort              | ASD and TD in separate dirs | Train separate ASD vs TD models or add
+                     |                                |                             | a cohort conditioning token.
+Dataset Splits       | Train / Val / Test (70/15/15)  | 300 loose image files       | Split by Image ID (e.g. 210 train, 45 val,
+                     |                                |                             | 45 test) to prevent stimulus leakage.
+=====================================================================================
+                           END OF COMPATIBILITY REPORT
+=====================================================================================

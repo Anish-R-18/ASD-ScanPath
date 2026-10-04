@@ -1,0 +1,42 @@
+GAZE4ASD EXTERNAL EVALUATION (frozen Phase-2 model)
+
+== NLL (per event) ==
+policy/group                 NLL       dur       pos   trials
+PolicyA overall           1.0393   -0.4009    1.4402     4376
+PolicyA ASD               1.1845   -0.4216    1.6061      771
+PolicyA TD                1.0090   -0.3966    1.4056     3605
+PolicyB overall           0.5283   -0.3793    0.9076     3992
+PolicyB ASD               0.5480   -0.3997    0.9477      651
+PolicyB TD                0.5247   -0.3757    0.9004     3341
+Sal4ASD test overall     -0.5030   -0.4640   -0.0390      903
+Sal4ASD test ASD         -0.3250   -0.5031    0.1781      410
+Sal4ASD test TD          -0.6341   -0.4352   -0.1988      493
+
+participant-macro NLL (Policy A):
+  ASD: {'n_participants': 33, 'macro_nll_mean': 1.2300334125185248, 'macro_nll_std': 0.5897515992748745}
+  TD : {'n_participants': 133, 'macro_nll_mean': 1.0459371580018904, 'macro_nll_std': 0.44652319178736544}
+
+== Behavioral aggregate means (Policy A) ==
+populations: real_ASD=771, real_TD=3605, gen_ASD=600, gen_TD=599
+metric                    real_ASD     real_TD     gen_ASD      gen_TD
+n_fix                        6.265       6.425      10.222       9.628
+dur_mean                     0.338       0.346       0.315       0.343
+dur_median                   0.298       0.304       0.268       0.294
+total_dur                    1.989       2.072       2.797       2.781
+sacc_amp_mean              317.435     294.564     163.497     154.709
+sacc_amp_median            280.207     255.882     132.673     125.931
+sacc_amp_norm_mean           0.197       0.183       0.100       0.094
+sacc_dir_mean                0.129       0.124       0.018       0.047
+sacc_dir_std                 1.599       1.616       1.669       1.652
+dispersion                   0.178       0.161       0.095       0.085
+bbox_area_norm               0.129       0.109       0.052       0.043
+revisit_rate                 0.164       0.237       0.377       0.386
+return_offset_mean           3.113       3.148       3.317       3.178
+
+MultiMatch (mean; 1=identical):
+type                  shape   length  direct. position duration   pairs
+RvR_ASD               0.880    0.843    0.581    0.700    0.608     900
+RvR_TD                0.895    0.859    0.601    0.777    0.602     900
+RvG_ASD               0.914    0.881    0.569    0.744    0.553     900
+RvG_TD                0.922    0.890    0.578    0.780    0.540     899
+GenASD_vs_GenTD       0.945    0.927    0.605    0.872    0.511     900
