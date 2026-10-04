@@ -5,7 +5,7 @@ This repository contains the code and preprocessing pipelines for our research o
 By combining deep neural networks with Temporal Point Processes (TPP), we model both the *spatial* distribution and the *temporal* dynamics (fixation durations) of eye gaze. Our architecture, **TPP-Gaze**, captures intricate behavioral differences between ASD and Typically Developing (TD) children when viewing complex visual stimuli.
 
 > **⚠️ NOTE ON DATASETS:**  
-> The datasets (Saliency4ASD, Gaze4ASD, CILIA) used in this research are **NOT distributed in this repository** due to privacy and licensing restrictions. They must be obtained directly from their official sources.
+> The datasets (Saliency4ASD, Gaze4ASD) used in this research are **NOT distributed in this repository** due to privacy and licensing restrictions. They must be obtained directly from their official sources.
 
 ---
 
