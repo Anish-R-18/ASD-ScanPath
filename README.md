@@ -121,12 +121,39 @@ python analysis/run_sensitivity.py
 
 ---
 
-## 8. Reproducing Figures & Tables
+## 8. Inference / Demo
+
+We provide a standalone inference tool to generate predicted scanpaths for any input image conditioned on either ASD or TD behavior. The model outputs predicted fixation coordinates along with predicted continuous durations.
+
+The visualizer renders the sequence as numbered points connected by arrows, where circle size corresponds to fixation duration and explicit time labels are attached.
+
+**Example Commands:**
+Generate an ASD-conditioned scanpath:
+```bash
+python inference.py --image path/to/image.png --condition ASD
+```
+Generate a TD-conditioned scanpath:
+```bash
+python inference.py --image path/to/image.png --condition TD
+```
+Generate both conditions side-by-side for visual comparison:
+```bash
+python inference.py --image path/to/image.png --condition both
+```
+
+Outputs (saved to `outputs/` by default):
+- `<condition>_scanpath.png`: Visualized scanpath over the image.
+- `<condition>_scanpath.json`: Raw sequential predictions formatted as `[x, y, duration_in_seconds]`.
+- `<image_name>_asd_vs_td.png`: A side-by-side comparison figure (if `--condition both` is used).
+
+---
+
+## 9. Reproducing Figures & Tables
 All final figures and numerical tables can be reproduced by running the Jupyter notebooks or python scripts located in the `results/` and `analysis/` directories. Pre-computed summary files are located in `docs/`.
 
 ---
 
-## 9. Citation
+## 10. Citation
 If you use this code in your research, please cite:
 
 ```bibtex

@@ -92,3 +92,8 @@ organize_repo.py
 *.pth
 *.pt
 *.ckpt
+
+# Inference and tests
+outputs/
+test/outputs/
+test/input/*.png
