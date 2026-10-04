@@ -59,7 +59,6 @@ To replicate our experiments, you must request the following datasets from their
 
 1. **Saliency4ASD** (Primary Dataset): Used for Phase 1 & 2 training.
 2. **Gaze4ASD** (External Validation): Used for zero-shot testing.
-3. **CILIA Dataset** (Exploratory Audit).
 
 Place the downloaded raw data in an `external_data/` or `AdditionalData/` directory.
 
