@@ -97,3 +97,6 @@ organize_repo.py
 outputs/
 test/outputs/
 test/input/*.png
+
+# Local training artifacts
+/training/runs/
