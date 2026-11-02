@@ -20,7 +20,7 @@ Pipeline, applied to every scanpath segment in this order:
      starting at/after t_end and clip the duration of a fixation that straddles
      t_end. If the clipped remainder is < --min-fix-ms, that fixation is dropped too.
   6. Optionally clamp remaining durations to --clamp-max-ms (off by default).
-  7. Drop the segment if fewer than --min-len fixations remain (default 4).
+  7. Drop the segment if fewer than --min-len fixations remain (default 3).
   8. Convert ms -> s and normalise 1-indexed pixel coords to [-1, 1]:
         x_norm = 2 * (x - 1) / (W - 1) - 1      (same for y with H)
 """

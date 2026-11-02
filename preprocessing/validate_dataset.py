@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 def validate():
-    processed_dir = 'c:/Users/anish/OneDrive/Desktop/gaze-ag/processed_data'
+    processed_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'processed_data')
     
     with open(os.path.join(processed_dir, 'asd_scanpaths.json'), 'r') as f:
         asd_data = json.load(f)

@@ -2,7 +2,7 @@
                SALIENCY4ASD DATASET - IN-DEPTH DURATION AUDIT REPORT
 =====================================================================================
 Inspection Date:    October 2026
-Target Directory:   c:\Users\anish\OneDrive\Desktop\gaze-ag
+Target Directory:   <repository root>
 Dataset:            Saliency4ASD (IEEE ICME 2019 Grand Challenge)
 Stimulus Setup:     MIT1003 images, 3.0s presentation, 1.0s grey interval between images
 Hardware / Tool:    Tobii T120 eye tracker (120 Hz sampling, 1280x1024), Tobii Studio SW

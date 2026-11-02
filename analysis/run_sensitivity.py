@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 import numpy as np
 
-sys.path.append('c:/Users/anish/OneDrive/Desktop/gaze-ag')
+sys.path.append(str(Path(__file__).resolve().parents[1] / 'preprocessing'))
 from preprocess_dataset import GROUPS, N_IMAGES, parse_scanpath_file
 
 class DummyCfg:
@@ -21,7 +21,7 @@ from collections import defaultdict
 
 def run_variant(min_len):
     cfg = DummyCfg(min_len)
-    RAW_DIR = Path('c:/Users/anish/OneDrive/Desktop/gaze-ag/TrainingData/TrainingData')
+    RAW_DIR = Path(__file__).resolve().parents[1] / 'TrainingData/TrainingData'
     img_dirs = {"ASD": RAW_DIR / "ASD", "TD": RAW_DIR / "TD"}
     
     # We can fake W=1024, H=768 for all just to get the valid lengths, since coords don't change valid status
@@ -90,7 +90,7 @@ def main():
         ("C", 2)
     ]
     
-    out_file = 'c:/Users/anish/OneDrive/Desktop/gaze-ag/preprocessing_sensitivity.txt'
+    out_file = str(Path(__file__).resolve().parents[1] / 'preprocessing_sensitivity.txt')
     with open(out_file, 'w') as f:
         f.write("PREPROCESSING SENSITIVITY ANALYSIS\n")
         f.write("==================================\n\n")

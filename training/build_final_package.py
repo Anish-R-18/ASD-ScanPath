@@ -1,4 +1,8 @@
 """
+SUPERSEDED: its Gaze4ASD tables, figures and text use the old native-size centred mapping. The
+current findings are in results/final_results/, written by hand from the V2 reports, and this
+script does not regenerate them. Kept for reproducibility only.
+
 Assemble the final TPP-Gaze ASD/TD results package from completed experiments.
 NO model work. Reads saved JSONs, writes tables/figures/text under
 training/runs/final_results/. Reports only experiment-supported numbers.

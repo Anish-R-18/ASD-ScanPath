@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image
 
 def main():
-    root_dir = Path("c:/Users/anish/OneDrive/Desktop/gaze-ag/external_data/Gaze4ASD")
+    root_dir = Path(__file__).resolve().parents[1] / "external_data/Gaze4ASD"
     
     img_files = glob.glob(str(root_dir / "Image Stimuli/*.*"))
     sizes = set()

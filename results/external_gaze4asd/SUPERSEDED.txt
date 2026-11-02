@@ -1,0 +1,30 @@
+SUPERSEDED - DO NOT USE THESE VALUES IN THE FINAL PAPER
+
+Everything in this folder comes from the original Gaze4ASD evaluation, which used an incorrect
+coordinate mapping. The files are kept unchanged for reproducibility.
+
+What went wrong
+- The original mapping assumed native-size stimuli centred on the 2560x1440 screen.
+- A later audit found strong evidence for fit-to-height scaling instead: stimuli scaled to the
+  screen height and centred horizontally. This mapping is strongly supported but partly inferred.
+  The original draw rectangle and presentation script are not available, so it is not experimentally
+  confirmed.
+
+Where the corrected results are
+- Tracked summaries: results/external_gaze4asd_v2/ (start with README.md)
+- Current findings:  results/final_results/MAIN_FINDINGS.txt
+- Full local outputs (not tracked by Git): training/runs/external_gaze4asd_v2/
+
+Superseded values include
+- Overall NLL +1.0393 (Policy A) and +0.5283 (Policy B); position NLL +1.44 and +0.91.
+- The conclusions "position likelihood does not transfer" and "external spatial domain gap".
+- All spatial real-vs-generated comparisons, and "generated spatial scale is about half of real".
+- Real saccade amplitude g = +0.46 and spatial dispersion g = +0.65 (corrected: +0.65 and +0.80).
+
+Related superseded material, also kept unchanged
+- external_data/Gaze4ASD_processed/ (old processed datasets)
+- preprocessing/preprocess_gaze4asd.py, training/eval_external.py, training/stats_external.py
+- analysis/audit_policies.py, audit_policy_b.py, audit_policy_c.py and check_gaze4asd.py (early audits)
+- Gaze4ASD items in results/final_results/ (see SUPERSEDED.txt there)
+
+Saliency4ASD results are not affected and remain valid.

@@ -1,42 +1,68 @@
 TPP-GAZE ASD/TD - LIMITATIONS
 
 1. No participant IDs in Saliency4ASD.
-   The Saliency4ASD processing has no per-observer identifiers, so conditioning
-   and all in-domain analyses use the GROUP label only (ASD/TD). Participant-level
-   statistics were therefore only possible on the external Gaze4ASD data.
+   The processed data have no per-observer identifiers across images, so participant-level generalization
+   cannot be established for that dataset. Uncertainty there covers images only, and conditioning uses the
+   group label alone. Participant-level statistics were possible only on Gaze4ASD.
 
-2. Gaze4ASD Policy-A clipping.
-   Policy A clips out-of-bounds fixations to the image border (+/-1), piling points
-   on edges that are very unlikely under the model and inflating the position NLL
-   (Policy A overall 1.04 vs Policy B, which removes out-of-bounds, 0.53).
-   Policy A is reported as primary per the request, but Policy B is the fairer NLL.
+2. Gaze4ASD display mapping is strongly supported but partly inferred.
+   Fit-to-height scaling and horizontal centring were not directly confirmed by the original presentation
+   script, because the draw rectangle is not in the dataset. Position NLL, absolute spatial metrics and
+   MultiMatch depend on this mapping. The original native-size mapping was contradicted by the data, and
+   its results are superseded.
 
-3. Generated fixation-count overproduction.
-   The TPP sampler fills the 3 s window and generates more fixations than humans
-   (generated ~10 vs real ~6-7), and it reverses the (weak, non-significant) real
-   ASD-vs-TD fixation-count direction. Fixation count is the least reliable output.
+3. Gaze4ASD Policy A clips off-image fixations to image boundaries.
+   This affects 3.52% of fixations (x 1.53%, y 2.24%) and piles points on image edges. Policy B, which removes
+   them instead, was run as a sensitivity analysis on the V2 evaluation. The Phase 1 vs Phase 2 and tau=1
+   comparisons use Policy A only.
 
-4. Weak revisit-rate reproduction.
-   Revisit rate is the LARGEST real ASD-vs-TD effect (g=-1.04) but the generated
-   model barely separates the groups on it (dz=-0.14, ns). Direction matches,
-   magnitude does not.
+4. External stimulus selection may not be fully independent.
+   Gaze4ASD stimulus selection may have used Saliency4ASD. Participants and images are separate, but the
+   selection process may not be. Stimuli were chosen for ASD/TD gaze differences and are mostly faces, so
+   effects may be inflated, and predictability may be higher than for general images.
 
-5. External spatial domain gap.
-   Position likelihood and absolute spatial scale do not transfer to Gaze4ASD
-   (different stimuli; DenseNet/positional priors tuned to Saliency4ASD). Generated
-   saccade amplitude / dispersion are ~half of real on Gaze4ASD. Temporal (duration)
-   behavior transfers better than spatial behavior.
+5. Conditioning does not generalize.
+   Conditioning improves in-domain likelihood slightly (+0.0073 nats/event, no confidence interval computed) but
+   does not improve overall corrected external likelihood (-0.0172 nats/event against Phase 2). It is a 1,024-
+   parameter additive embedding. The cause of the worse external TD fit has not been tested.
 
-6. Exploratory statistical analysis.
-   Permutation/bootstrap tests are two-sided and exploratory; there was no
-   pre-registration and no formal multiple-comparison control beyond a reported
-   Bonferroni reference (alpha=0.01 for 5 tests). The ASD/TD groups are also
-   imbalanced (Gaze4ASD: 33 ASD vs 133 TD participants). Results should be read as
-   effect-direction/size evidence, not confirmatory hypothesis tests.
+6. Generated fixation counts and total viewing time remain too high.
+   At tau=1, generated count is 10.24 (ASD) and 9.62 (TD) against real 6.25 and 6.41; total fixation time is 2.79 and
+   2.77 s against 1.99 and 2.07 s. The sampler has no stopping model and fills the 3 s window. Excess remains within
+   the real viewing window (+1.23 and +1.00). Generated durations are also too short.
 
-Additional notes:
-- Architectural quirk (documented): the released TPP-Gaze transformer encoder mixes
-  over the batch dimension, so results depend on batch composition; this is inherent
-  to the pretrained weights and was reproduced faithfully, not "fixed".
-- The ASD/TD conditioning is a 1,024-parameter additive embedding; its effect is
-  small by design, which bounds how strongly the model can separate the groups.
+7. Some generated group differences have the wrong direction.
+   Direction concentration, total fixation time and fixation count (the last not significant in real data) are
+   wrong at both tau=1 and tau=2. Even correct contrasts are too small, and per-image correspondence is weak.
+
+8. Revisit-rate magnitude is under-reproduced.
+   Revisit rate is the largest real ASD-vs-TD effect (g = -1.04), but the generated difference is only 29% of real at
+   tau=1 (15% at tau=2).
+
+9. Temperature changes sampling behaviour but does not change NLL.
+   tau=1 improves behavioural measures only. It does not improve the model. It was selected on validation images,
+   which also selected the Phase 2 checkpoint. Only tau=1 and 2 were compared. The TD revisit improvement reverses
+   within the real viewing window. Direction concentration is slightly worse at tau=1. The official TPP-Gaze
+   config uses tau=2.
+
+10. The original TPP-Gaze Transformer has a batch-attention implementation quirk.
+    The encoder has batch_first=False but receives (batch, length, dim) tensors, so attention mixes across the batch,
+    and results depend on batch composition. Causal time ordering comes from the LSTM. This is in the released model
+    and was reproduced, not fixed. Shuffling batches changed overall Gaze4ASD NLL by about 0.0001 or less. Generation
+    uses single-image, single-condition batches of 20.
+
+11. Statistical tests and generation comparisons are exploratory.
+    They are not preregistered confirmatory evidence. Four temperature tests were prespecified before generation, but
+    earlier tau=2 results on Gaze4ASD had already been seen. Holm correction applies within each family only. Effect
+    sizes such as g and dz are not on the same scale, and generated p-values depend on the number of samples.
+
+12. No clinical diagnosis or clinical validity is established.
+    These are group-level computational results. They are not a diagnostic, screening or individual-level tool.
+
+Additional notes
+- Groups are unbalanced on Gaze4ASD (33 ASD vs 133 TD participants), and age was not adjusted (mean 5.04 vs 4.54 years).
+- Phase 1 was not run at tau=1, so the Phase 1 vs Phase 2 behavioural comparison applies to tau=2 only.
+- MultiMatch is our own implementation, with a high ceiling and limited discrimination. Higher scores are not
+  automatically more realistic, because tighter sampling raises similarity.
+- Generated data have no participants, so generated uncertainty covers only images and seeds.
+- The final Phase 2 configuration (embedding only, lr 1e-4) followed an earlier full-base attempt rejected on validation.

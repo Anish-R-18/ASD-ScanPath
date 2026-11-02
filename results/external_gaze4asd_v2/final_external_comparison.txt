@@ -1,0 +1,349 @@
+FINAL EXTERNAL COMPARISON - CORRECTED GAZE4ASD
+
+Corrected dataset: fit-to-height mapping, Policy A. The mapping is strongly supported but partly inferred, and NOT
+experimentally confirmed. Frozen models; no retraining. All statistics are exploratory unless marked. No clinical or
+diagnostic validity is claimed. The summary tables below are generated directly from the result files; see tables/.
+
+1. PHASE 1 VS PHASE 2, NLL PER FIXATION (lower is better; gain > 0 favours Phase 2)
+                     Phase 1  Phase 2     Gain    Rel.   95% CI, participants    95% CI, images          
+overall joint        -0.5568  -0.5396  -0.0172   -3.1%   [-0.0224, -0.0122]      [-0.0324, -0.0018]      
+overall duration     -0.4038  -0.3986  -0.0052   -1.3%   [-0.0062, -0.0042]      [-0.0066, -0.0038]      
+overall position     -0.1530  -0.1410  -0.0120   -7.8%   [-0.0170, -0.0069]      [-0.0273, +0.0036]      
+ASD joint            -0.1936  -0.2039  +0.0104   +5.4%   [+0.0027, +0.0168]      [-0.0018, +0.0240]      
+ASD duration         -0.4174  -0.4203  +0.0029   +0.7%   [+0.0012, +0.0043]      [+0.0017, +0.0039]      
+ASD position          0.2239   0.2164  +0.0075   +3.4%   [-0.0005, +0.0142]      [-0.0045, +0.0215]      
+TD joint             -0.6325  -0.6096  -0.0229   -3.6%   [-0.0290, -0.0171]      [-0.0406, -0.0058]      
+TD duration          -0.4010  -0.3941  -0.0069   -1.7%   [-0.0080, -0.0058]      [-0.0084, -0.0054]      
+TD position          -0.2315  -0.2155  -0.0160   -6.9%   [-0.0221, -0.0103]      [-0.0332, +0.0013]      
+
+Phase 1 is better overall. Conditioning does not improve overall external NLL. The Saliency4ASD gain did not transfer.
+For reference, Saliency4ASD held-out test NLL: Phase 1 -0.4957, Phase 2 -0.5030.
+Phase 2 position NLL beats a centre-bias reference by 0.91 [0.78, 1.05] on 30 of 30 images.
+
+2. REAL ASD VS TD, PARTICIPANT LEVEL (33 ASD, 133 TD; one mean per participant; Holm within the family)
+Measure                                  ASD      TD       g   95% CI              Holm p
+Revisit rate                           0.202   0.289   -1.04   [-1.44, -0.68]       0.001
+Spatial dispersion (/diagonal)         0.125   0.108   +0.80   [+0.41, +1.24]       0.001
+Total viewing duration (s)             1.984   2.068   -0.71   [-1.11, -0.35]       0.002
+Saccade amplitude (/diagonal)          0.139   0.124   +0.65   [+0.22, +1.11]       0.010
+Saccade direction concentration        0.329   0.297   +0.55   [+0.11, +1.01]       0.025
+Fixation count                         6.205   6.388   -0.21   [-0.56, +0.14]       1.000
+Fixation duration (s)                  0.341   0.347   -0.14   [-0.50, +0.24]       1.000
+Median fixation duration (s)           0.300   0.305   -0.13   [-0.49, +0.24]       1.000
+Fixation rate (per s of fixation)      3.157   3.116   +0.11   [-0.24, +0.48]       1.000
+Horizontal saccade fraction            0.568   0.565   +0.05   [-0.36, +0.48]       1.000
+
+3. GENERATED ASD MINUS TD (Phase 2; image-level; pooled over 10 seeds)
+Measure                                  Real    tau=1    tau=2  t=1 % of real  t=2 % of real
+Spatial dispersion (/diagonal)        +0.0169  +0.0101  +0.0078            60%            46%
+Saccade amplitude (/diagonal)         +0.0151  +0.0075  +0.0049            50%            33%
+Revisit rate                          -0.0805  -0.0237  -0.0124            29%            15%
+Direction concentration               +0.0270  -0.0054  -0.0091               wrong direction
+Total fixation time (s)               -0.0822  +0.0189  +0.0250               wrong direction
+Fixation count                        -0.1590  +0.6187  +0.6066               wrong direction
+
+4. TAU=1 VS TAU=2 ON GAZE4ASD (per-image mean absolute error; four prespecified tests, not preregistered)
+Test                             tau=1   tau=2  Reduction  95% CI of gain          Holm p  Seeds
+Saccade amplitude, ASD          0.0179  0.0377      52.5%  [+0.0168, +0.0225]      0.0004   10/10
+Revisit rate, ASD               0.0569  0.1681      66.1%  [+0.0945, +0.1242]      0.0004   10/10
+Saccade amplitude, TD           0.0138  0.0276      49.9%  [+0.0088, +0.0181]      0.0004   10/10
+Revisit rate, TD                0.0449  0.1032      56.5%  [+0.0324, +0.0818]      0.0005   10/10
+
+Temperature changes sampling only. It does not change the model or its NLL. tau=1 was selected on Saliency4ASD validation images.
+Fixation-count overproduction remains at tau=1: 10.24 (ASD) and 9.62 (TD), against real 6.25 and 6.41.
+Full tau=1 and temperature reports: temperature_sensitivity.txt.
+
+========================================================================================
+FULL REPORT: PHASE 1 VS PHASE 2 ON CORRECTED GAZE4ASD
+Reproduced verbatim from training/runs/external_gaze4asd_v2/phase1_vs_phase2/final_comparison_report.txt
+========================================================================================
+
+PHASE 1 VS PHASE 2 ON CORRECTED GAZE4ASD - FINAL COMPARISON REPORT
+
+No training. Checkpoints, datasets and earlier results were not changed. All statistics are
+exploratory. Fit-to-height is strongly supported but partly inferred; it is NOT experimentally
+confirmed. No clinical or diagnostic validity is claimed.
+
+BOTTOM LINE
+Conditioning does not improve external NLL overall. Phase 1 is better overall by 0.017 nats per
+fixation. Phase 2 gains slightly on ASD and loses more on TD. In generated behaviour, Phase 2 widens
+two real ASD-TD spatial differences, but mainly by moving TD scanpaths further from real TD.
+The Saliency4ASD gain (+0.0073) did not transfer.
+
+DATA
+external_data/Gaze4ASD_processed_v2/fit_height_policy_a/gaze4asd_fit_height_policy_a.json
+33 ASD and 133 TD participants; 771 and 3,605 trials; 4,830 and 23,161 fixation events; 30 stimuli.
+Normalization: Saliency4ASD train split (log-duration mean -1.436568, std 0.693611).
+
+--------------------------------------------------------------------------------
+A. ACTUAL PERFORMANCE: NLL PER FIXATION (lower NLL is better; gain > 0 favours Phase 2)
+
+                     Phase 1   Phase 2   Gain      Rel.     95% CI participants    95% CI images
+Overall   Joint      -0.5568   -0.5396   -0.0172   -3.1%    [-0.0224, -0.0122]     [-0.0324, -0.0018]
+          Duration   -0.4038   -0.3986   -0.0052   -1.3%    [-0.0062, -0.0042]     [-0.0066, -0.0038]
+          Position   -0.1530   -0.1410   -0.0120   -7.8%    [-0.0170, -0.0069]     [-0.0273, +0.0036]
+ASD       Joint      -0.1936   -0.2039   +0.0104   +5.4%    [+0.0027, +0.0168]     [-0.0018, +0.0240]
+          Duration   -0.4174   -0.4203   +0.0029   +0.7%    [+0.0012, +0.0043]     [+0.0017, +0.0039]
+          Position   +0.2239   +0.2164   +0.0075   +3.4%    [-0.0005, +0.0142]     [-0.0045, +0.0215]
+TD        Joint      -0.6325   -0.6096   -0.0229   -3.6%    [-0.0290, -0.0171]     [-0.0406, -0.0058]
+          Duration   -0.4010   -0.3941   -0.0069   -1.7%    [-0.0080, -0.0058]     [-0.0084, -0.0054]
+          Position   -0.2315   -0.2155   -0.0160   -6.9%    [-0.0221, -0.0103]     [-0.0332, +0.0013]
+
+Relative gain = gain / |Phase 1 NLL|. Treat it with caution: NLL has no natural zero, and the
+percentages depend on the coordinate scale. Use the absolute values.
+
+Weighting by group does not rescue Phase 2. With ASD and TD weighted equally, the joint gain is
+-0.0063, participant CI [-0.0111, -0.0018], image CI [-0.0185, +0.0065]. This was added after
+seeing the results.
+
+--------------------------------------------------------------------------------
+B. STATISTICAL UNCERTAINTY
+
+Three resampling schemes are reported: participants (primary, stratified by group), images, and
+both together. The third is the most conservative because it allows for both sources of variation.
+
+                 Gain      Both resampled        Participants      Images      Holm p
+                                                 favouring P2      favouring   (participant
+                                                                   P2          sign-flip)
+Overall Joint    -0.0172   [-0.0333, -0.0007]     58/166           11/30        .0009
+ASD     Joint    +0.0104   [-0.0040, +0.0267]     25/33            17/30        .0172
+ASD     Duration +0.0029   [+0.0008, +0.0049]     22/33            24/30        .0093
+ASD     Position +0.0075   [-0.0072, +0.0234]     23/33            16/30        .0586
+TD      Joint    -0.0229   [-0.0411, -0.0045]     33/133           11/30        .0009
+TD      Duration -0.0069   [-0.0088, -0.0048]     25/133            1/30        .0009
+TD      Position -0.0160   [-0.0350, +0.0020]     38/133           11/30        .0009
+
+Fixation events were never treated as independent units. Participant intervals hold images fixed,
+so they do not generalise to new images. The ASD joint gain clears zero by participants only.
+
+--------------------------------------------------------------------------------
+C. WHAT THE EMBEDDING ACTUALLY DOES (in-memory scoring; no checkpoint changed)
+
+Gain over Phase 1 when each embedding is applied to each real group (joint NLL):
+                        Gain      95% CI, both resampled   Participants    Images
+ASD embedding, real ASD +0.0104   [-0.0041, +0.0261]        25/33          17/30
+ASD embedding, real TD  +0.0189   [+0.0045, +0.0351]       115/133         19/30
+TD embedding,  real ASD -0.0571   [-0.0787, -0.0347]         4/33           2/30
+TD embedding,  real TD  -0.0229   [-0.0419, -0.0045]        33/133         11/30
+(Intervals here are separate bootstrap draws, so they differ slightly from section B.)
+
+- The ASD embedding beats Phase 1 on both groups; the TD embedding loses to Phase 1 on both.
+- So real TD participants are scored better with the WRONG label: -0.6514 versus -0.6096.
+- Mean of the two embeddings, overall: -0.5572 against -0.5568 for Phase 1, gain +0.0005
+  [-0.0031, +0.0039]. The shared part of the embedding adds nothing overall.
+- There is still a small group-specific signal. Averaged over groups, the right label beats the
+  wrong one by +0.0128 joint, participant CI [+0.0049, +0.0212], image CI [+0.0083, +0.0171],
+  25/30 images. It is entirely spatial: position +0.0130, duration -0.0001 [-0.0019, +0.0015].
+  This is much smaller than the general advantage of the ASD embedding (about 0.055).
+- This statistic was added after seeing the results; treat it as post hoc.
+
+Reference only, not part of the Gaze4ASD comparison (Saliency4ASD test, no model choice made):
+              Phase 1   Phase 2   Wrong label   Mean embedding
+  ASD         -0.3164   -0.3250   -0.2777       -0.3064
+  TD          -0.6276   -0.6341   -0.6328       -0.6385
+Internally the true label wins for both groups, which confirms the label convention. Even there,
+the TD label barely beats the ASD label on TD participants (0.0012). The cause of the external
+reversal for TD is untested. Candidates include population, age and stimulus differences; none is
+established here.
+
+--------------------------------------------------------------------------------
+D. BEHAVIOURAL SIMILARITY (10 replicates, 20 scanpaths per image and condition, temperature 2.0)
+
+Match to the corresponding real group: mean absolute error across images, pooled over replicates.
+Gain > 0 favours Phase 2. Phase 1 is one generic set compared separately with each real group.
+
+ASD                       Real    P1      P2      MAE P1   MAE P2   Gain (rel.)        Holm p  Img    Seeds
+Fixation duration (s)     .339    .324    .316    .0193    .0252    -.0059 (-30.7%)    .257    11/30  2/10
+Fixation count            6.25    9.88    10.22   3.628    3.967    -.3389 ( -9.3%)    .002     5/30  0/10
+Count, real window        6.25    7.24    7.45    .989     1.200    -.2111 (-21.3%)    .007     6/30  0/10
+Total fixation time (s)   1.99    2.78    2.79    .792     .799     -.0065 ( -0.8%)    1.00     9/30  1/10
+Fixation rate (/s)        3.18    3.54    3.65    .365     .478     -.1131 (-31.0%)    .002     4/30  0/10
+Saccade amplitude         .139    .102    .101    .0370    .0377    -.0008 ( -2.1%)    1.00    16/30  3/10
+Horizontal fraction       .564    .462    .460    .1092    .1106    -.0013 ( -1.2%)    1.00    13/30  6/10
+Direction distribution    -       -       -       .2003    .1950    +.0053 ( +2.7%)    1.00    17/30  8/10
+Spatial dispersion        .125    .094    .095    .0321    .0315    +.0006 ( +1.8%)    1.00    20/30  6/10
+Revisit rate              .209    .367    .378    .1576    .1681    -.0105 ( -6.7%)    .052     7/30  2/10
+Direction concentration   .323    .238    .231    .0855    .0923    -.0069 ( -8.0%)    .257     9/30  2/10
+
+TD                        Real    P1      P2      MAE P1   MAE P2   Gain (rel.)        Holm p  Img    Seeds
+Fixation duration (s)     .346    .324    .334    .0256    .0210    +.0046 (+18.1%)    1.00    19/30  8/10
+Fixation count            6.41    9.88    9.61    3.469    3.202    +.2677 ( +7.7%)    .052    22/30  9/10
+Count, real window        6.41    7.53    7.40    1.123    1.001    +.1220 (+10.9%)    .476    18/30  9/10
+Total fixation time (s)   2.07    2.78    2.76    .710     .692     +.0185 ( +2.6%)    .027    22/30  8/10
+Fixation rate (/s)        3.12    3.54    3.47    .419     .353     +.0662 (+15.8%)    .257    20/30  9/10
+Saccade amplitude         .124    .102    .097    .0220    .0276    -.0056 (-25.5%)    .002     2/30  0/10
+Horizontal fraction       .563    .462    .460    .1119    .1174    -.0055 ( -4.9%)    1.00    14/30  3/10
+Direction distribution    -       -       -       .1946    .1947    -.0001 ( -0.1%)    1.00    15/30  6/10
+Spatial dispersion        .108    .094    .087    .0179    .0237    -.0058 (-32.5%)    .002     4/30  0/10
+Revisit rate              .290    .367    .390    .0850    .1032    -.0182 (-21.4%)    .002     4/30  0/10
+Direction concentration   .296    .238    .240    .0582    .0562    +.0020 ( +3.5%)    1.00    19/30  6/10
+
+Img = images favouring Phase 2. Seeds = replicates favouring Phase 2.
+Holm correction covers these 22 tests. Saccade direction is summarised by the 12-bin direction
+distribution (total variation distance), by the horizontal fraction, and by concentration.
+
+ASD minus TD: does Phase 2 reproduce the real group difference better than Phase 1?
+Phase 1 has no group input, so its difference is a null from independent seed sets (replicates
+1-5 against 6-10). Gap = |real difference - model difference|; gain > 0 favours Phase 2.
+
+                          Real      Phase 2   Same    Seeds with    Phase 1   Gap P1 -> P2     Gain [95% CI, images]
+                                              sign    real's sign   null
+Fixation duration         -.0072    -.0182    yes     10/10         -.0013    .0059 -> .0110   -.0051 [-.0194, +.0174]
+Fixation count            -.159     +.607     NO       0/10         +.105     .264  -> .766    -.502  [-.736,  -.250]
+Count, real window*       -.159     +.046     NO       2/10         -.225     .066  -> .205    -.139  [-.320,  +.248]
+Total fixation time       -.0822    +.0250    NO       1/10         +.0003    .0825 -> .1072   -.0247 [-.0389, -.0103]
+Fixation rate             +.0527    +.1882    yes     10/10         +.0400    .0127 -> .1355   -.1228 [-.1814, +.0629]
+Saccade amplitude         +.0151    +.0049    yes     10/10         +.0001    .0151 -> .0102   +.0048 [+.0021, +.0076]
+Horizontal fraction       +.0010    -.0002    NO       5/10         -.0053    .0063 -> .0012   +.0052 [-.0091, +.0195]
+Spatial dispersion        +.0169    +.0078    yes     10/10         -.0005    .0174 -> .0091   +.0083 [+.0060, +.0105]
+Revisit rate              -.0805    -.0124    yes      8/10         +.0011    .0816 -> .0682   +.0135 [-.0002, +.0281]
+Direction concentration   +.0270    -.0091    NO       2/10         -.0019    .0289 -> .0361   -.0073 [-.0174, +.0027]
+
+* Phase 1 here is truncated at each group's real fixation time, so this "null" borrows real
+  information and is not a pure null. It is not evidence about the model.
+The real duration, count, rate and horizontal differences have CIs that include zero, so "matching"
+them means little. The real horizontal difference is effectively zero.
+
+Critical qualification: the amplitude and dispersion contrasts widen mostly because TD moves away
+from real TD, not because ASD moves towards real ASD.
+  Dispersion: Phase 1 .094; Phase 2 ASD .095 (real .125); Phase 2 TD .087 (real .108).
+  Amplitude:  Phase 1 .102; Phase 2 ASD .101 (real .139); Phase 2 TD .097 (real .124).
+A better group contrast and a worse match to the real TD group happen together. Do not report one
+without the other. Temperature 2.0 narrows spatial spread and may contribute; this is untested.
+
+MultiMatch (1 = identical; Phase 2 minus Phase 1; Holm across 10 tests)
+           Real vs real   Phase 1   Phase 2   Change [95% CI, images]     Holm p  Seeds
+ASD shape      .916       .9306     .9313     +.0007 [-.0002, +.0016]     .638    8/10
+    length     .892       .9094     .9100     +.0005 [-.0006, +.0017]     .780    7/10
+    direction  .587       .5799     .5778     -.0021 [-.0050, +.0010]     .780    3/10
+    position   .782       .8143     .8121     -.0022 [-.0045, +.0001]     .458    3/10
+    duration   .610       .5518     .5495     -.0023 [-.0059, +.0013]     .780    3/10
+TD  shape      .928       .9350     .9364     +.0014 [+.0006, +.0023]     .028   10/10
+    length     .904       .9143     .9157     +.0015 [+.0001, +.0029]     .288    9/10
+    direction  .600       .5840     .5844     +.0004 [-.0018, +.0026]     .780    6/10
+    position   .845       .8404     .8459     +.0055 [+.0030, +.0082]     .002    9/10
+    duration   .606       .5500     .5427     -.0074 [-.0115, -.0033]     .016    2/10
+
+All changes are under 0.01, on a metric with a high ceiling and limited discrimination; generated
+scores often exceed real-vs-real. Against the other condition, only TD position favours the own
+condition (+.0034, Holm p = .041). TD position rising while TD dispersion worsens may reflect
+tighter scanpaths scoring well on this measure; that explanation is untested.
+
+--------------------------------------------------------------------------------
+E. ANSWERS
+
+1. Does conditioning improve external NLL?
+   No. Overall it is worse: -0.0172 nats per fixation (-3.1%), and the interval excludes zero under
+   all three resampling schemes. The difference is small but goes against Phase 2.
+
+2. ASD, TD, or both?
+   ASD gains a little: +0.0104 (+5.4%), clear of zero by participants but not by images. TD is worse:
+   -0.0229 (-3.6%), clear of zero under all schemes. Moreover, the ASD gain comes from an embedding
+   that also helps TD, so it does not show ASD-specific modelling.
+
+3. Spatial prediction?
+   Not improved. ASD +0.0075 (interval includes zero under every scheme). TD -0.0160 (excludes zero
+   by participants, includes zero by images). There is a small group-specific spatial signal
+   (right vs wrong label +0.0130), but it does not produce a net gain over Phase 1.
+
+4. Duration prediction?
+   ASD +0.0029 and TD -0.0069. Both are clear of zero under all schemes and both are very small. TD
+   duration is worse on 29 of 30 images. Right vs wrong label is zero (-0.0001), so duration has no
+   group-specific signal. The two embeddings simply differ in overall quality.
+
+5. Does Phase 2 reproduce real ASD/TD differences better than unconditioned Phase 1?
+   Partly, on 2 of 10 measures with intervals excluding zero: dispersion and saccade amplitude, which
+   reach 46% and 33% of the real difference. Phase 1 can show none by construction, so this is a low
+   bar. It gets worse on fixation count and total fixation time, whose directions are wrong.
+
+6. Which behavioural metrics improve?
+   Match to real, after Holm: only TD total fixation time, by 2.6%. TD fixation count is borderline
+   (+7.7%, Holm .052). TD rate is nominal only (+15.8%, Holm .257).
+   Group contrast: dispersion and amplitude. MultiMatch: TD position and TD shape, both under 0.01.
+
+7. Which remain problematic?
+   Made worse by Phase 2 (Holm < .05): ASD fixation count, ASD window count, ASD rate, TD saccade
+   amplitude, TD dispersion, TD revisit rate.
+   Wrong in both models: fixation count (about 10 vs 6), total time (2.8 vs 2.0 s, sampler fills 3 s),
+   amplitude and dispersion too small, revisit too high, horizontal fraction .46 vs .56, direction
+   concentration too low, MultiMatch duration about .06 below real-vs-real.
+   Group contrast in the wrong direction: count, total time, direction concentration.
+
+8. Robust across images, participants and seeds?
+   Robust under all three, in Phase 1's favour: TD joint and duration loss; overall joint and
+   duration loss (overall joint only just: both-resampled upper bound -0.0007).
+   Robust in Phase 2's favour: ASD duration gain, which is tiny.
+   Generated metrics can only be resampled by image and seed, because generated scanpaths have no
+   participants. Robust on both: dispersion and amplitude contrast (10/10 seeds), with the TD caveat;
+   TD amplitude and dispersion match worse (0/10 seeds favour Phase 2).
+   Not robust: ASD joint gain (participants only; 17/30 images); ASD position gain; TD and overall
+   position loss (participants only).
+   Single 20-sample runs vary widely, e.g. revisit difference -.0345 to +.0177 across seeds.
+
+9. What can we safely say in the paper?
+   Safe:
+   - On Gaze4ASD, unconditioned Phase 1 had lower overall NLL than Phase 2 (-0.557 vs -0.540).
+   - The small internal gain from group conditioning did not transfer externally.
+   - Phase 2 scored ASD trials slightly better and TD trials slightly worse than Phase 1.
+   - Conditioned generation showed dispersion and saccade amplitude contrasts in the real direction,
+     at about 46% and 33% of real size, accompanied by a worse match to real TD.
+   - Conditioning did not fix fixation count, revisit rate or spatial scale; some measures reversed.
+   - The learned embedding carried a small position-related group signal externally (post hoc).
+   Not safe:
+   - "Conditioning improves external prediction" or "generalises".
+   - "Phase 2 better captures ASD gaze" based on the +0.0104 ASD gain.
+   - "Phase 2 generates realistic group-specific scanpaths."
+   - Any headline percentage without the absolute value; any p-value as confirmatory.
+   - Why TD worsened: no cause has been tested.
+   - Any clinical, diagnostic or screening use.
+
+--------------------------------------------------------------------------------
+F. HOW TO READ THESE RESULTS
+
+Actual performance:     section A. Directly comparable: same trials, same batches, same mapping.
+Statistical uncertainty: section B. Resampling reflects participants and these 30 stimuli.
+Behavioural similarity: section D. Uses temperature 2.0, unlike the likelihood; 3 s sampling window.
+Exploratory or post hoc: all p-values; section C; equal-group weighting. No pre-registration.
+
+Limitations
+- Stimuli were selected by the dataset authors for maximal ASD/TD gaze difference, and mostly show
+  faces. The selection module appears to have used Saliency4ASD.
+- Groups are unbalanced (33 vs 133; TD is 83% of events). Age is not adjusted (5.04 vs 4.54 years).
+- Mapping-dependent: position NLL, absolute spatial metrics, MultiMatch. Only this one mapping was
+  compared, as requested; stretch and Policy B were not run for this comparison.
+- Holm correction is within each table only.
+- Phase 1 null uses 5 seed splits, so its range is descriptive, not a formal test.
+- MultiMatch is our own implementation; at most 30 pairs per image.
+
+--------------------------------------------------------------------------------
+G. CONTROLS AND VERIFICATION
+
+- Both checkpoints loaded (strict); hashes unchanged at the end of the run.
+  Phase 1 sha256 b613413027e775b98e449cbdbc9afa0253d6bd40f0cb2502230ed5bf1000b0bb
+  Phase 2 sha256 35319673382378487d23c1871cab0cf05b71b1e7963e180ec024e5d80901a9a4
+- All 1,290 base tensors are bit-identical between checkpoints. The embedding is the ONLY difference.
+- Same collate code, file order, batch size 128 and batch composition for both models.
+- Phase 2 with its embedding removed equals Phase 1 trial by trial (max difference 0).
+- Phase 2 trial log-likelihoods equal the earlier v2 run (max difference 0).
+- Phase 2 generated replicates reproduce the earlier run (max difference 3e-08).
+- Shuffled batches, 3 seeds: Phase 1 -0.55679 to -0.55680; Phase 2 -0.53962 to -0.53964.
+- Project loss function (tppgaze_nll) agrees with the scoring code.
+- Saliency4ASD test reproduced: Phase 1 -0.49565, Phase 2 -0.50300. Test data were read for this check
+  and the label reference only; nothing was tuned or chosen from them.
+- Gaze4ASD labels match the raw ASD_ScanPath and TD_ScanPath folders; training used ASD=0, TD=1.
+- Sampling: existing sample_conditioned. Phase 1 used an in-memory zero embedding, so all sets share
+  one code path. Temperature 2.0, 3 s, batch of 20. Seed 100000*(rep+1)+1000*(rank+1)+g, with g = 0 ASD,
+  1 TD, 2 Phase 1. Phase 1 and Phase 2 therefore use different random numbers; pairing is by image.
+
+FILES
+overall_nll_comparison.json   NLL, attribution, embedding specificity, checks
+group_nll_comparison.csv      Group and component table, all three resampling schemes
+participant_bootstrap.json    Paired cluster bootstrap detail
+generation_comparison.csv     Match to real, per metric and group
+behavioral_comparison.json    Match to real and ASD-TD differences
+multimatch_comparison.json    MultiMatch comparison
+comparison_figures/           1 NLL gain, 2 generated vs real, 3 group differences, 4 MultiMatch,
+                              5 each embedding on each group
+raw/                          Per-trial scores, per-image summaries, generated scanpaths, checks
+evaluation_log.txt            Run log
+Code: training/compare_phase1_phase2.py

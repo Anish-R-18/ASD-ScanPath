@@ -2,7 +2,7 @@
                       SALIENCY4ASD DATASET AUDIT REPORT
 ================================================================================
 Date of Inspection: October 2026
-Target Directory:   c:\Users\anish\OneDrive\Desktop\gaze-ag
+Target Directory:   <repository root>
 Dataset Name:       Saliency4ASD (Grand Challenge at IEEE ICME 2019)
 Stimuli Source:     MIT1003 Benchmark Dataset (Tilke Judd et al., ICCV 2009)
 Eye Tracking HW:    Tobii T120 (17-inch, 1280x1024 native resolution)
@@ -15,7 +15,7 @@ their respective 7-Zip compressed archives, the competition usage agreement, and
 Note: Due to archive extraction, both directories contain a nested subdirectory with identical names.
 
 Directory Tree Breakdown:
-c:\Users\anish\OneDrive\Desktop\gaze-ag\
+<repository root>/
 ├── AdditionalData.7z                                [511,983,151 bytes (~488.27 MB)]
 ├── TrainingData.7z                                  [318,659,824 bytes (~303.90 MB)]
 ├── UsageAgreement.txt                              [1,042 bytes]

@@ -1,4 +1,7 @@
 """
+SUPERSEDED: uses the old native-size centred Gaze4ASD mapping. Use eval_external_v2.py.
+Kept for reproducibility only; its values must not be used in the final paper.
+
 External Gaze4ASD evaluation of the FROZEN Phase-2 ASD/TD-conditioned model.
 NO retraining/tuning. Policy A is primary; Policy B is a sensitivity check.
 Outputs under training/runs/external_gaze4asd/.

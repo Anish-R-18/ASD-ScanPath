@@ -1,4 +1,7 @@
 """
+SUPERSEDED: analyses results from the old native-size centred Gaze4ASD mapping. Use
+stats_external_v2.py. Kept for reproducibility only; its values must not be used in the final paper.
+
 Formal statistical analysis of Gaze4ASD external validation (participant-level).
 Reads the saved per-scanpath metrics; does NOT touch any model/raw data.
 

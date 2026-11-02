@@ -1,0 +1,71 @@
+CORRECTED GAZE4ASD MAPPING - METHODOLOGY AND UNCERTAINTY
+
+Status: fit-to-height is strongly supported but partly inferred, and NOT experimentally confirmed.
+GAZE4ASD COORDINATE MAPPING - METHODOLOGY (version 2)
+
+STATUS
+Fit-to-height is STRONGLY SUPPORTED BUT PARTLY INFERRED. It is NOT experimentally
+confirmed: the original draw rectangle and presentation script are not in the dataset.
+The mapping was fixed from the audit evidence below, before any model was evaluated on
+this dataset, and must not be changed according to which mapping scores best.
+
+DIRECT EVIDENCE
+- Screen 2560x1440: README line 17 and expt.winRect = [0,0,2560,1440] in all 171 .mat files.
+- TSV X,Y are screen pixels: regression on raw Tobii onDisplayArea gives
+  X = 2559.84*gx + 0.01 and Y = 1439.51*gy + 0.40 (33,238 fixation matches).
+- Origin is top-left with y pointing down, per the Tobii Active Display Coordinate System.
+
+INFERRED EVIDENCE FOR FIT-TO-HEIGHT
+- The authors' own saliency maps (dataset git history, commit ea333cf) match this geometry
+  with 4:3 padding at median r = 0.9999 over 4,533 maps, with no free parameters. Native
+  centred placement gives r = 0.23. The maps show the authors' processing, not the display.
+- Fixations inside the image: 96.5% here versus 81.4% for native centred placement.
+- Eye landmarks from a face detector, using no gaze: estimated scale 1.71 (CI 1.58-1.75) for
+  1200-wide images and 1.21 (CI 1.00-1.29) for 1650x1100, against 1.80 and 1.31 predicted.
+  On Saliency4ASD, where the true scale is 1.00, the same estimator reads 0.77, so these
+  estimators read low.
+
+EQUATIONS
+  X = 2560 * gx,  Y = 1440 * gy        (already applied in the dataset's TSV files)
+  scale = 1440 / H
+  displayed_width = scale * W
+  offset_x = (2560 - displayed_width) / 2
+  image_x = (X - offset_x) / scale
+  image_y = Y / scale
+  norm_x = 2 * image_x / W - 1
+  norm_y = 2 * image_y / H - 1
+
+WHY CONTINUOUS COORDINATES
+Gaze is a continuous screen position, and after resizing it does not fall on the source
+image's pixel grid. The image therefore occupies the continuous interval [0, W] x [0, H],
+so its outer edges sit at exactly -1 and +1. Saliency4ASD instead stores 1-indexed pixel
+indices and uses 2*(x-1)/(W-1)-1. The two conventions differ by at most about 2/W (0.0017
+at W = 1200), about one image pixel. That is well below the roughly 21 screen pixel median
+offset measured on the central fixation icon, so it is not material.
+
+STRETCH SENSITIVITY
+  norm_x = 2 * X / 2560 - 1,  norm_y = 2 * Y / 1440 - 1
+This maps X and Y independently and does not preserve aspect ratio. It is included because
+gaze alone does not exclude it. The case against it rests mainly on the authors' maps
+(median r = 0.91 versus 0.9999), plus a likelihood comparison that is itself biased toward
+smaller scales.
+
+REMAINING UNCERTAINTY
+- No file records the draw rectangle. Confirmation requires the authors or their script.
+- The 1650x1100 group has the weakest landmark evidence (5 images; interval touches 1.00).
+- Cropping cannot be tested directly.
+- Indexing and pixel-centre conventions are undeterminable, and matter by at most about 1 px.
+
+DATASET VERSIONS (from dataset_summary.csv)
+Version               Role          ASD/TD part.  ASD/TD trials  Fixations  Out of image
+fit_height_policy_a   PRIMARY             33/133       771/3605      27991         3.52%
+stretch_policy_a      SENSITIVITY         33/133       771/3605      27991         3.19%
+fit_height_policy_b   SENSITIVITY         33/133       745/3556      26900         3.52%
+
+PHASE 2 NLL BY CORRECTED VERSION (overall; position NLL is not comparable between mappings without scale correction)
+Version                   Joint  Duration  Position
+fit_height_policy_a     -0.5396   -0.3986   -0.1410
+stretch_policy_a        -0.6320   -0.3965   -0.2355
+fit_height_policy_b     -0.6570   -0.3949   -0.2621
+
+The older native-size centred mapping is SUPERSEDED and is not part of this package. See ../external_gaze4asd/SUPERSEDED.txt.

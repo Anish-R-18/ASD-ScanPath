@@ -5,7 +5,7 @@ from PIL import Image
 from pathlib import Path
 
 def main():
-    root_dir = Path("c:/Users/anish/OneDrive/Desktop/gaze-ag/external_data/Gaze4ASD")
+    root_dir = Path(__file__).resolve().parents[1] / "external_data/Gaze4ASD"
     if not root_dir.exists():
         print(f"Directory {root_dir} does not exist yet. Waiting for clone.")
         return
