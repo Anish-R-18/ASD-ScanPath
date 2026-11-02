@@ -1,0 +1,43 @@
+%% ASD-ScanPath: ASD/TD-conditioned TPP-Gaze (reflects the implemented Phase-2 model).
+%% Original TPP-Gaze base is frozen; the only added module is the 2-class group
+%% embedding (nn.Embedding(2,512)) ADDED to the fused 512-d context before BOTH heads.
+flowchart LR
+    subgraph IN[1. INPUT]
+      I1[Stimulus image]
+      I2[Previous gaze history]
+      I3[ASD / TD condition]
+    end
+
+    IMG[2. Image Encoder<br/>DenseNet201 + CoordConv<br/>-> image features 256-d]
+    HIS[3. Gaze-History Encoder<br/>TPP-Gaze transformer + LSTM<br/>-> history features 256-d]
+    FUS[4. Fusion concat<br/>image + history -> 512-d context]
+    COND[5. ASD / TD Conditioning<br/>learnable 2-class embedding<br/>ASD=0, TD=1  2x512<br/>ADDED to 512-d context  +1024 params]
+    SPA[6a. Spatial head<br/>2D GMM -> next x,y]
+    TMP[6b. Temporal head<br/>Log-Gaussian MM -> next duration]
+    OUT[Predicted fixation x,y,d]
+
+    I1 --> IMG
+    I2 --> HIS
+    IMG --> FUS
+    HIS --> FUS
+    FUS --> COND
+    I3 -. selects embedding .-> COND
+    COND --> SPA
+    COND --> TMP
+    SPA --> OUT
+    TMP --> OUT
+    OUT -. 7. autoregressive loop: append fixation, predict next until 3s .-> HIS
+
+    OUT --> FINAL[8. FINAL OUTPUT<br/>scanpath x1,y1,d1 , x2,y2,d2 , ...<br/>+ visualization: numbered fixations, arrows, durations]
+
+    SAME[Same image] --> ASD[ASD] --> ASDSP[ASD-conditioned scanpath]
+    SAME --> TD[TD] --> TDSP[TD-conditioned scanpath]
+
+    classDef base fill:#dce9f5,stroke:#3a3f44;
+    classDef hist fill:#dcefe1,stroke:#3a3f44;
+    classDef fuse fill:#e7e0f2,stroke:#3a3f44;
+    classDef add  fill:#ffe1ad,stroke:#e07b00,stroke-width:3px;
+    class IMG,SPA,TMP base;
+    class HIS hist;
+    class FUS fuse;
+    class COND,ASD add;

@@ -81,6 +81,7 @@ processed_data/
 !configs/*.json
 !docs/*.json
 !results/*.json
+!results/external_gaze4asd_v2/tables/*.csv
 
 # Scratch / Temp
 scratch/

@@ -1,42 +1,85 @@
 TPP-GAZE ASD/TD - MAIN FINDINGS
 (Only results directly supported by the experiments. Categories kept distinct.)
 
-A) MODEL LIKELIHOOD IMPROVEMENT (held-out test negative log-likelihood; lower=better)
-   Saliency4ASD test (45 images, 903 scanpaths):
-     Pretrained (ref, overall):        -0.1665
-     Phase 1 (fine-tuned):   overall -0.4957  ASD -0.3164  TD -0.6276
-     Phase 2 (ASD/TD cond.): overall -0.5030  ASD -0.3250  TD -0.6341
-   Phase 2 improves over Phase 1: overall +0.0073 (+1.48%),
-     ASD +0.0086 (+2.71%), TD +0.0064 (+1.03%).
-   Phase 2 adds only 1,024 trainable params (2x512 group embedding); base frozen.
-   -> Conditioning gives a small but consistent in-domain likelihood gain.
+SUMMARY
+Group conditioning gave a small in-domain likelihood gain that did not carry over to corrected
+Gaze4ASD: unconditioned Phase 1 is better overall there. Real ASD and TD children differed in spatial
+gaze measures. Generated scanpaths reproduce some of those differences, too weakly, and get others
+wrong. Temperature 1 improves external spatial behaviour but does not fix timing.
 
-B) BEHAVIORAL DIRECTION MATCHING (generated ASD vs TD vs real ASD vs TD)
-   Generated scanpaths reproduce the DIRECTION of the real ASD-vs-TD difference in
-   4 of 5 metrics: fixation duration (ASD<TD), saccade amplitude (ASD>TD),
-   spatial dispersion (ASD>TD), revisit rate (ASD<TD).
-   It does NOT reproduce fixation-count direction (real ASD<TD, generated ASD>TD),
-   and it over-produces fixation counts overall.
+NLL is per fixation event; lower is better. Gaze4ASD results use the fit-to-height mapping with Policy A,
+which is strongly supported but partly inferred, and NOT experimentally confirmed.
 
-C) STATISTICAL SIGNIFICANCE (Gaze4ASD, participant-level REAL; image-level paired GEN; EXPLORATORY)
-   Real significant group effects: spatial dispersion (Hedges g=+0.65, p<.01),
-     revisit rate (g=-1.04, p<.01, largest), saccade amplitude (g=+0.46, p<.05).
-   Real NOT significant: fixation duration (g=-0.14) and fixation count (g=-0.21).
-   Generated, matching direction AND significant: spatial dispersion (dz=+0.80, p<.01),
-     saccade amplitude (dz=+0.38, p<.05).
-   Generated mismatch/weak: duration dz=-0.58 (p<.01) but real ns (model exaggerates);
-     revisit dz=-0.14 (ns) vs real large (model under-reproduces);
-     fixation count wrong direction.
-   p-values are exploratory (Bonferroni alpha for 5 tests = 0.01; no pre-registration).
+A) IN-DOMAIN LIKELIHOOD (Saliency4ASD held-out test: 45 images, 903 scanpaths)
+                        Overall    ASD       TD
+   Pretrained (ref)     -0.1665
+   Phase 1 (fine-tuned) -0.4957   -0.3164   -0.6276
+   Phase 2 (ASD/TD)     -0.5030   -0.3250   -0.6341
+   Phase 2 gain:        +0.0073   +0.0086   +0.0064 nats/event
+                        (+1.48%)  (+2.71%)  (+1.03%)
+   Duration and position (overall): Phase 1 -0.4621, -0.0335; Phase 2 -0.4640, -0.0390.
+   Phase 2 adds 1,024 trainable parameters (a 2 x 512 group embedding); the base is frozen.
+   The gain is small, and no confidence interval was computed for it.
 
-D) EXTERNAL GENERALIZATION (Gaze4ASD, frozen model, no tuning)
-   Duration likelihood transfers (duration NLL ~ -0.40 vs -0.46 in-domain).
-   Position likelihood does NOT transfer (position NLL +1.44 Policy A / +0.91 Policy B
-     vs -0.04 in-domain) -> spatial domain gap.
-   Overall NLL: Policy A +1.0393, Policy B +0.5283
-     vs Saliency4ASD test -0.5030.
-   Scanpath structure stays plausible (MultiMatch real-vs-generated ~ real-vs-real).
-   ASD-vs-TD behavioral direction partly generalizes (spatial effects strongest).
+B) EXTERNAL LIKELIHOOD (corrected Gaze4ASD: 30 stimuli, 33 ASD and 133 TD participants, 771 and 3,605
+   trials, 27,991 fixations). Same trials and batches for both models. Gain > 0 favours Phase 2.
+                     Phase 1   Phase 2   Gain      95% CI, participants   95% CI, images
+   Overall joint     -0.5568   -0.5396   -0.0172   [-0.0224, -0.0122]     [-0.0324, -0.0018]
+   Overall duration  -0.4038   -0.3986   -0.0052   [-0.0062, -0.0042]     [-0.0066, -0.0038]
+   Overall position  -0.1530   -0.1410   -0.0120   [-0.0170, -0.0069]     [-0.0273, +0.0036]
+   ASD joint         -0.1936   -0.2039   +0.0104   [+0.0027, +0.0168]     [-0.0018, +0.0240]
+   TD joint          -0.6325   -0.6096   -0.0229   [-0.0290, -0.0171]     [-0.0406, -0.0058]
+   -> Phase 1 is better overall by 0.0172 nats/event. Conditioning does not improve overall external
+      likelihood. The Saliency4ASD gain did not transfer.
+   -> ASD gains slightly (clear of zero by participants only), and TD is worse under both schemes.
+   -> The ASD gain is not ASD-specific: the ASD embedding beats Phase 1 on both groups, and the TD
+      embedding loses to Phase 1 on both. A small group-specific position signal exists (right label
+      beats wrong label by +0.0128 joint), but is post hoc. Why TD worsened has not been tested.
+   Transfer of the Phase 2 model: duration NLL -0.399 [-0.422, -0.376]. Position beats a centre-bias
+   reference by 0.91 [0.78, 1.05] on 30 of 30 images. Position NLL is not comparable across mappings.
 
-No clinical validity is claimed. These are computational modeling results on
-group-labeled gaze data; they are not a diagnostic or individual-level tool.
+C) REAL ASD VS TD (Gaze4ASD, one mean per participant; Holm correction; EXPLORATORY)
+   Measure                    Hedges' g   95% CI           Holm p   Direction
+   Revisit rate               -1.04       [-1.44, -0.68]   .001     ASD lower
+   Spatial dispersion         +0.80       [+0.41, +1.24]   .001     ASD higher
+   Total fixation time        -0.71       [-1.11, -0.35]   .002     ASD lower
+   Saccade amplitude          +0.65       [+0.22, +1.11]   .010     ASD higher
+   Direction concentration    +0.55       [+0.11, +1.01]   .025     ASD higher
+   Not significant: fixation duration (g = -0.14), fixation count (g = -0.21), fixation rate (g = +0.11),
+   horizontal saccade fraction (g = +0.05).
+
+D) GENERATED BEHAVIOUR (Phase 2, Gaze4ASD; 10 seeds; 20 scanpaths per image and condition)
+   ASD minus TD              Real      tau=1     tau=2     tau=1 / tau=2 as share of real
+   Spatial dispersion        +.0169    +.0101    +.0078    60% / 46%   direction matches, weaker
+   Saccade amplitude         +.0151    +.0075    +.0049    50% / 33%   direction matches, weaker
+   Revisit rate              -.0805    -.0237    -.0124    29% / 15%   direction matches, weak
+   Direction concentration   +.0270    -.0054    -.0091    WRONG DIRECTION
+   Total fixation time       -.0822    +.0189    +.0250    WRONG DIRECTION
+   Fixation count            -.159     +.619     +.607     WRONG DIRECTION (real not significant)
+   Fixation count and total time remain problematic: at tau=1 generated count is 10.24 (ASD) and 9.62 (TD)
+   against real 6.25 and 6.41, and total time is 2.79 and 2.77 s against 1.99 and 2.07 s.
+   Per-image correspondence with real differences is weak (tau=1: amplitude r = .08, dispersion r = .15,
+   revisit r = .34). MultiMatch shows little condition specificity.
+   Real values here are image-level means. Generated group differences show model behaviour, not
+   evidence about any individual.
+
+E) TEMPERATURE (inference-time setting; the model and its likelihood do not change)
+   Mechanism: each spatial mixture sigma becomes sigma^tau, with means and weights unchanged. tau=1 is the
+   original distribution. All mixture weight has sigma < 1, so tau=2 narrows spread. Durations are not tempered.
+   Selection: tau=1 was selected using Saliency4ASD validation images. Gaze4ASD was not used to choose it.
+   External check, paired seeds (per-image mean absolute error, tau=1 vs tau=2; four prespecified tests):
+     Saccade amplitude  ASD .0179 vs .0377 (52.5% lower)   TD .0138 vs .0276 (49.9% lower)
+     Revisit rate       ASD .0569 vs .1681 (66.1% lower)   TD .0449 vs .1032 (56.5% lower)
+     All four: Holm p <= .0005, 95% CIs exclude zero, 10/10 seeds.
+   Exploratory: dispersion error is also lower (47.8%, 34.1%). Direction concentration is slightly worse
+   (7.6%, 19.2%). Fixation duration, count, rate and total time do not change beyond seed noise.
+   Caveat: TD revisit reverses within the real viewing window, so its close match partly depends on excess
+   fixations. Amplitude and dispersion results hold in that check.
+   Final behavioural generation setting: tau=1. This is not a likelihood improvement.
+
+No clinical validity is claimed. These are computational modelling results on group-labelled gaze data; they
+are not a diagnostic or individual-level tool. All statistics are exploratory, except that the four temperature
+tests were prespecified (not preregistered).
+
+Sources: tracked summaries and tables in results/external_gaze4asd_v2/, with each source file and its hash in
+tables/provenance.csv. Full local outputs are under training/runs/, which is not tracked by Git.

@@ -9,10 +9,16 @@ Usage:
   python inference.py --image path/to/image.png --condition ASD
   python inference.py --image path/to/image.png --condition TD
   python inference.py --image path/to/image.png --condition both   # side-by-side
+  python inference.py --image path/to/image.png --temperature 2.0  # official TPP-Gaze config value
 
-Outputs (default outputs/):
+Temperature defaults to 1.0, the behavioural-generation setting selected on Saliency4ASD
+validation images. It changes sampling only: it is not a model or likelihood improvement.
+It raises each spatial mixture sigma to the power tau; durations are not tempered.
+
+Outputs (default test/outputs/<image_stem>/):
   <cond>_scanpath.png   visualization over the image
-  <cond>_scanpath.json  raw prediction [(x, y, duration), ...]
+  <cond>_scanpath.json  scanpath_pixels: [x, y, duration], x and y clipped to the image as in
+                        the official generate_predictions; scanpath_normalized: as sampled
   <stem>_asd_vs_td.png  side-by-side (when --condition both)
 """
 from __future__ import annotations
@@ -40,6 +46,8 @@ from training.generate_cond import sample_conditioned, to_scanpaths
 GID = {"ASD": 0, "TD": 1}
 # Saliency4ASD train-split log-inter-time stats the model was trained with (fallback).
 DEFAULT_MEAN, DEFAULT_STD = -1.4365682299606377, 0.6936114719391417
+# Selected on Saliency4ASD validation images for behavioural generation; does not affect NLL.
+DEFAULT_TEMPERATURE = 1.0
 
 
 def resolve(p):
@@ -70,7 +78,14 @@ def load_model(ckpt, base_cfg, mean, std, device):
     return cmodel
 
 
-def predict(cmodel, image_path, condition, device, n_sim=1, temperature=2.0, t_end=3.0, seed=0):
+def to_pixels(spn, W, H):
+    """Map normalized [-1,1] onto the displayed image, clipped to it; (L,3) [x_px, y_px, dur_s]."""
+    xpx = np.clip((spn[:, 0] + 1) / 2 * (W - 1), 0, W - 1)
+    ypx = np.clip((spn[:, 1] + 1) / 2 * (H - 1), 0, H - 1)
+    return np.stack([xpx, ypx, spn[:, 2]], axis=1)
+
+
+def predict(cmodel, image_path, condition, device, n_sim=1, temperature=DEFAULT_TEMPERATURE, t_end=3.0, seed=0):
     """Returns (pil_image, W, H, scanpath_px (L,3), scanpath_norm (L,3))."""
     im = Image.open(image_path).convert("RGB")
     W, H = im.size
@@ -80,11 +95,7 @@ def predict(cmodel, image_path, condition, device, n_sim=1, temperature=2.0, t_e
                                     t_end=t_end, n_sim=max(1, n_sim), temperature=temperature)
     sps = to_scanpaths(it, mk, ms)                        # list of (L,3) [x_norm,y_norm,dur_s]
     spn = max(sps, key=len) if len(sps) > 1 else sps[0]   # pick the richest sample
-    # map normalized [-1,1] back onto the DISPLAYED image resolution
-    xpx = (spn[:, 0] + 1) / 2 * (W - 1)
-    ypx = (spn[:, 1] + 1) / 2 * (H - 1)
-    sppx = np.stack([xpx, ypx, spn[:, 2]], axis=1)
-    return im, W, H, sppx, spn
+    return im, W, H, to_pixels(spn, W, H), spn
 
 
 def draw(ax, im, sppx, condition):
@@ -150,7 +161,9 @@ def main():
     ap.add_argument("--base-cfg", default="tppgaze/data/config.yaml")
     ap.add_argument("--stats-json", default="training/runs/phase2_embedding_only/summary_full.json")
     ap.add_argument("--n-sim", type=int, default=1)
-    ap.add_argument("--temperature", type=float, default=2.0)
+    ap.add_argument("--temperature", type=float, default=DEFAULT_TEMPERATURE,
+                    help="sampling temperature tau (default: %(default)s, selected for behavioural generation; "
+                         "not a likelihood change). tau=2.0 is the official TPP-Gaze config value and narrows spatial spread")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default=None, help="auto|cpu|cuda")
     args = ap.parse_args()

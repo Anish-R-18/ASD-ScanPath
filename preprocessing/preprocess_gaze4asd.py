@@ -1,3 +1,6 @@
+# SUPERSEDED: this script assumes native-size centred stimuli, which the coordinate audit found
+# to be contradicted by the data. Use preprocess_gaze4asd_v2.py. Kept for reproducibility only;
+# values derived from this mapping must not be used in the final paper.
 import os
 import glob
 import json
@@ -7,8 +10,8 @@ from PIL import Image
 from pathlib import Path
 
 def main():
-    root_dir = Path("c:/Users/anish/OneDrive/Desktop/gaze-ag/external_data/Gaze4ASD")
-    out_dir = Path("c:/Users/anish/OneDrive/Desktop/gaze-ag/external_data/Gaze4ASD_processed")
+    root_dir = Path(__file__).resolve().parents[1] / "external_data/Gaze4ASD"
+    out_dir = Path(__file__).resolve().parents[1] / "external_data/Gaze4ASD_processed"
     out_dir.mkdir(parents=True, exist_ok=True)
     
     asd_tsvs = glob.glob(str(root_dir / "ASD_ScanPath/**/*.tsv"), recursive=True)
