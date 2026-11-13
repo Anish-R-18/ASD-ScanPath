@@ -1,103 +1,82 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# =============================================================================
+# ASD-ScanPath .gitignore
+#
+# The repository is PUBLIC. It must never contain dataset files, participant
+# records, stimulus photographs, processed scanpaths, raw experiment outputs or
+# model checkpoints. See docs/dataset_documentation.md ("Data terms").
+# =============================================================================
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Datasets and raw data (DO NOT UPLOAD)
-AdditionalData/
+# --- Datasets (obtain from the dataset owners; never commit) -----------------
 TrainingData/
+AdditionalData/
 external_data/
 processed_data/
 *.mat
 *.tsv
-*.csv
-*.json
+*.edf
+*.asc
 
-# Only allow specific config and validation jsons
-!configs/*.json
-!docs/*.json
-!results/*.json
-!results/external_gaze4asd_v2/tables/*.csv
+# --- Upstream TPP-Gaze sample image: redistribution rights of the photo are unclear, not distributed ---
+tppgaze/data/1009.jpg
 
-# Scratch / Temp
-scratch/
-temp/
-tmp/
-organize_repo.py
-
-# Checkpoints
+# --- Model weights (not distributed) -----------------------------------------
 *.pth
 *.pt
 *.ckpt
+*.safetensors
 
-# Inference and tests
-outputs/
-test/outputs/
-test/input/*.png
-
-# Local training artifacts
+# --- Raw, local experiment outputs (curated summaries live in results/) ------
 /training/runs/
+/outputs/
+*.npz
+*.json.gz
+
+# --- Restricted or licence-unclear material kept on the local machine only ---
+local_only/
+**/local_only/
+**/local_only_restricted/
+inference/inputs/
+inference/outputs/
+presentation/supporting_material/meeting_walkthrough/01_example_image/
+
+# --- Unpublished manuscript (pending authorship / venue decision) ------------
+paper/
+
+# --- Machine-readable data files: ignored by default, allowed where curated ---
+*.csv
+*.json
+!results/**/*.csv
+!results/**/*.json
+!archive/results/in_domain_behaviour_tau2_initial/*.json
+!archive/results/in_domain_behaviour_tau2_initial/PROVENANCE.csv
+!inference/demo/demo_results/**/*.json
+!scripts/research_completion/external_reference/*.tsv
+
+# --- Python -------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+.env
+
+# --- Editors, OS and Office temporary files ----------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+node_modules/
+
+# --- Local helper scripts -----------------------------------------------------
+organize_repo.py
+scratch/
+tmp/
+temp/

@@ -1,5 +1,5 @@
 """
-Build the tracked publication summary in results/external_gaze4asd_v2/ from local, Git-ignored outputs.
+Build the tracked publication summary in results/external_evaluation/ from local, Git-ignored outputs.
 No model work. Tables are derived from machine-readable results, reports are reproduced verbatim, and figures
 come from an explicit list. Nothing based on the old native-size Gaze4ASD mapping is included, nor raw data,
 per-scanpath or per-participant records, checkpoints, logs, or images that show dataset stimuli.
@@ -12,7 +12,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-OUT = "results/external_gaze4asd_v2"
+OUT = "results/external_evaluation"
 TAB, FIG = f"{OUT}/tables", f"{OUT}/figures"
 V2 = "training/runs/external_gaze4asd_v2"
 P12 = f"{V2}/phase1_vs_phase2"
@@ -20,6 +20,8 @@ TAU1 = f"{V2}/temperature_tau1"
 VAL = "training/runs/temperature_sensitivity"
 REP = "external_data/Gaze4ASD_processed_v2/reports"
 SAL = "training/runs/phase2_embedding_only/test_eval_phase2.json"
+# E3 (research completion): image-level 95% interval for the in-domain Phase 2 gain
+E3 = "training/runs/research_completion/e3_indomain_gain_ci_v1/e3_results.json"
 PRIMARY = "fit_height_policy_a"
 CORRECTED = (PRIMARY, "stretch_policy_a", "fit_height_policy_b")
 FIGURES = {
@@ -90,6 +92,7 @@ SUM = [r for r in read_csv(f"{V2}/comparison/nll_summary.csv") if r["version"] i
 CB = read_json(f"{V2}/comparison/nll_uncertainty.json")["model_vs_centre_bias"]
 Tt = read_json(SAL)
 DS = read_csv(f"{REP}/dataset_summary.csv")
+E3J = read_json(E3)["overall_joint"]
 
 # ---------------- tables
 table("dataset_summary.csv", DS, f"{REP}/dataset_summary.csv")
@@ -151,6 +154,8 @@ for gr in ("overall", "ASD", "TD"):
         s.append(f"{gr + ' ' + k:19s}{float(r['phase1_nll']):9.4f}{float(r['phase2_nll']):9.4f}{float(r['improvement']):+9.4f}{float(r['relative_pct']):+7.1f}%   {fmt_ci(json.loads(r['participant_ci'])):24s}{fmt_ci(json.loads(r['image_ci'])):24s}")
 s += ["", "Phase 1 is better overall. Conditioning does not improve overall external NLL. The Saliency4ASD gain did not transfer.",
       "For reference, Saliency4ASD held-out test NLL: Phase 1 " + f"{Tt['phase1']['overall']['nll']:.4f}, Phase 2 {Tt['phase2']['overall']['nll']:.4f}.",
+      f"That in-domain gain is statistically inconclusive: {E3J['gain']:+.4f}, 95% image-level CI [{E3J['image_ci'][0]:+.4f}, {E3J['image_ci'][1]:+.4f}], "
+      f"{E3J['images_favouring_phase2']} of {E3J['images']} images favour Phase 2 (E3, docs/research_audit/ADDITIONAL_RESULTS.md).",
       f"Phase 2 position NLL beats a centre-bias reference by {-CB[PRIMARY]['model_minus_centre']:.2f} [{-CB[PRIMARY]['model_minus_centre_ci'][1]:.2f}, {-CB[PRIMARY]['model_minus_centre_ci'][0]:.2f}] on {CB[PRIMARY]['images_model_better']} of {CB[PRIMARY]['images']} images.",
       "", "2. REAL ASD VS TD, PARTICIPANT LEVEL (33 ASD, 133 TD; one mean per participant; Holm within the family)",
       f"{'Measure':36s}{'ASD':>8s}{'TD':>8s}{'g':>8s}   {'95% CI':18s}{'Holm p':>8s}"]
@@ -172,7 +177,7 @@ s += ["", "Temperature changes sampling only. It does not change the model or it
       "Full tau=1 and temperature reports: temperature_sensitivity.txt."]
 with open(f"{OUT}/final_external_comparison.txt", "w", encoding="utf-8", newline="\n") as f:
     f.write("\n".join(s) + "\n" + verbatim("FULL REPORT: PHASE 1 VS PHASE 2 ON CORRECTED GAZE4ASD", f"{P12}/final_comparison_report.txt"))
-note("final_external_comparison.txt", f"{P12}/final_comparison_report.txt", f"{P12}/group_nll_comparison.csv", f"{V2}/statistics/participant_level_real.csv", f"{TAU1}/statistical_results.json", f"{V2}/comparison/nll_uncertainty.json", SAL)
+note("final_external_comparison.txt", f"{P12}/final_comparison_report.txt", f"{P12}/group_nll_comparison.csv", f"{V2}/statistics/participant_level_real.csv", f"{TAU1}/statistical_results.json", f"{V2}/comparison/nll_uncertainty.json", SAL, E3)
 with open(f"{OUT}/temperature_sensitivity.txt", "w", encoding="utf-8", newline="\n") as f:
     f.write("TEMPERATURE SENSITIVITY AND GAZE4ASD EVALUATION AT TAU=1\n\nTemperature was selected on Saliency4ASD validation images (Parts A and B) and then evaluated on Gaze4ASD (Parts C and D).\nIt changes sampling only, not the model or its NLL. Paths inside these reports refer to local, Git-ignored outputs.\n"
             + verbatim("PART A: VALIDATION-SET REPORT", f"{VAL}/final_report.txt") + verbatim("PART B: VALIDATION-SET METHODOLOGY", f"{VAL}/temperature_methodology.txt")
@@ -190,7 +195,7 @@ m += ["", "PHASE 2 NLL BY CORRECTED VERSION (overall; position NLL is not compar
 for r in SUM:
     if r["group"] == "overall":
         m.append(f"{r['version']:22s}{float(r['nll']):9.4f}{float(r['nll_duration']):10.4f}{float(r['nll_position']):10.4f}")
-m += ["", "The older native-size centred mapping is SUPERSEDED and is not part of this package. See ../external_gaze4asd/SUPERSEDED.txt."]
+m += ["", "The older native-size centred mapping is SUPERSEDED and is not part of this package. See ../../archive/results/external_gaze4asd_native_mapping/SUPERSEDED.txt."]
 with open(f"{OUT}/corrected_mapping_methodology.txt", "w", encoding="utf-8", newline="\n") as f:
     f.write("\n".join(m) + "\n")
 note("corrected_mapping_methodology.txt", f"{REP}/mapping_methodology.txt", f"{REP}/dataset_summary.csv", f"{V2}/comparison/nll_summary.csv")
@@ -206,7 +211,7 @@ Publication summaries for the corrected Gaze4ASD evaluation. Built by `training/
 | Measure | Result |
 |---|---|
 | External NLL, Phase 1 vs Phase 2 | {p1} vs {p2}: Phase 1 is better overall by {gain} |
-| In-domain NLL, Phase 1 vs Phase 2 | {sp1} vs {sp2}: Phase 2 is better by {sgain} |
+| In-domain NLL, Phase 1 vs Phase 2 | {sp1} vs {sp2}: gain {sgain} for Phase 2, 95% image-level CI {e3ci}; statistically inconclusive |
 | Selected temperature | τ=1, chosen on Saliency4ASD validation images |
 | Fixation count at τ=1, ASD and TD | {ca} and {ct}, against {ra} and {rt} real |
 
@@ -224,8 +229,10 @@ Temperature changes sampling only, not the model or its likelihood.
 
 ## Deliberately excluded
 
-Raw or processed datasets; per-scanpath and per-participant records; generated scanpaths; checkpoints; training logs; figures that show dataset stimuli; and anything based on the old native-size mapping, which is marked superseded in [`../external_gaze4asd/SUPERSEDED.txt`](../external_gaze4asd/SUPERSEDED.txt).
-""".format(p1=f"{float(g[('overall', 'joint')]['phase1_nll']):.4f}", p2=f"{float(g[('overall', 'joint')]['phase2_nll']):.4f}", gain=f"{-float(g[('overall', 'joint')]['improvement']):.4f}", sp1=f"{Tt['phase1']['overall']['nll']:.4f}", sp2=f"{Tt['phase2']['overall']['nll']:.4f}", sgain=f"{Tt['phase1']['overall']['nll'] - Tt['phase2']['overall']['nll']:.4f}", ca=f"{rl[('ASD', 'n_fix')]['tau1']:.2f}", ct=f"{rl[('TD', 'n_fix')]['tau1']:.2f}", ra=f"{rl[('ASD', 'n_fix')]['real']:.2f}", rt=f"{rl[('TD', 'n_fix')]['real']:.2f}")
+Raw or processed datasets; per-scanpath and per-participant records; generated scanpaths; checkpoints; training logs; figures that show dataset stimuli; and anything based on the old native-size mapping, which is archived in [`../../archive/results/external_gaze4asd_native_mapping/`](../../archive/results/external_gaze4asd_native_mapping/SUPERSEDED.txt).
+
+Other result folders: [`../README.md`](../README.md) (index of all results).
+""".format(p1=f"{float(g[('overall', 'joint')]['phase1_nll']):.4f}", p2=f"{float(g[('overall', 'joint')]['phase2_nll']):.4f}", gain=f"{-float(g[('overall', 'joint')]['improvement']):.4f}", sp1=f"{Tt['phase1']['overall']['nll']:.4f}", sp2=f"{Tt['phase2']['overall']['nll']:.4f}", sgain=f"{Tt['phase1']['overall']['nll'] - Tt['phase2']['overall']['nll']:+.4f}", e3ci=f"[{E3J['image_ci'][0]:+.4f}, {E3J['image_ci'][1]:+.4f}]", ca=f"{rl[('ASD', 'n_fix')]['tau1']:.2f}", ct=f"{rl[('TD', 'n_fix')]['tau1']:.2f}", ra=f"{rl[('ASD', 'n_fix')]['real']:.2f}", rt=f"{rl[('TD', 'n_fix')]['real']:.2f}")
 with open(f"{OUT}/README.md", "w", encoding="utf-8", newline="\n") as f:
     f.write(readme)
 table("provenance.csv", provenance, SAL)

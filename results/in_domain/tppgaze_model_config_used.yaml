@@ -1,0 +1,15 @@
+seed: 0
+mean_log_inter_times: -1.5003827344693448
+std_log_inter_times: 0.6699457426712012
+temperature: 2
+distributions: mixture
+context:
+  type: transformer
+  size: 256
+metadata:
+  type: densenet
+  size: 256
+merge: cat
+dropout: 0.4
+marks_dist_components: 16
+durations_dist_components: 4

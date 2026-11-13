@@ -1,0 +1,60 @@
+{
+ "e1_crosscheck": {
+  "P2_ASD": {
+   "image_id": 8,
+   "seed": 101000,
+   "scanpaths": 20,
+   "lengths_equal": true,
+   "max_abs_diff": 1.0013580322265625e-05,
+   "passed": true
+  },
+  "P1_s0": {
+   "image_id": 8,
+   "seed": 101000,
+   "scanpaths": 20,
+   "lengths_equal": true,
+   "max_abs_diff": 1.0013580322265625e-05,
+   "passed": true
+  }
+ },
+ "examples": {
+  "s4a_random_60": {
+   "records": 13,
+   "identical": 13,
+   "mismatches": [],
+   "image_sha256_unchanged": true
+  },
+  "s4a_random_246": {
+   "records": 3,
+   "identical": 3,
+   "mismatches": [],
+   "image_sha256_unchanged": true
+  },
+  "s4a_best_102": {
+   "records": 3,
+   "identical": 3,
+   "mismatches": [],
+   "image_sha256_unchanged": true
+  },
+  "s4a_worst_116": {
+   "records": 3,
+   "identical": 3,
+   "mismatches": [],
+   "image_sha256_unchanged": true
+  },
+  "synthetic_scene": {
+   "records": 13,
+   "identical": 13,
+   "mismatches": [],
+   "image_sha256_unchanged": true
+  }
+ },
+ "passed": true,
+ "environment": {
+  "python": "3.12.4",
+  "torch": "2.3.1+cpu",
+  "numpy": "1.26.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "threads": 12
+ }
+}

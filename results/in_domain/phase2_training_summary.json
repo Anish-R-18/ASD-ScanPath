@@ -1,0 +1,22 @@
+{
+  "tag": "full",
+  "epochs_run": 28,
+  "initial_val": {
+    "nll": -0.5844617829292063,
+    "nll_duration": -0.4783567114737399,
+    "nll_position": -0.10610506614848225
+  },
+  "best_val_nll": -0.5964142481365406,
+  "best_epoch": 8,
+  "best_checkpoint": "<project_root>/training/runs/phase2_embedding_only/best_model_conditioned.pth",
+  "params": {
+    "base_total": 23895712,
+    "base_trainable_prefreeze": 3881784,
+    "base_trainable_postfreeze": 0,
+    "group_emb": 1024,
+    "conditioned_total": 23896736,
+    "conditioned_trainable": 1024
+  },
+  "mean_log_inter_time": -1.4365682299606377,
+  "std_log_inter_time": 0.6936114719391417
+}

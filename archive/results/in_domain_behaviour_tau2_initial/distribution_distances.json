@@ -1,0 +1,42 @@
+{
+  "gen_ASD__vs__gen_TD": {
+    "n_fix": 0.6943132887899035,
+    "dur_mean": 0.022411518651633475,
+    "total_dur": 0.027522075509883427,
+    "sacc_amp_norm_mean": 0.003013778773492049,
+    "dispersion": 0.007289740176038505,
+    "revisit_rate": 0.010411506435382295,
+    "face_dwell_frac": 0.0002100486815965792,
+    "social_dwell_frac": 0.0030899210220797033
+  },
+  "real_ASD__vs__gen_ASD": {
+    "n_fix": 4.103468834688347,
+    "dur_mean": 0.023173894053613954,
+    "total_dur": 0.8211157082967319,
+    "sacc_amp_norm_mean": 0.031912287689801665,
+    "dispersion": 0.010417714290044018,
+    "revisit_rate": 0.15783042642487966,
+    "face_dwell_frac": 0.0011722234628315825,
+    "social_dwell_frac": 0.0056794029333042395
+  },
+  "real_TD__vs__gen_TD": {
+    "n_fix": 2.578005213297976,
+    "dur_mean": 0.03168232477566897,
+    "total_dur": 0.4111728396281766,
+    "sacc_amp_norm_mean": 0.02410738097090423,
+    "dispersion": 0.010847730871477865,
+    "revisit_rate": 0.08507278346817679,
+    "face_dwell_frac": 0.000997525877992206,
+    "social_dwell_frac": 0.008076343024796668
+  },
+  "real_ASD__vs__real_TD": {
+    "n_fix": 0.885697323504675,
+    "dur_mean": 0.03773853969891363,
+    "total_dur": 0.4096738979864444,
+    "sacc_amp_norm_mean": 0.010486142472124533,
+    "dispersion": 0.0065104526494186195,
+    "revisit_rate": 0.06694113922240988,
+    "face_dwell_frac": 0.0010324465827250833,
+    "social_dwell_frac": 0.01035852897518474
+  }
+}

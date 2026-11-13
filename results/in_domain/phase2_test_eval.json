@@ -1,0 +1,73 @@
+{
+  "evaluated_at": "2026-10-04T12:17:18",
+  "device": "cuda",
+  "split_file": "<project_root>/training/runs/baseline/split.json",
+  "phase1_checkpoint": "<project_root>/training/runs/baseline/best_model.pth",
+  "phase2_checkpoint": "<project_root>/training/runs/phase2_embedding_only/best_model_conditioned.pth",
+  "test_images": 45,
+  "test_ASD_scanpaths": 410,
+  "test_TD_scanpaths": 493,
+  "batch_size": 128,
+  "train_split_log_inter_time": {
+    "mean": -1.4365682299606377,
+    "std": 0.6936114719391417
+  },
+  "phase1": {
+    "overall": {
+      "n_scanpaths": 903,
+      "n_events": 6537,
+      "nll": -0.4956716135661683,
+      "nll_duration": -0.46214337706000536,
+      "nll_position": -0.03352823650616288
+    },
+    "ASD": {
+      "n_scanpaths": 410,
+      "n_events": 2772,
+      "nll": -0.31643314194068595,
+      "nll_duration": -0.5026976538426948,
+      "nll_position": 0.1862645119020089
+    },
+    "TD": {
+      "n_scanpaths": 493,
+      "n_events": 3765,
+      "nll": -0.6276368309223003,
+      "nll_duration": -0.4322850888152205,
+      "nll_position": -0.1953517421070798
+    }
+  },
+  "phase2": {
+    "overall": {
+      "n_scanpaths": 903,
+      "n_events": 6537,
+      "nll": -0.5030170176004404,
+      "nll_duration": -0.46401601856557606,
+      "nll_position": -0.03900099903486438
+    },
+    "ASD": {
+      "n_scanpaths": 410,
+      "n_events": 2772,
+      "nll": -0.32501544944221666,
+      "nll_duration": -0.5031222872661821,
+      "nll_position": 0.1781068378239655
+    },
+    "TD": {
+      "n_scanpaths": 493,
+      "n_events": 3765,
+      "nll": -0.6340715586189255,
+      "nll_duration": -0.4352238334824206,
+      "nll_position": -0.19884772513650487
+    }
+  },
+  "improvement_overall": {
+    "absolute": 0.007345404034272085,
+    "relative_pct": 1.4819093595908597
+  },
+  "improvement_ASD": {
+    "absolute": 0.008582307501530717,
+    "relative_pct": 2.7122024731339405
+  },
+  "improvement_TD": {
+    "absolute": 0.006434727696625231,
+    "relative_pct": 1.0252310539471563
+  }
+}

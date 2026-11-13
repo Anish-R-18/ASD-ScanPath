@@ -587,7 +587,7 @@ def verify():
     recs = load_external_scanpaths(DATA, bank)
     labels_ok = all(r["source_file"].startswith(f"{r['group']}_ScanPath/{r['participant']}/") for r in recs)
     ext = by_group(recs, bank, lambda r: r["image_id"])
-    sal_bank = StimulusBank(OmegaConf.load("training/config_phase2_embonly.yaml").images_dir)
+    sal_bank = StimulusBank(OmegaConf.load("configs/phase2_embedding_only.yaml").images_dir)
     test_ids = set(map(int, split["test"]))
     sal_res = by_group([s for s in sal if s["image_id"] in test_ids], sal_bank, lambda r: f"{r['image_id']}.png")
     out = dict(gaze4asd_labels_match_raw_folders=labels_ok, group_ids_in_training=dict(ASD=0, TD=1), gaze4asd=ext, saliency4asd_test_reference_only=sal_res, known_saliency_phase1=-0.4957, known_saliency_phase2=-0.5030)

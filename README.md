@@ -1,296 +1,356 @@
-# ASD-ScanPath: Modelling Gaze Dynamics in Space and Time in ASD and TD Children
+# ASD-ScanPath: ASD/TD-Conditioned TPP-Gaze
 
-This repository contains the code and preprocessing pipelines for our research on **group-conditioned gaze modelling in Autism Spectrum Disorder (ASD) and Typically Developing (TD) children using Neural Temporal Point Processes**.
+ASD-ScanPath tests what changes when a scanpath model is told whether a viewer is an autistic (ASD) or a typically developing (TD) child.
+- **Starting point:** [TPP-Gaze](https://github.com/phuselab/tppgaze) (D'Amelio et al., WACV 2025), a neural temporal point process that predicts where the next fixation lands and how long it lasts.
+- **What we did:**
+  1. fine-tuned TPP-Gaze on child gaze data;
+  2. added a minimal 1,024-parameter ASD/TD group embedding;
+  3. evaluated the result on held-out images, on an external dataset, and through the scanpaths it generates.
 
-We adapt **TPP-Gaze**, a published model that combines deep neural networks with a Temporal Point Process (TPP) to jointly predict *where* the next fixation lands and *how long* it lasts. We fine-tune it on ASD and TD gaze data, add a small ASD/TD group embedding, and test the result on an external dataset.
+> **Research use only.** These are group-level computational results. This is **not** a diagnostic or screening tool, and no clinical validity is established. Generated scanpaths are samples from a group-level model and do not represent any individual child.
 
-> **⚠️ NOTE ON DATASETS:**  
-> The datasets (Saliency4ASD, Gaze4ASD) used in this research are **NOT distributed in this repository** due to privacy and licensing restrictions. They must be obtained directly from their official sources.
+> **Data are not included.** No dataset, participant record, stimulus photograph or model checkpoint is distributed in this repository. See [Datasets](#6-datasets) and [`docs/dataset_documentation.md`](docs/dataset_documentation.md).
 
-> **⚠️ RESEARCH USE ONLY:**  
-> These are group-level computational results. This is not a diagnostic or screening tool, and no clinical validity is established.
+**Main finding.** The negative result is the main finding:
+- **Fine-tuning helped:** Phase 1 improves the held-out likelihood clearly.
+- **Likelihood:** the ASD/TD embedding gives only a small, statistically inconclusive in-domain gain, and it makes the external fit **worse**.
+- **Generated scanpaths:** the embedding does change them. Some spatial ASD−TD differences appear in the real direction at reduced size; several other differences have the wrong direction; and neither group becomes more realistic.
 
----
-
-## 1. Overview and Motivation
-
-**Research objective:** to test whether a small ASD/TD group embedding added to TPP-Gaze improves prediction of gaze scanpaths, whether any gain holds on an external dataset, and how closely generated scanpaths reproduce real ASD and TD behaviour.
-
-Aggregate gaze statistics and static saliency maps discard the order and timing of fixations. A temporal point process models a scanpath as a sequence of events, so location and duration can be predicted together.
-
-![ASD/TD-conditioned TPP-Gaze architecture](docs/figures/architecture_diagram.png)
-
-*Phase 2 architecture ([SVG version](docs/figures/architecture_diagram.svg)).*
-
-The model has the following parts:
-1. **Image encoder:** DenseNet201 with CoordConv, producing 256-d image features.
-2. **Gaze-history encoder:** the TPP-Gaze Transformer and LSTM, producing 256-d history features.
-3. **Spatial head:** a bivariate Gaussian mixture (16 components) over the next fixation location.
-4. **Duration head:** a log-normal mixture (4 components) over the next fixation duration.
-
-**Phase 2 is a group-conditioned model.** It adds a learned 2 x 512 ASD/TD embedding (**1,024 parameters**) to the fused 512-d context before both prediction heads. The whole base model is frozen during Phase 2 training, so only the embedding is trained.
-
-**Results in brief:**
-- Phase 2 gives a small in-domain likelihood gain (0.0073 nats per fixation) but **does not improve overall external likelihood**. On corrected Gaze4ASD, Phase 1 is better overall by 0.0172.
-- Real ASD and TD children differ in spatial gaze measures. Generated scanpaths reproduce some of these differences too weakly, and get others wrong.
-- **Temperature τ=1 is the selected behavioural-generation setting.** It improves external saccade-amplitude and revisit-rate similarity compared with τ=2, but it does not change the model or its likelihood. Fixation-count overproduction remains.
-- The Gaze4ASD fit-to-height mapping is strongly supported but partly inferred, not experimentally confirmed.
+See [Main results](#13-main-verified-results).
 
 ---
 
-## 2. Repository Structure
+## Contents
 
-```
-ASD-ScanPath/
-├── configs/            # Model configuration reference
-├── tppgaze/            # Original TPP-Gaze architecture (PyTorch), unmodified
-├── training/           # Training, evaluation, statistics and temperature scripts
-├── preprocessing/      # Scripts to process raw eye-tracking data
-├── analysis/           # Early dataset audits and sensitivity analysis
-├── results/            # Findings, limitations, tables and figures
-│   ├── final_results/          # Current findings and limitations
-│   ├── external_gaze4asd_v2/   # Corrected Gaze4ASD summaries, tables and figures
-│   └── external_gaze4asd/      # SUPERSEDED: old mapping, kept for reproducibility
-├── docs/               # Audits, dataset notes and architecture diagram
-├── test/               # Inference demo folder
-├── inference.py        # Scanpath generation and visualization
-├── requirements.txt    # Python dependencies
-└── README.md           # This file
-```
-
-Checkpoints, datasets and `training/runs/` (experiment outputs) are not tracked by Git.
+1. [Research objective](#1-research-objective)
+2. [What we implemented](#2-what-we-implemented)
+3. [Architecture](#3-architecture)
+4. [Phase 1 and Phase 2](#4-phase-1-and-phase-2)
+5. [Repository structure](#5-repository-structure)
+6. [Datasets](#6-datasets)
+7. [Installation](#7-installation)
+8. [Dataset setup](#8-dataset-setup)
+9. [Preprocessing](#9-preprocessing)
+10. [Training](#10-training)
+11. [Evaluation](#11-evaluation)
+12. [Inference and demo](#12-inference-and-demo)
+13. [Main verified results](#13-main-verified-results)
+14. [Limitations](#14-limitations)
+15. [Reproducibility](#15-reproducibility)
+16. [References and citation](#16-references-and-citation)
 
 ---
 
-## 3. Installation
+## 1. Research objective
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Anish-R-18/ASD-ScanPath.git
-   cd ASD-ScanPath
-   ```
-2. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-*(Note: tested with Python 3.12 and PyTorch 2.3 on CPU for inference, and Python 3.13 and PyTorch 2.12 with CUDA for experiments. The evaluation scripts expect a GPU.)*
+**Research question.** If one shared TPP-Gaze model receives only a small ASD/TD label, what changes?
 
----
-
-## 4. Dataset Acquisition
-To replicate our experiments, you must request the following datasets from their respective authors:
-
-1. **Saliency4ASD** (Primary Dataset): Used for Phase 1 & 2 training. Images are split 70/15/15 into train, validation and test, by image.
-2. **Gaze4ASD** (External Evaluation): Used only with frozen models. It is separate in participants and images, but its stimulus selection may have used Saliency4ASD.
-
-Place the downloaded raw data in an `external_data/` or `AdditionalData/` directory.
-
----
-
-## 5. Preprocessing Pipeline
-
-### 5.1 Saliency4ASD
-Run the provided pipeline to clean the raw discrete coordinates:
-```bash
-python preprocessing/preprocess_dataset.py
-```
-**Key Cleaning Steps:**
-- Removes the first fixation.
-- Filters fixations with duration `< 60ms`.
-- Truncates scanpaths to a `3.0s` maximum cumulative duration.
-- Enforces a minimum length of 3 fixations.
-- Normalizes coordinates to `[-1, 1]`.
-
-### 5.2 Gaze4ASD (External Evaluation)
-Run the corrected script to map screen coordinates to image-local space:
-```bash
-python preprocessing/preprocess_gaze4asd_v2.py
-```
-The primary mapping assumes each image is scaled to the `1440`-pixel height of the `2560x1440` screen and centred horizontally:
-
-```
-scale = 1440 / H
-image_x = (X - (2560 - scale * W) / 2) / scale
-image_y = Y / scale
-```
-
-This mapping is **strongly supported but partly inferred**. The original draw rectangle and presentation script are not available, so it is not experimentally confirmed. Policy A, the primary dataset, clips the 3.52% of fixations outside the image to its edges. Stretch and Policy B versions are written as sensitivity analyses.
-
-> The original `preprocess_gaze4asd.py` assumed native-size centred stimuli. An audit found that this was contradicted by the data, so its results are **superseded** and must not be used. See [`results/external_gaze4asd/SUPERSEDED.txt`](results/external_gaze4asd/SUPERSEDED.txt).
-
----
-
-## 6. Training Instructions
-
-Set `images_dir` in each config to your local Saliency4ASD image folder, and place the pretrained TPP-Gaze weights at `tppgaze/data/model_transformer.pth` (see `tppgaze/download_models.sh`).
-
-### Phase 1: Base TPP-Gaze Fine-Tuning
-Fine-tune TPP-Gaze on combined ASD and TD data, with the DenseNet backbone frozen and no conditioning:
-```bash
-python training/train_tpp.py train --config training/config.yaml
-```
-
-### Phase 2: ASD/TD Conditioning
-Starting from the Phase 1 checkpoint, freeze the whole base model and train only the 1,024-parameter group embedding:
-```bash
-python training/train_tpp_cond.py train --config training/config_phase2_embonly.yaml
-```
-
-Both scripts also accept `smoke` and `short` in place of `train` for quick checks.
-
----
-
-## 7. Evaluation & Main Findings
-
-NLL is negative log-likelihood per fixation; lower is better. All statistics are exploratory, except where marked. Full details: [`MAIN_FINDINGS.txt`](results/final_results/MAIN_FINDINGS.txt) and the [corrected Gaze4ASD results](results/external_gaze4asd_v2/README.md).
-
-### 7.1 Phase 1 and Phase 2 on Saliency4ASD (held-out test)
-
-| Model | Overall | ASD | TD |
-|---|---|---|---|
-| Pretrained (reference) | −0.1665 | | |
-| Phase 1 | −0.4957 | −0.3164 | −0.6276 |
-| Phase 2 | −0.5030 | −0.3250 | −0.6341 |
-
-Phase 2 gains 0.0073 nats per fixation (1.48%) in-domain. This gain is small, and no confidence interval was computed.
-
-### 7.2 Corrected Gaze4ASD External Evaluation
-
-The frozen models were evaluated on 30 stimuli, with 33 ASD and 133 TD participants and 771 and 3,605 trials. Coordinates use the fit-to-height mapping with Policy A, which is strongly supported but partly inferred, not experimentally confirmed ([methodology](results/external_gaze4asd_v2/corrected_mapping_methodology.txt)).
-
-The Phase 2 position prediction beats a centre-bias reference by 0.91 nats [0.78, 1.05] on 30 of 30 images.
-
-### 7.3 Phase 1 vs Phase 2 External Comparison
-
-Both models score the same trials in the same batches. A positive gain favours Phase 2.
-
-| | Phase 1 | Phase 2 | Gain | 95% CI, participants | 95% CI, images |
-|---|---|---|---|---|---|
-| **Overall** | −0.5568 | −0.5396 | **−0.0172** | [−0.0224, −0.0122] | [−0.0324, −0.0018] |
-| ASD | −0.1936 | −0.2039 | +0.0104 | [+0.0027, +0.0168] | [−0.0018, +0.0240] |
-| TD | −0.6325 | −0.6096 | −0.0229 | [−0.0290, −0.0171] | [−0.0406, −0.0058] |
-
-**Conditioning does not improve overall external likelihood.** The ASD gain clears zero only at participant level and is not ASD-specific: the ASD embedding also helps TD trials, and the TD embedding hurts both groups. Why the TD fit worsens has not been tested.
-
-### 7.4 Real ASD vs TD on Gaze4ASD (participant level)
-
-| Measure | Hedges' g | 95% CI | Direction |
-|---|---|---|---|
-| Revisit rate | −1.04 | [−1.44, −0.68] | ASD lower |
-| Spatial dispersion | +0.80 | [+0.41, +1.24] | ASD higher |
-| Total fixation time | −0.71 | [−1.11, −0.35] | ASD lower |
-| Saccade amplitude | +0.65 | [+0.22, +1.11] | ASD higher |
-| Direction concentration | +0.55 | [+0.11, +1.01] | ASD higher |
-
-Fixation duration, fixation count, fixation rate and horizontal saccade fraction showed no significant difference.
-
-### 7.5 Generated Behaviour on Gaze4ASD
-
-10 seeds, 20 scanpaths per image and condition.
-
-| ASD minus TD | Real | τ=1 | τ=2 | Assessment |
-|---|---|---|---|---|
-| Spatial dispersion | +.0169 | +.0101 | +.0078 | Direction matches; 60% / 46% of real |
-| Saccade amplitude | +.0151 | +.0075 | +.0049 | Direction matches; 50% / 33% of real |
-| Revisit rate | −.0805 | −.0237 | −.0124 | Direction matches; weak, 29% / 15% of real |
-| Direction concentration | +.0270 | −.0054 | −.0091 | Wrong direction |
-| Total fixation time | −.0822 | +.0189 | +.0250 | Wrong direction |
-
-Fixation overproduction remains: at τ=1 the model generates 10.24 (ASD) and 9.62 (TD) fixations against 6.25 and 6.41 real.
-
-### 7.6 Temperature Sensitivity
-
-Temperature raises each spatial mixture sigma to the power τ, leaving means and weights unchanged. τ=1 is the original distribution. Every sigma here is below 1, so τ=2 narrows spatial spread, despite the usual meaning of "higher temperature". Durations are not tempered.
-
-**τ=1 was selected on Saliency4ASD validation images**, then checked once on Gaze4ASD with paired seeds:
-
-| Per-image error | ASD, τ=1 vs τ=2 | TD, τ=1 vs τ=2 |
+| | Question | Evaluated by |
 |---|---|---|
-| Saccade amplitude | .0179 vs .0377 (52.5% lower) | .0138 vs .0276 (49.9% lower) |
-| Revisit rate | .0569 vs .1681 (66.1% lower) | .0449 vs .1032 (56.5% lower) |
+| Q1 | Does the label improve the fit to held-out Saliency4ASD scanpaths? | Likelihood, in-domain |
+| Q2 | Does any improvement transfer to Gaze4ASD, a dataset never used for training? | Likelihood, external |
+| Q3 | Do generated ASD and TD scanpaths differ the way real ASD and TD children do, and does either group become more realistic? | Generated behaviour |
 
-These four tests were prespecified but not preregistered, and all favour τ=1 in 10 of 10 seeds. Fixation duration, count, rate and total time do not improve, and direction concentration is slightly worse. The TD revisit improvement reverses within the real viewing window. **This is a behavioural result, not a likelihood improvement.**
+**Why a minimal label.** Separate ASD and TD models would differ in every weight, so a difference between them could come from the group or from training noise. A shared model with a zero-initialised embedding isolates the effect of the label. A detailed motivation is in [`docs/research_overview.md`](docs/research_overview.md).
 
-### 7.7 Current Limitations
-- **Mapping:** the Gaze4ASD display mapping is strongly supported but partly inferred.
-- **Conditioning:** the small in-domain gain does not carry over to overall external likelihood.
-- **Generated behaviour:** fixation counts and total time are too high, some group differences have the wrong direction, and revisit differences are under-reproduced.
-- **Independence:** Gaze4ASD stimulus selection may have used Saliency4ASD. Its stimuli were chosen for group differences.
-- **Participants:** Saliency4ASD has no participant IDs across images. Groups are unbalanced on Gaze4ASD, and age is not adjusted.
-- **Model quirk:** the original TPP-Gaze Transformer attends across the batch dimension; this was reproduced, not fixed.
-- **Statistics:** analyses are exploratory, not preregistered confirmatory evidence.
+## 2. What we implemented
 
-Full list: [`LIMITATIONS.txt`](results/final_results/LIMITATIONS.txt).
+**Original TPP-Gaze, unchanged** (in [`tppgaze/`](tppgaze/UPSTREAM.md); all source code byte-identical to upstream commit `59cf572`, MIT licence; the upstream sample photo `data/1009.jpg` is not distributed):
+- the released code and pretrained transformer weights;
+- the DenseNet201 + CoordConv image encoder;
+- the transformer + LSTM history encoder;
+- the 16-component spatial and 4-component duration mixture heads;
+- the joint NLL objective and the sampler.
 
----
+**Our work:**
 
-## 8. Inference / Demo
-
-We provide a standalone inference tool to generate predicted scanpaths for any input image conditioned on either ASD or TD behavior. The model outputs predicted fixation coordinates along with predicted continuous durations. It needs the Phase 2 checkpoint at `training/runs/phase2_embedding_only/best_model_conditioned.pth`, which is not distributed in this repository.
-
-The visualizer renders the sequence as numbered points connected by arrows, where circle size corresponds to fixation duration and explicit time labels are attached.
-
-**Example Commands:**
-Generate an ASD-conditioned scanpath:
-```bash
-python inference.py --image path/to/image.png --condition ASD
-```
-Generate a TD-conditioned scanpath:
-```bash
-python inference.py --image path/to/image.png --condition TD
-```
-Generate both conditions side-by-side for visual comparison:
-```bash
-python inference.py --image path/to/image.png --condition both
-```
-Use a different sampling temperature:
-```bash
-python inference.py --image path/to/image.png --temperature 2.0
-```
-
-Sampling uses **τ=1 by default**, the selected behavioural-generation setting. τ=2 is the value in the official TPP-Gaze config. Temperature changes sampling only: τ=1 is not a likelihood improvement. Use `--seed` to change the random seed. The same seed can give different scanpaths on a different PyTorch version, although the model's outputs and likelihoods agree (checked on 2.3 and 2.15).
-
-Outputs (saved to `test/outputs/<image_name>/` by default; `--out-dir` changes the parent folder):
-- `<condition>_scanpath.png`: Visualized scanpath over the image.
-- `<condition>_scanpath.json`: `scanpath_pixels` as `[x, y, duration_in_seconds]`, clipped to the image, and `scanpath_normalized` as sampled.
-- `<image_name>_asd_vs_td.png`: A side-by-side comparison figure (if `--condition both` is used).
-
-Generated scanpaths show model behaviour for research. They must not be used to assess any individual.
-
----
-
-## 9. Reproducing Figures & Tables
-Run these from the repository root. They read the datasets and checkpoints, and write to `training/runs/`.
-
-> **Overwriting:** `eval_external_v2.py`, `compare_phase1_phase2.py run`, `temperature_sensitivity.py run` and `eval_gaze4asd_tau1.py run` refuse to overwrite an existing output folder. `analyze_phase2.py`, `stats_external_v2.py`, `gen_replicates_v2.py` and the `analyze` steps do not, so back up earlier results before rerunning them.
-
-| Step | Command |
+| Component | Files |
 |---|---|
-| Saliency4ASD behavioural analysis | `python training/analyze_phase2.py` |
-| Corrected Gaze4ASD evaluation | `python training/eval_external_v2.py` |
-| Statistics and figures | `python training/stats_external_v2.py` |
-| Generation replicates at τ=2 | `python training/gen_replicates_v2.py` |
-| Phase 1 vs Phase 2 | `python training/compare_phase1_phase2.py run`, then `verify`, then `analyze` |
-| Temperature selection (validation) | `python training/temperature_sensitivity.py run`, then `windowed`, then `analyze` |
-| Gaze4ASD at τ=1 | `python training/eval_gaze4asd_tau1.py run`, then `analyze` |
-| Tracked corrected summaries | `python training/build_results_v2.py` (replaces `results/external_gaze4asd_v2/`) |
+| Saliency4ASD and Gaze4ASD preprocessing, including a corrected Gaze4ASD coordinate mapping | [`preprocessing/`](preprocessing/README.md) |
+| Phase 1 fine-tuning and Phase 2 embedding-only training | [`training/train_tpp.py`](training/train_tpp.py), [`training/train_tpp_cond.py`](training/train_tpp_cond.py) |
+| The ASD/TD conditioning wrapper and conditioned sampler; the base package is not modified | [`training/conditioned.py`](training/conditioned.py), [`training/generate_cond.py`](training/generate_cond.py) |
+| Likelihood evaluation (in-domain and external), behavioural metrics, MultiMatch, statistics | [`training/`](training/README.md), [`scripts/research_completion/`](scripts/README.md) |
+| Inference and scanpath visualization | [`inference/`](inference/README.md) |
 
-Summaries are in [`results/final_results/`](results/final_results/README.txt) and [`results/external_gaze4asd_v2/`](results/external_gaze4asd_v2/README.md). Items based on the old Gaze4ASD mapping are listed in [`SUPERSEDED.txt`](results/final_results/SUPERSEDED.txt).
+Our settings that differ from the released configuration:
+- sampling temperature τ = 1 (the released config uses 2);
+- log-duration normalisation computed on our training split;
+- at least 3 fixations per scanpath (the TPP-Gaze paper used 4).
 
----
+Where each component comes from is documented in [`docs/architecture.md`](docs/architecture.md).
 
-## 10. Citation
-If you use this code in your research, please cite:
+## 3. Architecture
 
-```bibtex
-@article{ASDScanPath2026,
-  title={ASD-ScanPath: Modelling Gaze Dynamics in Space and Time in ASD and TD Children},
-  author={Anish, R. and et al.},
-  journal={TBD},
-  year={2026}
-}
+![ASD/TD-conditioned TPP-Gaze](docs/figures/architecture_diagram.png)
+
+*Blue and green: unchanged TPP-Gaze. Orange: our ASD/TD embedding ([SVG version](docs/figures/architecture_diagram.svg)).*
+
+**Encoding.**
+- The image is encoded by a frozen DenseNet201 with CoordConv into a 256-d vector *z*.
+- The gaze history (previous locations and log-durations) is encoded by the transformer and LSTM into a 256-d state *h*.
+- Together they form the context *c* = [*h* ‖ *z*] ∈ ℝ⁵¹².
+
+**Prediction heads.** From the context:
+- a 16-component diagonal Gaussian mixture predicts the next location;
+- a 4-component log-normal mixture predicts the next duration.
+
+**Our conditioning.** The ASD/TD label selects one row *e*ℓ of a zero-initialised `nn.Embedding(2, 512)`, which is **added** to the context before both heads: *c̃* = *c* + *e*ℓ.
+- It is added at every step, identically in training, likelihood scoring and sampling.
+- Adding (rather than concatenating) keeps the heads' input size, so the pretrained heads load unchanged.
+
+**Released-code quirk, kept on purpose.** The released transformer attends across the scanpaths in a batch rather than along each sequence (a `batch_first` layout issue). We kept it because the pretrained weights were learned with it.
+- On Gaze4ASD likelihood it changes overall NLL by about 0.0001 or less.
+- In generation, scanpaths sampled together can influence each other.
+
+## 4. Phase 1 and Phase 2
+
+| | Phase 1: fine-tune | Phase 2: label only |
+|---|---|---|
+| Purpose | Adapt TPP-Gaze to child gaze data | Isolate what the ASD/TD label adds |
+| Starts from | Released TPP-Gaze weights | Best Phase 1 checkpoint |
+| Trained parameters | 3,881,784 (DenseNet201 frozen and its features cached) | 1,024 (the 2 × 512 embedding); the whole base frozen and kept in evaluation mode |
+| Optimiser | AdamW, lr 10⁻³, weight decay 0.1, batch 128, gradient clip 5 | Same, but lr 10⁻⁴ |
+| Stopping | Early stopping, patience 20; best epoch 6 of 26 | Best epoch 8 of 28 |
+| Best validation NLL | −0.5845 (−0.384 by epoch 26: early stopping mattered) | −0.5845 → −0.5964 |
+| Config | [`configs/phase1_baseline.yaml`](configs/phase1_baseline.yaml) | [`configs/phase2_embedding_only.yaml`](configs/phase2_embedding_only.yaml) |
+
+**Why the comparison is clean.** All 1,290 base weight tensors are identical in the two checkpoints, so Phase 1 is exactly Phase 2 with a zero embedding.
+
+**Model selection used validation data only.** Validation images chose the checkpoints and the sampling temperature. Test images and Gaze4ASD were never used for training or selection.
+
+## 5. Repository structure
+
+```text
+ASD-ScanPath/
+├── README.md                  this file
+├── requirements.txt           pip dependencies
+├── environment.yml            conda environment
+├── configs/                   Phase 1 and Phase 2 training configurations
+├── tppgaze/                   original TPP-Gaze implementation (unmodified upstream code, MIT licence; sample photo omitted)
+├── preprocessing/             Saliency4ASD and Gaze4ASD preprocessing, validation and sensitivity checks
+├── training/                  Python package: conditioning wrapper, sampler, data loading, training,
+│                              evaluation, statistics and result builders
+├── inference/                 inference.py (scanpath generation and visualization) and the curated demo
+├── scripts/                   research-completion experiments (E1–E3, A3–A6), result collection, figures
+├── results/                   curated, group-level result summaries and figures (start with results/final/)
+├── docs/                      research documentation, guides, audits and the repository audit
+├── presentation/              supervisor presentation, speaking scripts and supporting material
+├── tests/                     lightweight tests (no dataset needed)
+└── archive/                   superseded code, configuration and results, kept for provenance
 ```
 
-*(Placeholder: Update with official publication details once accepted).*
+The role of every folder and file is described in its own `README.md`, and in [`docs/handover_guide.md`](docs/handover_guide.md). The following are **not** in the repository and are ignored by Git:
+- the datasets (`TrainingData/`, `external_data/`) and processed data (`processed_data/`);
+- the checkpoints and raw experiment outputs (`training/runs/`);
+- the unpublished manuscript (`paper/`);
+- local-only restricted material (`local_only/`, `**/local_only*/`).
 
-Please also cite the original TPP-Gaze paper, which this work builds on: *TPP-Gaze: Modelling Gaze Dynamics in Space and Time with Neural Temporal Point Processes* (see `docs/`).
+## 6. Datasets
+
+| | Saliency4ASD | Gaze4ASD |
+|---|---|---|
+| Role | Training, validation and held-out test | External evaluation only (frozen models) |
+| Images | 300 natural images from MIT1003; split by image 210 / 45 / 45 (seed 0) | 30 stimuli, mostly faces, selected for ASD/TD differences |
+| Data after preprocessing | 2,705 ASD and 3,324 TD scanpaths (train/val/test 4,229 / 897 / 903) | 771 ASD and 3,605 TD trials from 33 ASD and 133 TD children |
+| Age | ASD 5–12 years (mean 8) | 3–7 years (group means 5.04 ASD, 4.54 TD) |
+| Recording | Tobii T120, 1280 × 1024, 3 s per image | Tobii Pro Fusion, 2560 × 1440, 3 s per image |
+| Source | [Zenodo record 13960426](https://zenodo.org/records/13960426) | [github.com/yyzyyz001/Gaze4ASD](https://github.com/yyzyyz001/Gaze4ASD) |
+
+**Data terms are unresolved.**
+- **Saliency4ASD.** The Zenodo record lists CC BY 4.0, while the usage agreement distributed with the data forbids sharing any part of it with third parties. We do not assume that one overrides the other.
+- **Gaze4ASD.** The README states an MIT licence, but does not state where its stimulus images come from.
+- **What follows.** This repository therefore publishes no dataset content and no stimulus image.
+
+Details, known dataset issues (for example 133 vs the documented 132 TD children) and access instructions are in [`docs/dataset_documentation.md`](docs/dataset_documentation.md).
+
+## 7. Installation
+
+Tested environments:
+- **CPU** (inference, tests, the research-completion analyses): Python 3.12.4 with PyTorch 2.3.1.
+- **GPU** (training and the original evaluations): PyTorch 2.12.1 with CUDA 13.0.
+
+```bash
+git clone https://github.com/Anish-R-18/ASD-ScanPath.git
+cd ASD-ScanPath
+pip install -r requirements.txt          # or: conda env create -f environment.yml && conda activate asd-scanpath
+python -m unittest discover -s tests -t .   # lightweight checks; no dataset needed
+```
+
+**Internet and DenseNet201.** TPP-Gaze loads DenseNet201 through `torch.hub`. The first run therefore downloads `pytorch/vision` v0.10.0 and the DenseNet201 weights (about 80 MB), which needs internet access.
+
+**Pretrained TPP-Gaze weights.** Required for Phase 1 training:
+
+```bash
+# from the repository root (equivalent to tppgaze/download_models.sh)
+curl -L -o tppgaze/data/model_transformer.pth https://github.com/phuselab/tppgaze/releases/download/v1.0.0/model_transformer.pth
+```
+
+## 8. Dataset setup
+
+Request or download both datasets from their owners and place them as follows (all ignored by Git):
+
+```text
+TrainingData/TrainingData/          Saliency4ASD: ASD/, TD/, Images/, README.txt (as released)
+external_data/Gaze4ASD/             Gaze4ASD: ASD_ScanPath/, TD_ScanPath/, ASD_rawData/, TD_rawData/, Image Stimuli/
+```
+
+All paths are relative to the repository root. Run every command from the root.
+
+## 9. Preprocessing
+
+```bash
+python preprocessing/preprocess_dataset.py      # Saliency4ASD  -> processed_data/{asd,td}_scanpaths.json
+python preprocessing/validate_dataset.py        # sanity checks on the processed Saliency4ASD data
+python preprocessing/preprocess_gaze4asd_v2.py  # Gaze4ASD      -> external_data/Gaze4ASD_processed_v2/
+```
+
+**Saliency4ASD.** In this order:
+1. Split each file into sequences at index resets.
+2. Drop any sequence that contains a fixation longer than 3,000 ms.
+3. Remove the first fixation.
+4. Remove fixations shorter than 60 ms.
+5. Truncate at 3 s.
+6. Require at least 3 fixations.
+7. Normalise coordinates to [−1, 1].
+
+**Gaze4ASD.** The release records gaze in screen pixels but not where each image was drawn. We map it with **fit-to-height**: scale the image to the 1,440-pixel screen height and centre it horizontally.
+- **How certain:** the mapping is strongly supported but partly inferred. The authors' own saliency maps match it at median *r* = 0.9999, against 0.91 for a stretch mapping and 0.23 for native-size placement.
+- **Off-image fixations:** the primary version clips them to the image edge (Policy A). Two sensitivity versions are also written: stretch with clipping, and fit-to-height with removal (Policy B).
+- **Superseded mapping:** an earlier native-size mapping was contradicted by the data. Its script and results are in [`archive/`](archive/README.md).
+
+Full details: [`docs/preprocessing.md`](docs/preprocessing.md).
+
+## 10. Training
+
+```bash
+python training/train_tpp.py smoke       # quick check: one batch, gradients, frozen backbone
+python training/train_tpp.py train       # Phase 1  (configs/phase1_baseline.yaml)
+python training/train_tpp_cond.py smoke  # quick check: zero embedding == Phase 1, labels change the NLL
+python training/train_tpp_cond.py train  # Phase 2  (configs/phase2_embedding_only.yaml)
+```
+
+- **Config.** Both scripts accept `--config <file>`; the defaults are the configurations behind the reported results. `short` runs a few epochs on a few images.
+- **Outputs.** Written to `training/runs/baseline/` and `training/runs/phase2_embedding_only/`. Phase 2 reuses the Phase 1 image split (`training/runs/baseline/split.json`).
+- **Hardware.** Training used an NVIDIA GPU; CPU works but is slow.
+
+See [`docs/training_guide.md`](docs/training_guide.md).
+
+## 11. Evaluation
+
+Likelihood and generated behaviour are evaluated separately, because they answer different questions.
+
+| Evaluation | Command |
+|---|---|
+| Gaze4ASD evaluation (three versions); then statistics | `python training/eval_external_v2.py`, then `python training/stats_external_v2.py` |
+| Phase 1 vs Phase 2 on Gaze4ASD (likelihood and generation at τ = 2) | `python training/compare_phase1_phase2.py run`, then `verify`, then `analyze` |
+| Temperature selection on Saliency4ASD **validation** images | `python training/temperature_sensitivity.py run`, then `windowed`, then `analyze` |
+| Gaze4ASD behaviour at τ = 1 vs τ = 2 | `python training/eval_gaze4asd_tau1.py run`, then `analyze` |
+| E3: in-domain confidence interval | `python scripts/research_completion/e3_indomain_gain_ci.py` |
+| E2: Phase 1 vs Phase 2 under the three Gaze4ASD versions | `python scripts/research_completion/e2_mapping_policy_nll.py` |
+| E1: label effect on generated behaviour, against a seed-only baseline | `python scripts/research_completion/e1_phase_tau1.py run <shard> 5` (×5), then `merge`, then `analyze` |
+| Rebuild the curated summaries | `python training/build_results_v2.py` and `python scripts/collect_results.py` |
+
+**What E1 measures.** It generates 20 scanpaths per image and seed over 10 seeds (τ = 1), with the ASD label, the TD label and Phase 1 run twice. The label effect is (ASD − TD) − (Phase 1 run A − Phase 1 run B), so the difference that random seeds alone produce is removed.
+
+**Existing outputs are protected.** Most evaluation scripts refuse to overwrite an existing output folder. The full list of steps, inputs, outputs and run times is in [`docs/evaluation_guide.md`](docs/evaluation_guide.md).
+
+## 12. Inference and demo
+
+**Requirements.** Inference needs the trained checkpoints. They are **not distributed**; ask the project owner, or retrain them with Section 10.
+
+```text
+training/runs/phase2_embedding_only/best_model_conditioned.pth   Phase 2 (required)
+training/runs/baseline/best_model.pth                            Phase 1 (only for --compare-phase1)
+```
+
+```bash
+python inference/inference.py --image path/to/image.png --condition both             # ASD and TD side by side
+python inference/inference.py --image path/to/image.png --compare-phase1             # Phase 1, ASD and TD
+python inference/inference.py --image path/to/image.png --condition ASD --n-samples 4 # four seeds
+python inference/demo/run_demo.py --check                                            # reproduce the saved demo
+```
+
+**Outputs.**
+- **Location:** `inference/outputs/<image name>/` (ignored by Git).
+- **What is written:** figures of numbered fixations, where circle area shows duration, and JSON files with `[x, y, duration]` per fixation.
+- **Defaults:** sampling uses τ = 1 by default. With the same seed, all conditions share their random numbers.
+
+See [`inference/README.md`](inference/README.md) and [`inference/demo/DEMO_GUIDE.md`](inference/demo/DEMO_GUIDE.md).
+
+## 13. Main verified results
+
+NLL is in nats per fixation (lower is better); a positive gain favours Phase 2. The full table with sources is [`results/final/KEY_RESULTS.md`](results/final/KEY_RESULTS.md).
+
+**Likelihood**
+
+| Comparison | Result | Verdict |
+|---|---|---|
+| Released TPP-Gaze → Phase 1, Saliency4ASD test | −0.1665 → −0.4957 | Clear improvement |
+| Phase 1 vs Phase 2, Saliency4ASD test | −0.4957 vs −0.5030; gain +0.0073, 95% image CI [−0.0012, +0.0163]; 27 of 45 images favour Phase 2 | **Inconclusive** |
+| Phase 1 vs Phase 2, Gaze4ASD (primary version) | −0.5568 vs −0.5396; gain −0.0172, participant CI [−0.0224, −0.0122] | **Phase 2 worse** |
+| Gaze4ASD by group | TD −0.0229 (worse); ASD +0.0104, clearing zero by participant only | TD worse; ASD gain fragile |
+| Gaze4ASD, alternative versions | stretch −0.0274; off-image removal (Policy B) −0.0087 | Phase 2 worse in all three versions |
+
+**Generated behaviour** (E1: Gaze4ASD, 10 seeds, τ = 1)
+- **The label changes behaviour.** 8 of 9 measures move beyond the seed-only baseline, but only by about 1% of the image diagonal.
+- **Some contrasts are right, but smaller.** Spatial ASD−TD contrasts follow the real direction at reduced size: dispersion 69%, saccade amplitude 64% and revisit rate 32% of the real difference. An independent run gave 60%, 50% and 29%, so treat these as approximate.
+- **Some contrasts are wrong.** Total fixation time, direction concentration and fixation count go in the **wrong direction**.
+- **Realism does not improve.** Neither group becomes more realistic. The conditions move apart, mostly because the TD condition contracts past real TD, rather than each moving towards its own real group.
+- **Too many fixations.** Both labels over-produce fixations: about 10 per scanpath, against about 6 in real data.
+
+**Sampling temperature**
+- **Behaviour, not likelihood.** τ changes generated behaviour but never the likelihood.
+- **Why τ = 1.** It was selected on validation images. On Gaze4ASD it reduces saccade-amplitude and revisit-rate error by 50–66% compared with τ = 2.
+- **Effect on contrasts.** At τ = 2 the contrasts keep their direction but shrink (46%, 33% and 15%).
+
+**Real ASD vs TD on Gaze4ASD.** ASD children show:
+- fewer revisits (g = −1.04);
+- more dispersion (+0.80);
+- less total fixation time (−0.71);
+- larger saccades (+0.65);
+- more concentrated saccade directions (+0.55);
+- more off-image gaze (7.35% vs 2.72% of fixations).
+
+How to read these results, and what they do not show: [`docs/results_interpretation.md`](docs/results_interpretation.md).
+
+## 14. Limitations
+
+- **Conditioning.** The in-domain gain is inconclusive, and the external fit is worse. The small external ASD gain depends on the coordinate mapping. The cause of the worse TD fit has not been tested: age, eye tracker, display, stimuli and site differ all at once.
+- **Coordinate mapping.** The Gaze4ASD mapping is strongly supported but partly inferred, not confirmed from the original presentation code.
+- **Age.** Neither dataset has participant-level age, so ASD/TD effects cannot be age-adjusted. The age ranges also differ between the datasets (5–12 vs 3–7 years).
+- **Generated behaviour.** The sampler has no stopping or viewing-time model, which leads to over-production of fixations. The model also cannot express off-image gaze.
+- **Released-code quirk.** The released transformer attends across the batch dimension. We kept this for fidelity and disclose it.
+- **Participants and statistics.** Saliency4ASD has no participant IDs, so in-domain uncertainty is estimated across images. All analyses are exploratory.
+- **No clinical claims.** No clinical validity is established, and no comparison or superiority over other ASD scanpath models is claimed.
+
+Full list: [`docs/limitations.md`](docs/limitations.md). Open questions: [`docs/research_audit/UNRESOLVED_ISSUES.md`](docs/research_audit/UNRESOLVED_ISSUES.md).
+
+## 15. Reproducibility
+
+**Verified so far:**
+- The image split, checkpoint hashes, results and documents are cross-checked by scripts:
+  - `scripts/collect_results.py --check`;
+  - `scripts/research_completion/z_consistency_check.py`, which recomputes 44 cited numbers;
+  - `inference/demo/run_demo.py --check`, which regenerates the 35 demo scanpaths exactly;
+  - the tests in [`tests/`](tests/README.md).
+- CPU re-scorings agree with the original GPU results within 0.0002 nats per fixation.
+
+**Known limits.** The same seed can give different samples on a different PyTorch version or device. The step-by-step guide, environment details and these limits are in [`docs/reproducibility.md`](docs/reproducibility.md).
+
+## 16. References and citation
+
+**Licence.** No licence has been chosen yet for this project's own code; until one is added, all rights are reserved by the authors. The bundled [`tppgaze/`](tppgaze/LICENSE) keeps its original MIT licence.
+
+**Citing this project.** A citation file will be added once the authorship of the accompanying manuscript is settled. Until then, please cite the repository URL and the works below.
+
+**Original model**
+- A. D'Amelio, G. Cartella, V. Cuculo, M. Lucchi, M. Cornia, R. Cucchiara and G. Boccignone. "TPP-Gaze: Modelling gaze dynamics in space and time with neural temporal point processes." *Proc. IEEE/CVF WACV*, 2025, pp. 8786–8795. doi:[10.1109/WACV61041.2025.00851](https://doi.org/10.1109/WACV61041.2025.00851). Code: [github.com/phuselab/tppgaze](https://github.com/phuselab/tppgaze).
+
+**Datasets**
+- H. Duan, G. Zhai, X. Min, Z. Che, Y. Fang, X. Yang, J. Gutiérrez and P. Le Callet. "A dataset of eye movements for the children with autism spectrum disorder." *Proc. ACM MMSys*, 2019, pp. 255–260. doi:[10.1145/3304109.3325818](https://doi.org/10.1145/3304109.3325818).
+- J. Gutiérrez, Z. Che, G. Zhai and P. Le Callet. "Saliency4ASD: Challenge, dataset and tools for visual attention modeling for autism spectrum disorder." *Signal Processing: Image Communication* 92, 116092, 2021. doi:[10.1016/j.image.2020.116092](https://doi.org/10.1016/j.image.2020.116092).
+- Y. Yang, J. Cui, X. Guo, X. Su, W. Ni, J. Lu, L. Wang and H. Ma. "Gaze4ASD: A novel dataset and visual saliency map-based method for autism screening." *Proc. IEEE ICME*, 2025. doi:[10.1109/ICME59968.2025.11210055](https://doi.org/10.1109/ICME59968.2025.11210055).
+- T. Judd, K. Ehinger, F. Durand and A. Torralba. "Learning to predict where humans look." *Proc. IEEE ICCV*, 2009 (MIT1003, the source of the Saliency4ASD images). doi:[10.1109/ICCV.2009.5459462](https://doi.org/10.1109/ICCV.2009.5459462).
+
+**Methods used in the evaluation**
+- A. Wagner, Y. Halchenko and M. Hanke. "multimatch-gaze: The MultiMatch algorithm for gaze path comparison in Python." *JOSS* 4(40), 1525, 2019. doi:[10.21105/joss.01525](https://doi.org/10.21105/joss.01525). Our own MultiMatch implementation is validated against it in [`docs/research_audit/MULTIMATCH_VALIDATION.md`](docs/research_audit/MULTIMATCH_VALIDATION.md).

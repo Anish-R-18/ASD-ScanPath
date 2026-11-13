@@ -15,9 +15,9 @@ Subcommands
 
 Examples
 --------
-  python training/train_tpp.py smoke --config training/config.yaml
-  python training/train_tpp.py short --config training/config.yaml --epochs 3 --limit-images 12 --batch-size 16
-  python training/train_tpp.py train --config training/config.yaml
+  python training/train_tpp.py smoke --config configs/phase1_baseline.yaml
+  python training/train_tpp.py short --config configs/phase1_baseline.yaml --epochs 3 --limit-images 12 --batch-size 16
+  python training/train_tpp.py train --config configs/phase1_baseline.yaml
 """
 from __future__ import annotations
 import argparse
@@ -378,7 +378,7 @@ def cmd_train(cfg, args):
 def main():
     ap = argparse.ArgumentParser(description="TPP-Gaze fine-tuning (Phase 1 baseline)")
     ap.add_argument("cmd", choices=["smoke", "short", "train"])
-    ap.add_argument("--config", default=os.path.join(_THIS_DIR, "config.yaml"))
+    ap.add_argument("--config", default=os.path.join(_ROOT, "configs", "phase1_baseline.yaml"))
     ap.add_argument("--epochs", type=int, default=None)
     ap.add_argument("--batch-size", type=int, default=None)
     ap.add_argument("--limit-images", type=int, default=None)

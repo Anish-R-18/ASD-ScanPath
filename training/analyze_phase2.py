@@ -25,7 +25,7 @@ from training import metrics as M
 # ---- config ----
 BASE_CFG = "tppgaze/data/config.yaml"
 P2 = "training/runs/phase2_embedding_only/best_model_conditioned.pth"
-CFG = OmegaConf.load("training/config_phase2_embonly.yaml")
+CFG = OmegaConf.load("configs/phase2_embedding_only.yaml")
 AOI_CSV = "ImageAnnotations.csv"
 OUT = "training/runs/phase2_embedding_only/analysis"
 N_SIM = 20

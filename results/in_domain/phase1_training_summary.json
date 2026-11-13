@@ -1,0 +1,40 @@
+{
+  "tag": "full",
+  "epochs_run": 26,
+  "initial_val": {
+    "nll": -0.2567999776334068,
+    "nll_duration": -0.3022859544522936,
+    "nll_position": 0.04548597511508939
+  },
+  "best_val_nll": -0.584461774770877,
+  "best_epoch": 6,
+  "best_checkpoint": "<project_root>/training/runs/baseline/best_model.pth",
+  "first_epoch": {
+    "epoch": 1,
+    "train": {
+      "nll": -0.4420565006102312,
+      "nll_duration": -0.41246989448795707,
+      "nll_position": -0.029586604676297173
+    },
+    "val": {
+      "nll": -0.5503446624157823,
+      "nll_duration": -0.45283951696477637,
+      "nll_position": -0.09750514081728748
+    }
+  },
+  "last_epoch": {
+    "epoch": 26,
+    "train": {
+      "nll": -0.9688098149283084,
+      "nll_duration": -0.5164140985024573,
+      "nll_position": -0.45239571925229977
+    },
+    "val": {
+      "nll": -0.3842344116187783,
+      "nll_duration": -0.46802975914366146,
+      "nll_position": 0.08379533849147817
+    }
+  },
+  "mean_log_inter_time": -1.4365682299606377,
+  "std_log_inter_time": 0.6936114719391417
+}

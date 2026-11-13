@@ -1,0 +1,113 @@
+========================================================================================
+  SALIENCY4ASD -> TPP-GAZE PREPROCESSING REPORT
+========================================================================================
+Generated: 2026-10-04T11:38:41
+Config:    min_fix_ms=60.0, t_end=3.0, max_plausible_ms=3000.0, clamp_max_ms=None, min_len=3, keep_first=False
+
+Pipeline order (per segment):
+  1. drop segment if any fixation > 3000 ms
+  2. remove first fixation
+  3. onset-anchored start times on a 0-based timeline of the remaining fixations
+  4. remove fixations < 60 ms
+  5. truncate at 3.0 s on the 0-based timeline (drop after, clip straddling; drop clip < 60 ms)
+  6. clamp durations: off
+  7. drop segment if < 3 fixations remain
+  8. ms -> s; x,y -> [-1,1] via 2*(v-1)/(dim-1)-1
+
+1. VALID SCANPATHS
+----------------------------------------------------------------------------------------
+                                                 ASD            TD
+raw segments                                   3,761         3,837
+dropped: impossible duration (>max)               36            44
+dropped: < min_len after cleaning              1,020           469
+VALID scanpaths                                2,705         3,324
+  of which truncated at t_end                    618         1,300
+  ASD retention: 71.9% of raw segments
+  TD retention: 86.6% of raw segments
+
+2. FIXATION COUNTS (accounting: raw = sum of all removals + valid)
+----------------------------------------------------------------------------------------
+                                                 ASD            TD
+raw fixations                                 29,089        34,538
+lost in impossible-duration segments             169           195
+removed: first fixation                        3,725         3,793
+removed: < 60 ms                               4,728         3,748
+removed: start >= t_end                        1,009           669
+removed: clipped remainder too short              93           131
+lost in too-short segments                       890           498
+VALID fixations                               18,475        25,504
+  clipped at t_end (kept)                        530         1,195
+  coordinates clamped to [-1,1]                    0             0
+
+3. DURATION STATISTICS (ms)
+----------------------------------------------------------------------------------------
+[ASD] per-fixation duration
+  before: n=29,089  min=8  p25=83  median=192  mean=261  p75=350  p95=708  max=7803
+  after:  n=18,475  min=60  p25=142  median=241  mean=292  p75=375  p95=691  max=2698
+[ASD] per-scanpath total duration
+  before: n=3,761  min=8  p25=657  median=1823  mean=2015  p75=3013  p95=4861  max=19464
+  after:  n=2,705  min=207  p25=1283  median=2091  mean=1994  p75=2864  p95=3000  max=3000
+[ASD] fixations per scanpath
+  before: n=3,761  min=1.0  p25=5.0  median=7.0  mean=7.7  p75=10.0  p95=16.0  max=33.0
+  after:  n=2,705  min=3.0  p25=5.0  median=7.0  mean=6.8  p75=8.0  p95=12.0  max=23.0
+[ASD] scanpaths per image
+  before: n=300  min=8.0  p25=12.0  median=13.0  mean=12.5  p75=14.0  p95=15.0  max=17.0
+  after:  n=300  min=4.0  p25=7.0  median=9.0  mean=9.0  p75=11.0  p95=12.0  max=14.0
+  images with zero valid scanpaths: 0
+
+[TD] per-fixation duration
+  before: n=34,538  min=8  p25=100  median=233  mean=318  p75=392  p95=866  max=11483
+  after:  n=25,504  min=60  p25=142  median=250  mean=312  p75=391  p95=791  max=2765
+[TD] per-scanpath total duration
+  before: n=3,837  min=8  p25=1755  median=3015  mean=2865  p75=3688  p95=5091  max=23957
+  after:  n=3,324  min=225  p25=1957  median=2772  mean=2391  p75=3000  p95=3000  max=3000
+[TD] fixations per scanpath
+  before: n=3,837  min=1.0  p25=7.0  median=9.0  mean=9.0  p75=11.0  p95=16.0  max=25.0
+  after:  n=3,324  min=3.0  p25=6.0  median=7.0  mean=7.7  p75=9.0  p95=13.0  max=22.0
+[TD] scanpaths per image
+  before: n=300  min=9.0  p25=12.0  median=13.0  mean=12.8  p75=14.0  p95=14.0  max=15.0
+  after:  n=300  min=7.0  p25=10.0  median=11.0  mean=11.1  p75=12.0  p95=13.0  max=14.0
+  images with zero valid scanpaths: 0
+
+4. LOG-DURATION STATISTICS (seconds) - candidates for config.yaml
+----------------------------------------------------------------------------------------
+  Pretrained config.yaml: mean_log_inter_times=-1.5126, std_log_inter_times=0.5892
+  ASD : mean=-1.4576  std=0.6724
+  TD  : mean=-1.4229  std=0.7121
+  ALL : mean=-1.4375  std=0.6959
+  NOTE: computed on ALL processed data. For training, recompute on the train split only.
+
+5. DATA-INTEGRITY FLAGS
+----------------------------------------------------------------------------------------
+  ASD: non-contiguous Idx inside segments: 0
+  ASD: raw segments identical to a segment in another image file: 0 (still present after cleaning: 0)
+  ASD: max raw segments per image = 17 (README states 14 subjects per group per image)
+  TD: non-contiguous Idx inside segments: 0
+  TD: raw segments identical to a segment in another image file: 2 (still present after cleaning: 0)
+  TD: max raw segments per image = 15 (README states 14 subjects per group per image)
+  Duplicated segments are flagged ('duplicate_flag') but NOT removed.
+
+6. INTEGRITY CHECKS (all asserted at runtime)
+----------------------------------------------------------------------------------------
+  [PASS] fixation accounting identity holds for ASD and TD
+  [PASS] segment accounting identity holds for ASD and TD
+  [PASS] every scanpath has >= 3 fixations
+  [PASS] every x,y lies in [-1, 1]
+  [PASS] every duration >= 0.060 s
+  [PASS] every scanpath total duration <= 3.0 s
+  [PASS] all 600 raw scanpath files unchanged (SHA-256 before == after)
+
+7. EXAMPLE PROCESSED SCANPATHS
+----------------------------------------------------------------------------------------
+[Removed from the public copy: this section lists raw individual scanpaths from the Saliency4ASD release, which may not be redistributed.]
+
+8. OUTPUT FILES
+----------------------------------------------------------------------------------------
+  asd_scanpaths.json / td_scanpaths.json : list of records
+     {image_id, group, segment_index, image_width, image_height, n_fixations,
+      total_duration_s, raw_n_fixations, truncated, short_fixations_removed,
+      duplicate_flag, scanpath: [[x_norm, y_norm, duration_s], ...]}
+  removed_segments.csv     : every dropped segment with reason
+  preprocessing_stats.json : all counters and statistics (machine-readable)
+  preprocessing_report.txt : this report
+========================================================================================

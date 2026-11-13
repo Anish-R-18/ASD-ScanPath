@@ -1,0 +1,17 @@
+# Conda environment for ASD-ScanPath (CPU). For GPU training, replace the PyTorch lines with a CUDA build,
+# for example following https://pytorch.org/get-started/locally/.
+name: asd-scanpath
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pytorch>=2.3
+  - torchvision>=0.18
+  - cpuonly
+  - numpy>=1.26
+  - scipy>=1.13
+  - pillow>=10.0
+  - matplotlib>=3.8
+  - omegaconf>=2.3
+  - pyyaml>=6.0

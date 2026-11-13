@@ -102,7 +102,7 @@ def run():
     bas = model.base
     log("checkpoint loaded (strict); evaluation mode; all parameters frozen")
 
-    cfg_images = OmegaConf.load("training/config_phase2_embonly.yaml").images_dir
+    cfg_images = OmegaConf.load("configs/phase2_embedding_only.yaml").images_dir
     bank = StimulusBank(cfg_images)
     dims = {i: bank.dims(f"{i}.png") for i in images}
     for r in recs:

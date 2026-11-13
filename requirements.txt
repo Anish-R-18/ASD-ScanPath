@@ -1,10 +1,17 @@
-# Lower bounds are the versions the project was tested with.
+# ASD-ScanPath runtime dependencies.
+# Lower bounds are the versions the project was tested with (CPU: Python 3.12.4, PyTorch 2.3.1;
+# GPU training: PyTorch 2.12.1 + CUDA 13.0). Install a CUDA build of PyTorch for GPU training.
+torch>=2.3
+torchvision>=0.18
 numpy>=1.26
-pandas>=2.2
 scipy>=1.13
-Pillow>=11.0
+Pillow>=10.0
 matplotlib>=3.8
 omegaconf>=2.3
 PyYAML>=6.0
-torch>=2.3
-torchvision>=0.18
+
+# Optional:
+#   pandas>=2.2            only for the archived scripts in archive/code/
+#   python-pptx>=1.0       presentation/*/build/slide_content.py
+#   multimatch-gaze==0.1.3 reference implementation for scripts/research_completion/a5_*.py and e1d_*.py
+#   pytest                 alternative runner for tests/ (the tests use unittest)

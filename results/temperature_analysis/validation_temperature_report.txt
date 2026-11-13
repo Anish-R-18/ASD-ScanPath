@@ -1,0 +1,251 @@
+TEMPERATURE SENSITIVITY - FINAL REPORT
+
+Saliency4ASD validation images only (45). No retraining, no test split, no Gaze4ASD. All statistics are
+exploratory. Temperature is an inference-time setting: it does not change learned weights.
+
+BOTTOM LINE
+tau = 2 does narrow generated gaze. It squares every mixture sigma, which shortens saccades by about 18%
+and raises revisit rate by about 50%. tau = 1 is the better overall setting on these images: it matches
+amplitude and revisit rate better, and it is the distribution the model's NLL actually scores. tau = 2
+looks better on overall dispersion, but mostly because its narrowing offsets the excess fixations.
+Neither temperature fixes fixation overproduction or the wrong-direction group differences.
+
+Recommendation: use tau = 1 for behavioural generation, and report tau = 2 as a sensitivity result.
+This rests on validation images only and is not confirmed on independent data.
+It is not a likelihood improvement: the model's likelihood is the same either way.
+
+--------------------------------------------------------------------------------
+A. EFFECTS DIRECTLY CAUSED BY TEMPERATURE
+
+Mechanism: sigma_tau = sigma ^ tau, with means and weights unchanged. tau = 1 is the original distribution.
+100% of mixture weight has sigma < 1, so tau = 2 narrows every component. Durations are not tempered.
+
+Predicted per-axis SD of the next fixation (normalized coordinates)
+                     Within component        Total
+                     tau=1    tau=2          tau=1    tau=2
+First fixation       0.190    0.046          0.299    0.234
+Later fixations      0.138    0.028          0.279    0.242
+Components shrink about 4-5 fold, but total spread falls only 13-22%, because the unchanged spread between
+component means remains. Samples therefore cluster more tightly around the same modes.
+
+Generated values, paired by seed (tau=2 minus tau=1; 95% CI over 45 images)
+                          Group   tau=1    tau=2    Change               Holm p  Images      Seeds     Effect /
+                                                                                 tau2 higher tau2      seed SD
+                                                                                             higher
+Saccade amplitude         ASD     .1385    .1134    -.0251 [-.0259,-.0243]  .002    0/45     0/10      19.0
+                          TD      .1323    .1099    -.0224 [-.0231,-.0217]  .002    0/45     0/10      11.6
+Spatial dispersion        ASD     .1277    .1084    -.0193 [-.0201,-.0186]  .002    0/45     0/10      23.8
+                          TD      .1178    .1008    -.0170 [-.0177,-.0163]  .002    0/45     0/10      10.7
+Revisit rate              ASD     .2100    .3236    +.1136 [+.1068,+.1203]  .002   45/45    10/10      18.8
+                          TD      .2241    .3277    +.1036 [+.0978,+.1092]  .002   45/45    10/10      16.9
+Horizontal fraction       ASD     .5416    .5163    -.0252 [-.0356,-.0156]  .002   10/45     0/10       3.9
+                          TD      .5516    .5259    -.0257 [-.0357,-.0156]  .002    8/45     0/10       4.5
+Direction concentration   ASD     .2175    .2267    +.0091 [+.0061,+.0124]  .002   34/45    10/10       1.3
+                          TD      .2272    .2353    +.0081 [+.0050,+.0111]  .002   36/45    10/10       2.2
+
+No detectable effect after Holm correction:
+Fixation duration, mean   ASD     .3014    .3024    +.0010 [+.0003,+.0017]  .122   31/45     8/10       0.3
+                          TD      .3219    .3225    +.0005 [-.0004,+.0015]  1.00   25/45     9/10       0.1
+Fixation count            ASD     10.61    10.59    -.0229 [-.0497,+.0046]  1.00   21/45     2/10       0.2
+                          TD       9.90     9.90    +.0065 [-.0202,+.0320]  1.00   21/45     6/10       0.1
+Fixation rate             ASD     3.771    3.765    -.0059 [-.0135,+.0019]  1.00   20/45     3/10       0.1
+                          TD      3.537    3.542    +.0051 [-.0046,+.0140]  1.00   27/45     8/10       0.2
+Total fixation time       ASD     2.805    2.803    -.0015 [-.0044,+.0013]  1.00   19/45     5/10       0.2
+                          TD      2.787    2.784    -.0026 [-.0058,+.0006]  1.00   17/45     2/10       0.4
+Median fixation duration also shows no Holm-corrected effect (per-scanpath ASD .2624 vs .2632, TD .2772 vs .2767).
+
+Off-image fixations (before clipping): tau=1 ASD 0.39%, TD 0.20%; tau=2 ASD 0.001%, TD 0%.
+Clipping does not change any conclusion here; unclipped results are in the tables.
+
+Likelihood. NLL on validation is -0.5964 for the model. It is computed without temperature and is a property
+of the model, not of the sampling setting. As a diagnostic, scoring real validation fixations under the
+narrowed tau=2 density gives position NLL +16.40, against -0.12 for the model's density. Real fixations are
+badly described by the narrowed density. This does not mean tau = 1 improved the model: -0.12 is simply the
+model's existing value.
+
+--------------------------------------------------------------------------------
+B. DIFFERENCES CAUSED BY RANDOM SAMPLING VARIATION
+
+SD of the condition mean across seeds (one seed = 20 scanpaths per image per condition):
+  amplitude .0012-.0021; dispersion .0008-.0016; revisit .0042-.0080; duration .0038-.0040; count .08-.13.
+The split-half reference (same temperature, seeds 1-5 vs 6-10) is at most .0001 for amplitude,
+.0002 for dispersion and .0023 for revisit, far below the temperature effects above.
+Duration, count, rate and total time changes are the same size as this noise, so treat them as no effect.
+In a single seed, the group difference can vary considerably; use pooled values.
+
+--------------------------------------------------------------------------------
+C. DIFFERENCES BETWEEN REAL AND GENERATED SCANPATHS
+
+Real validation means, with signed error of each temperature (generated minus real)
+                          Group   Real     tau=1 error   tau=2 error    Closer overall
+Saccade amplitude         ASD     .1382    +.0003        -.0248         tau=1
+                          TD      .1261    +.0062        -.0162         tau=1 (CI touches zero)
+Revisit rate              ASD     .1769    +.0331        +.1467         tau=1
+                          TD      .2419    -.0178        +.0858         tau=1
+Spatial dispersion        ASD     .1136    +.0141        -.0053         tau=2 (not clear; see below)
+                          TD      .1065    +.0113        -.0058         tau=2 (not clear; see below)
+Direction concentration   ASD     .3066    -.0891        -.0800         tau=2 (both far too low)
+                          TD      .2744    -.0472        -.0391         tau=2 (both too low)
+Horizontal fraction       ASD     .5284    +.0132        -.0120         neither
+                          TD      .5482    +.0034        -.0223         neither
+Fixation duration, mean   ASD     .3072    -.0058        -.0048         neither
+                          TD      .3409    -.0189        -.0184         neither
+Fixation count            ASD     6.68     +3.93         +3.91          neither: both too many
+                          TD      7.81     +2.08         +2.09          neither: both too many
+Count, real time window   ASD     6.68     +0.93         +0.92          neither
+                          TD      7.81     +0.87         +0.86          neither
+Total fixation time       ASD     1.96     +0.84         +0.84          neither: sampler fills 3 s
+                          TD      2.41     +0.38         +0.38          neither
+
+Per-image error (mean absolute error, MAE; gain > 0 favours tau=1; includes noise from few real scanpaths)
+                          Group   MAE tau=1  MAE tau=2  Gain [95% CI]            Holm p  Seeds for tau=1
+Revisit rate              ASD     .0517      .1472      +.0955 [+.0789,+.1093]   .002    10/10
+                          TD      .0553      .0940      +.0387 [+.0158,+.0605]   .037    10/10
+Saccade amplitude         ASD     .0173      .0269      +.0096 [+.0033,+.0152]   .101    10/10
+                          TD      .0162      .0192      +.0030 [-.0018,+.0078]   1.00    10/10
+Spatial dispersion        ASD     .0177      .0150      -.0028 [-.0073,+.0018]   1.00     0/10
+                          TD      .0178      .0159      -.0019 [-.0058,+.0022]   1.00     2/10
+Direction concentration   ASD     .0947      .0885      -.0062 [-.0098,-.0026]   .053     2/10
+                          TD      .0586      .0549      -.0037 [-.0073,+.0002]   1.00     3/10
+All other metrics: Holm p > .60; the largest relative difference is TD horizontal fraction at 5.3%.
+
+Distribution distances, per image (gain > 0 favours tau=1)
+Saccade amplitudes  ASD .0232 vs .0326, +.0094 [+.0057,+.0129], Holm .001; TD .0209 vs .0251, Holm .097
+Revisit rates       ASD .0697 vs .1504, +.0807 [+.0665,+.0934], Holm .001; TD .0703 vs .1049, Holm .008
+Positions           ASD .0341 vs .0359, Holm .27; TD .0297 vs .0296, Holm 1.0
+Dispersion          ASD .0222 vs .0197, Holm .97; TD .0215 vs .0195, Holm 1.0
+Durations, counts, directions: Holm p > .60 at all comparisons.
+
+Window-matched check (post hoc): metrics recomputed using only fixations inside the real viewing window.
+This removes the excess fixations but uses real timing, so it is a diagnostic only.
+                          Group   Real     tau=1 error   tau=2 error
+Spatial dispersion        ASD     .1136    +.0043        -.0140
+                          TD      .1065    +.0080        -.0086
+Saccade amplitude         ASD     .1382    -.0003        -.0247
+                          TD      .1261    +.0060        -.0163
+Revisit rate              ASD     .1769    -.0250        +.0660
+                          TD      .2419    -.0421        +.0534
+Direction concentration   ASD     .3066    -.0183        -.0069
+                          TD      .2744    -.0236        -.0149
+Much of tau=1's dispersion overshoot and revisit excess comes from having too many fixations. Dispersion
+now favours tau=1 for ASD and ties for TD; TD revisit also ties. Also note how much of the direction
+concentration shortfall disappears: it was largely caused by long scanpaths.
+
+MultiMatch (1 = identical)
+           Real vs real   tau=1     tau=2     tau1-tau2   Holm p  Seeds for tau=1
+ASD shape     .9183       .9211     .9287     -.0076      .001     0/10
+    length    .9052       .9051     .9116     -.0065      .001     0/10
+    direction .5870       .5935     .5891     +.0044      .001     9/10
+    position  .8230       .8133     .8279     -.0145      .001     0/10
+    duration  .5396       .5313     .5305     +.0008      .197     5/10
+TD  shape     .9291       .9269     .9332     -.0063      .001     0/10
+    length    .9145       .9115     .9162     -.0047      .001     0/10
+    direction .6091       .6045     .6011     +.0034      .001    10/10
+    position  .8486       .8339     .8471     -.0132      .001     0/10
+    duration  .5168       .5166     .5156     +.0010      .133     8/10
+All changes are under .015. The p-values are small because seeds are paired, not because differences are
+large. A higher score is not automatically more realistic: tighter sampling raises similarity, and tau=2 now
+exceeds real-vs-real on shape and length. Position is the one component where tau=2 is clearly closer to the
+real-vs-real level (differences: tau=2 +.0049 and -.0015; tau=1 -.0097 and -.0147).
+Conditioning specificity is unchanged: real TD is closer to TD-conditioned samples on position (+.0088 and
++.0059), but real ASD is closer to TD-conditioned samples as well (-.0078 and -.0061).
+
+ASD minus TD
+                          Real [95% CI]             tau=1     tau=2     % of real     Seeds with real's sign
+Saccade amplitude         +.0121 [+.0051,+.0188]    +.0062    +.0035    51% / 29%     10 / 10
+Spatial dispersion        +.0071 [+.0018,+.0124]    +.0099    +.0076    140% / 107%   10 / 10
+Revisit rate              -.0650 [-.0886,-.0422]    -.0140    -.0041    22% / 6%      10 / 6
+Fixation duration, mean   -.0337 [-.0574,-.0101]    -.0206    -.0201    61% / 60%     10 / 10
+Fixation rate             +.3585 [+.0905,+.6415]    +.2340    +.2231    65% / 62%     10 / 10
+Fixation count            -1.133 [-1.575,-.709]     +.716     +.686     wrong sign     0 / 0
+Total fixation time       -.4454 [-.5533,-.3418]    +.0179    +.0190    wrong sign     0 / 0
+Direction concentration   +.0322 [+.0059,+.0585]    -.0097    -.0086    wrong sign     2 / 2
+Horizontal fraction       -.0199 [-.0542,+.0131]    -.0100    -.0096    real includes zero
+
+Paired temperature effect on the difference (tau=2 minus tau=1):
+  amplitude -.0027 [-.0035,-.0018], 0/10 seeds positive; dispersion -.0023 [-.0032,-.0014], 0/10;
+  revisit +.0099 [+.0054,+.0146], 8/10. Others include zero, except rate, which is borderline.
+Closeness to the real difference: tau=1 for amplitude (gain +.0027 [+.0007,+.0035]) and revisit
+(+.0099 [+.0054,+.0146]). Dispersion favours tau=2 numerically, gap .0005 vs .0028, but the interval includes
+zero [-.0030,+.0027] and both values lie inside the real interval.
+Window-matched dispersion difference: tau=1 +.0034 (48%), tau=2 +.0017 (24%), which reverses that preference.
+With real timing applied, count, revisit and concentration differences also look much closer to real.
+That improvement is borrowed from real timing and must not be credited to the model.
+
+--------------------------------------------------------------------------------
+D. ANSWERS
+
+1. Which gives more realistic spatial dispersion?
+   Not clear. Over full scanpaths tau=1 is too wide (+.014, +.011) and tau=2 too narrow (-.005, -.006); tau=2 is
+   numerically closer, in 10/10 and 8/10 seeds. However, the per-image gain includes zero (Holm 1.0), and the
+   window-matched check favours tau=1 for ASD and ties for TD. tau=2's advantage is mostly offsetting errors.
+
+2. Which gives more realistic saccade amplitude?
+   tau=1. Error +.0003 and +.0062, against -.0248 and -.0162 at tau=2; 10/10 seeds in both groups.
+   Clear for ASD (distance Holm .001; bias CI excludes zero). Weaker for TD (distance Holm .097; bias CI
+   touches zero; MAE Holm 1.0).
+
+3. Does temperature affect fixation duration?
+   No detectable effect. It is not tempered at all. Any route is indirect, through history, and the observed
+   changes (at most .001 s) are within seed noise.
+
+4. Does temperature affect revisit rate?
+   Yes, strongly: +.11 and +.10 at tau=2 (45/45 images, 10/10 seeds). tau=1 is closer to real over full scanpaths
+   (Holm .002, .037). In the window-matched check, ASD still favours tau=1; TD ties.
+
+5. Does either reduce fixation-count overproduction?
+   No. Both give about 10.6 (ASD) and 9.9 (TD), against real 6.7 and 7.8. Inside the real window, the excess is
+   still about 0.9. Temperature is not a remedy.
+
+6. Which better reproduces real ASD-vs-TD differences?
+   tau=1 on amplitude (51% vs 29%) and revisit (22% vs 6%), both still too small. Dispersion is unresolved.
+   Duration and rate are unchanged. Fixation count, total time and direction concentration are wrong in both.
+
+7. Are conclusions stable across seeds?
+   Yes for direct effects on amplitude, dispersion and revisit (all 10 seeds, effect 11-24 times seed SD), and
+   for amplitude and revisit realism (10/10). Dispersion realism is not settled by seeds because the question
+   turns on the window, not on noise. Duration and count differences are noise.
+
+8. Is tau=2 artificially narrowing the spatial distribution?
+   Yes. This is a direct result of the formula, because every sigma is below 1. Components become 4-5 times
+   narrower, while the means do not move. It is the sampling setting, not learned behaviour. The official
+   config uses tau=2, so this is not a bug in our code. We have not established the authors' rationale.
+
+9. Is there a trade-off?
+   Yes, but limited. tau=2 scores better on full-scanpath dispersion, slightly on direction concentration, on
+   MultiMatch position, and has no off-image fixations (tau=1: 0.2-0.4%, handled by clipping). tau=1 scores better
+   on amplitude, revisit rate, the amplitude and revisit group differences, and MultiMatch direction.
+   Several tau=2 gains are explained by compensation for excess fixations, or by a measure that rewards tightness.
+   Temporal metrics are unaffected either way.
+
+Decision. tau=1 is supported by several metrics rather than one: amplitude, revisit, two group differences, and
+its identity with the distribution scored by NLL. No single metric decided this.
+
+--------------------------------------------------------------------------------
+E. SAFE AND UNSAFE CLAIMS
+
+Safe
+- In this code, tau raises each sigma to the power tau; tau=2 narrowed all components and durations are not tempered.
+- On validation images, tau=2 shortened saccades and raised revisit rate compared with tau=1.
+- tau=1 better matched real saccade amplitude (clearly for ASD) and revisit rate.
+- Temperature did not reduce fixation overproduction.
+Not safe
+- "Lower temperature improves the model" or "the likelihood improved". Weights and NLL did not change.
+- "tau=1 is realistic". Fixation count, total time, direction concentration and several group differences remain wrong.
+- Any claim that tau=1 is better on independent data. It has not been tested there.
+- Reading MultiMatch p-values as large effects, or crediting the model for window-matched improvements.
+- Any clinical or diagnostic conclusion.
+
+--------------------------------------------------------------------------------
+F. LIMITATIONS
+
+- Validation images were used to choose the Phase-2 checkpoint, so this split is not independent of the model.
+- Only tau = 1 and 2 were tested, as requested. Dispersion lies between them, but intermediate values are untested.
+- Few real scanpaths per image (ASD 4-13, TD 8-14), which adds noise to per-image error.
+- No participant IDs across images, so uncertainty covers images and seeds, not participants.
+- Group contrasts are image-level, with no adjustment for age or other covariates.
+- Earlier tau=2 results (including Gaze4ASD) remain valid as tau=2 results and were not changed. Their "too small"
+  spatial scale may partly reflect this setting. Whether that holds on Gaze4ASD was not tested here, by design.
+- Window matching and the bias comparison are post hoc.
+
+Details: temperature_methodology.txt. Checkpoint unchanged. Nothing was pushed.

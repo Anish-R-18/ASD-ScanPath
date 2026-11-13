@@ -1,0 +1,487 @@
+{
+ "note": "gain > 0 favours Phase 2; NLL per fixation; position NLL is not comparable across mappings, but Phase 1 vs Phase 2 within one version is.",
+ "results": {
+  "fit_height_policy_a": {
+   "gate_aggregate_nll_diff_vs_saved_gpu": 0.0001691009889635846,
+   "per_trial_abs_diff_median": 0.004950523376464844,
+   "per_trial_abs_diff_p99": 0.030537128448486328,
+   "trials": 4376,
+   "events": 27991,
+   "overall_joint": {
+    "phase1": -0.5566582440891296,
+    "phase2": -0.539428766295013,
+    "gain": -0.017229477794116464,
+    "participant_ci": [
+     -0.022486107516564584,
+     -0.01223708706706277
+    ],
+    "image_ci": [
+     -0.03233440378135233,
+     -0.002370425360057939
+    ],
+    "participants_favouring": 58,
+    "participants": 166,
+    "images_favouring": 11,
+    "images": 30
+   },
+   "overall_duration": {
+    "phase1": -0.4038209192648326,
+    "phase2": -0.39860659497015294,
+    "gain": -0.005214324294679661,
+    "participant_ci": [
+     -0.0061742339353275865,
+     -0.004209815992587299
+    ],
+    "image_ci": [
+     -0.006583892387258817,
+     -0.003831056106969859
+    ],
+    "participants_favouring": 47,
+    "participants": 166,
+    "images_favouring": 3,
+    "images": 30
+   },
+   "overall_position": {
+    "phase1": -0.1528373248242969,
+    "phase2": -0.1408221713248601,
+    "gain": -0.012015153499436802,
+    "participant_ci": [
+     -0.017216106295374043,
+     -0.007146339012580593
+    ],
+    "image_ci": [
+     -0.027010935873104984,
+     0.00286218341261534
+    ],
+    "participants_favouring": 61,
+    "participants": 166,
+    "images_favouring": 11,
+    "images": 30
+   },
+   "ASD_joint": {
+    "phase1": -0.19345589196830063,
+    "phase2": -0.20384447094569788,
+    "gain": 0.010388578977397263,
+    "participant_ci": [
+     0.0027608583637868398,
+     0.01692570151641255
+    ],
+    "image_ci": [
+     -0.0018885274902270504,
+     0.02440565038344252
+    ],
+    "participants_favouring": 25,
+    "participants": 33,
+    "images_favouring": 16,
+    "images": 30
+   },
+   "ASD_duration": {
+    "phase1": -0.4174417171542442,
+    "phase2": -0.42030963939662797,
+    "gain": 0.002867922242383779,
+    "participant_ci": [
+     0.001207795825868071,
+     0.004320425851651271
+    ],
+    "image_ci": [
+     0.0017019589669089136,
+     0.003937266181536111
+    ],
+    "participants_favouring": 22,
+    "participants": 33,
+    "images_favouring": 24,
+    "images": 30
+   },
+   "ASD_position": {
+    "phase1": 0.2239858251859436,
+    "phase2": 0.2164651684509301,
+    "gain": 0.007520656735013484,
+    "participant_ci": [
+     -0.00015059709400869258,
+     0.014265787442988908
+    ],
+    "image_ci": [
+     -0.004610239643165903,
+     0.02073787119809592
+    ],
+    "participants_favouring": 23,
+    "participants": 33,
+    "images_favouring": 16,
+    "images": 30
+   },
+   "TD_joint": {
+    "phase1": -0.6324005419494811,
+    "phase2": -0.6094115885624969,
+    "gain": -0.02298895338698427,
+    "participant_ci": [
+     -0.029123633474611322,
+     -0.017134178757697238
+    ],
+    "image_ci": [
+     -0.040367088857686896,
+     -0.005682108376647253
+    ],
+    "participants_favouring": 33,
+    "participants": 133,
+    "images_favouring": 11,
+    "images": 30
+   },
+   "TD_duration": {
+    "phase1": -0.4009804350972294,
+    "phase2": -0.3940806373439764,
+    "gain": -0.0068997977532529705,
+    "participant_ci": [
+     -0.007941548522453205,
+     -0.005791997321867075
+    ],
+    "image_ci": [
+     -0.00845503891784817,
+     -0.00536204027705827
+    ],
+    "participants_favouring": 25,
+    "participants": 133,
+    "images_favouring": 1,
+    "images": 30
+   },
+   "TD_position": {
+    "phase1": -0.23142010685225173,
+    "phase2": -0.21533095121852042,
+    "gain": -0.0160891556337313,
+    "participant_ci": [
+     -0.02221733575359892,
+     -0.010136746232793582
+    ],
+    "image_ci": [
+     -0.033496765401467656,
+     0.0007900527143075381
+    ],
+    "participants_favouring": 38,
+    "participants": 133,
+    "images_favouring": 11,
+    "images": 30
+   },
+   "primary_gain_saved_gpu": -0.01718201703035258
+  },
+  "stretch_policy_a": {
+   "gate_aggregate_nll_diff_vs_saved_gpu": 0.00011913484123919982,
+   "per_trial_abs_diff_median": 0.004784107208251953,
+   "per_trial_abs_diff_p99": 0.029968902468681335,
+   "trials": 4376,
+   "events": 27991,
+   "overall_joint": {
+    "phase1": -0.6592292286880717,
+    "phase2": -0.6318529508729775,
+    "gain": -0.027376277815094205,
+    "participant_ci": [
+     -0.03222556379268255,
+     -0.02262987766635394
+    ],
+    "image_ci": [
+     -0.04557903127019201,
+     -0.007890459686185845
+    ],
+    "participants_favouring": 37,
+    "participants": 166,
+    "images_favouring": 9,
+    "images": 30
+   },
+   "overall_duration": {
+    "phase1": -0.401838698235446,
+    "phase2": -0.396520676317631,
+    "gain": -0.005318021917815019,
+    "participant_ci": [
+     -0.0062761592907853445,
+     -0.004333850466648207
+    ],
+    "image_ci": [
+     -0.006684077406847927,
+     -0.003918854641054271
+    ],
+    "participants_favouring": 47,
+    "participants": 166,
+    "images_favouring": 3,
+    "images": 30
+   },
+   "overall_position": {
+    "phase1": -0.2573905304526257,
+    "phase2": -0.23533227455534653,
+    "gain": -0.022058255897279184,
+    "participant_ci": [
+     -0.026944427650387383,
+     -0.017255781183476693
+    ],
+    "image_ci": [
+     -0.0409645200781172,
+     -0.00368022623555192
+    ],
+    "participants_favouring": 43,
+    "participants": 166,
+    "images_favouring": 9,
+    "images": 30
+   },
+   "ASD_joint": {
+    "phase1": -0.32324382870402146,
+    "phase2": -0.3259110444944591,
+    "gain": 0.0026672157904376152,
+    "participant_ci": [
+     -0.00414243811569405,
+     0.008700704902457083
+    ],
+    "image_ci": [
+     -0.009113247899980257,
+     0.016029118463604355
+    ],
+    "participants_favouring": 20,
+    "participants": 33,
+    "images_favouring": 14,
+    "images": 30
+   },
+   "ASD_duration": {
+    "phase1": -0.4154686349149076,
+    "phase2": -0.41839426400498575,
+    "gain": 0.002925629090078129,
+    "participant_ci": [
+     0.0013066400232423447,
+     0.0043774721081763
+    ],
+    "image_ci": [
+     0.0017824542659044672,
+     0.00400095876636566
+    ],
+    "participants_favouring": 22,
+    "participants": 33,
+    "images_favouring": 24,
+    "images": 30
+   },
+   "ASD_position": {
+    "phase1": 0.09222480621088612,
+    "phase2": 0.09248321951052664,
+    "gain": -0.00025841329964051334,
+    "participant_ci": [
+     -0.007178038315810572,
+     0.0060866315916803925
+    ],
+    "image_ci": [
+     -0.011864737515578828,
+     0.012544365234331249
+    ],
+    "participants_favouring": 18,
+    "participants": 33,
+    "images_favouring": 12,
+    "images": 30
+   },
+   "TD_joint": {
+    "phase1": -0.7292956974037128,
+    "phase2": -0.6956541428684977,
+    "gain": -0.03364155453521504,
+    "participant_ci": [
+     -0.03939609198765453,
+     -0.02815099488774485
+    ],
+    "image_ci": [
+     -0.05466860771213385,
+     -0.011768045676481778
+    ],
+    "participants_favouring": 17,
+    "participants": 133,
+    "images_favouring": 10,
+    "images": 30
+   },
+   "TD_duration": {
+    "phase1": -0.3989963082625692,
+    "phase2": -0.3919591535625719,
+    "gain": -0.007037154699997304,
+    "participant_ci": [
+     -0.00809814163644363,
+     -0.00592653491347553
+    ],
+    "image_ci": [
+     -0.008561040787820003,
+     -0.0055435615706627
+    ],
+    "participants_favouring": 25,
+    "participants": 133,
+    "images_favouring": 1,
+    "images": 30
+   },
+   "TD_position": {
+    "phase1": -0.3302993891411436,
+    "phase2": -0.30369498930592587,
+    "gain": -0.026604399835217736,
+    "participant_ci": [
+     -0.032356591012694634,
+     -0.021152015882455927
+    ],
+    "image_ci": [
+     -0.047847235557912364,
+     -0.004471046718003605
+    ],
+    "participants_favouring": 25,
+    "participants": 133,
+    "images_favouring": 11,
+    "images": 30
+   }
+  },
+  "fit_height_policy_b": {
+   "gate_aggregate_nll_diff_vs_saved_gpu": 0.00017854681190061748,
+   "per_trial_abs_diff_median": 0.004756450653076172,
+   "per_trial_abs_diff_p99": 0.028321504592895508,
+   "trials": 4301,
+   "events": 26900,
+   "overall_joint": {
+    "phase1": -0.6655132284832488,
+    "phase2": -0.6568441067336882,
+    "gain": -0.008669121749560629,
+    "participant_ci": [
+     -0.012977723219325716,
+     -0.0041754044095406034
+    ],
+    "image_ci": [
+     -0.024329348682740618,
+     0.006897946442091495
+    ],
+    "participants_favouring": 70,
+    "participants": 166,
+    "images_favouring": 12,
+    "images": 30
+   },
+   "overall_duration": {
+    "phase1": -0.4003657421746662,
+    "phase2": -0.3948882565445173,
+    "gain": -0.005477485630148849,
+    "participant_ci": [
+     -0.006472438066493719,
+     -0.0044521713185299945
+    ],
+    "image_ci": [
+     -0.006874042338674912,
+     -0.004097662548590842
+    ],
+    "participants_favouring": 45,
+    "participants": 166,
+    "images_favouring": 2,
+    "images": 30
+   },
+   "overall_position": {
+    "phase1": -0.26514748630858265,
+    "phase2": -0.2619558501891709,
+    "gain": -0.0031916361194117807,
+    "participant_ci": [
+     -0.007496301462385966,
+     0.0012442703602103691
+    ],
+    "image_ci": [
+     -0.019139839272224974,
+     0.012381408466759133
+    ],
+    "participants_favouring": 76,
+    "participants": 166,
+    "images_favouring": 13,
+    "images": 30
+   },
+   "ASD_joint": {
+    "phase1": -0.37806066848539016,
+    "phase2": -0.39322764432510815,
+    "gain": 0.015166975839717968,
+    "participant_ci": [
+     0.007651970714066141,
+     0.0215344941961797
+    ],
+    "image_ci": [
+     0.003034044409679766,
+     0.029375632536748277
+    ],
+    "participants_favouring": 27,
+    "participants": 33,
+    "images_favouring": 18,
+    "images": 30
+   },
+   "ASD_duration": {
+    "phase1": -0.40967368118397823,
+    "phase2": -0.41261718474529885,
+    "gain": 0.0029435035613206055,
+    "participant_ci": [
+     0.0012271527744213847,
+     0.004462720827057556
+    ],
+    "image_ci": [
+     0.001762010783756378,
+     0.004076853341554542
+    ],
+    "participants_favouring": 21,
+    "participants": 33,
+    "images_favouring": 23,
+    "images": 30
+   },
+   "ASD_position": {
+    "phase1": 0.03161301269858807,
+    "phase2": 0.01938954042019071,
+    "gain": 0.012223472278397363,
+    "participant_ci": [
+     0.0046302548715583475,
+     0.018931057421420063
+    ],
+    "image_ci": [
+     0.00015069150009829302,
+     0.02572430491312104
+    ],
+    "participants_favouring": 24,
+    "participants": 33,
+    "images_favouring": 16,
+    "images": 30
+   },
+   "TD_joint": {
+    "phase1": -0.7223382225344729,
+    "phase2": -0.7089570672454467,
+    "gain": -0.013381155289026211,
+    "participant_ci": [
+     -0.018349517035691154,
+     -0.008236248432782018
+    ],
+    "image_ci": [
+     -0.031095599995855348,
+     0.004156644251616855
+    ],
+    "participants_favouring": 43,
+    "participants": 133,
+    "images_favouring": 12,
+    "images": 30
+   },
+   "TD_duration": {
+    "phase1": -0.39852570436516727,
+    "phase2": -0.3913835173988597,
+    "gain": -0.007142186966307548,
+    "participant_ci": [
+     -0.008249643527077336,
+     -0.006019807835263742
+    ],
+    "image_ci": [
+     -0.008674539400291318,
+     -0.0056173055785519
+    ],
+    "participants_favouring": 24,
+    "participants": 133,
+    "images_favouring": 1,
+    "images": 30
+   },
+   "TD_position": {
+    "phase1": -0.3238125181693056,
+    "phase2": -0.317573549846587,
+    "gain": -0.0062389683227186635,
+    "participant_ci": [
+     -0.011271903227135496,
+     -0.0013718754767437216
+    ],
+    "image_ci": [
+     -0.024071002072134272,
+     0.011756355045111676
+    ],
+    "participants_favouring": 52,
+    "participants": 133,
+    "images_favouring": 15,
+    "images": 30
+   }
+  }
+ },
+ "checkpoints_unchanged": true
+}

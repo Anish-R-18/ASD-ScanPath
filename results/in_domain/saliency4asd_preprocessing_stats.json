@@ -1,0 +1,285 @@
+{
+  "generated": "2026-10-04T11:38:41",
+  "config": {
+    "out_dir": "<project_root>\\processed_data",
+    "min_fix_ms": 60.0,
+    "t_end": 3.0,
+    "max_plausible_ms": 3000.0,
+    "clamp_max_ms": null,
+    "min_len": 3,
+    "keep_first": false
+  },
+  "groups": {
+    "ASD": {
+      "counters": {
+        "raw_segments": 3761,
+        "raw_fixations": 29089,
+        "fix_removed_first": 3725,
+        "fix_removed_short": 4728,
+        "fix_removed_after_tend": 1009,
+        "valid_segments": 2705,
+        "valid_fixations": 18475,
+        "fix_clipped_at_tend": 530,
+        "seg_truncated": 630,
+        "valid_truncated": 618,
+        "fix_removed_clip_too_short": 93,
+        "seg_drop_too_short": 1020,
+        "fix_lost_too_short_seg": 890,
+        "seg_drop_impossible": 36,
+        "fix_lost_impossible_seg": 169
+      },
+      "idx_anomalies": 0,
+      "duplicate_segments": {
+        "raw": 0,
+        "valid": 0
+      },
+      "before": {
+        "duration_ms": {
+          "count": 29089,
+          "min": 8.0,
+          "p5": 8.0,
+          "p25": 83.0,
+          "median": 192.0,
+          "mean": 260.58489463371035,
+          "p75": 350.0,
+          "p95": 708.0,
+          "max": 7803.0,
+          "std": 310.7581229401945
+        },
+        "segment_total_ms": {
+          "count": 3761,
+          "min": 8.0,
+          "p5": 33.0,
+          "p25": 657.0,
+          "median": 1823.0,
+          "mean": 2015.4623770273863,
+          "p75": 3013.0,
+          "p95": 4861.0,
+          "max": 19464.0,
+          "std": 1627.2237425941782
+        },
+        "fixations_per_segment": {
+          "count": 3761,
+          "min": 1.0,
+          "p5": 1.0,
+          "p25": 5.0,
+          "median": 7.0,
+          "mean": 7.734379154480192,
+          "p75": 10.0,
+          "p95": 16.0,
+          "max": 33.0,
+          "std": 4.40334300426635
+        },
+        "segments_per_image": {
+          "count": 300,
+          "min": 8.0,
+          "p5": 10.0,
+          "p25": 12.0,
+          "median": 13.0,
+          "mean": 12.536666666666667,
+          "p75": 14.0,
+          "p95": 15.0,
+          "max": 17.0,
+          "std": 1.5150320862022104
+        }
+      },
+      "after": {
+        "duration_ms": {
+          "count": 18475,
+          "min": 60.0,
+          "p5": 75.0,
+          "p25": 142.0,
+          "median": 241.0,
+          "mean": 291.91334235453314,
+          "p75": 375.0,
+          "p95": 691.0,
+          "max": 2698.0,
+          "std": 216.8168866615391
+        },
+        "segment_total_ms": {
+          "count": 2705,
+          "min": 207.00000000000003,
+          "p5": 525.0,
+          "p25": 1283.0,
+          "median": 2091.0,
+          "mean": 1993.7519408502772,
+          "p75": 2864.0,
+          "p95": 3000.0,
+          "max": 3000.0,
+          "std": 847.2484747835404
+        },
+        "fixations_per_segment": {
+          "count": 2705,
+          "min": 3.0,
+          "p5": 3.0,
+          "p25": 5.0,
+          "median": 7.0,
+          "mean": 6.829944547134935,
+          "p75": 8.0,
+          "p95": 12.0,
+          "max": 23.0,
+          "std": 2.8134726367757983
+        },
+        "segments_per_image": {
+          "count": 300,
+          "min": 4.0,
+          "p5": 5.950000000000001,
+          "p25": 7.0,
+          "median": 9.0,
+          "mean": 9.016666666666667,
+          "p75": 11.0,
+          "p95": 12.0,
+          "max": 14.0,
+          "std": 2.1031061683984373
+        },
+        "images_with_zero_valid": 0
+      },
+      "log_duration_seconds": {
+        "mean": -1.4575551366862762,
+        "std": 0.6724068116283008
+      }
+    },
+    "TD": {
+      "counters": {
+        "raw_segments": 3837,
+        "raw_fixations": 34538,
+        "fix_removed_first": 3793,
+        "fix_removed_short": 3748,
+        "fix_removed_after_tend": 669,
+        "fix_clipped_at_tend": 1195,
+        "seg_truncated": 1332,
+        "valid_segments": 3324,
+        "valid_fixations": 25504,
+        "valid_truncated": 1300,
+        "seg_drop_too_short": 469,
+        "fix_lost_too_short_seg": 498,
+        "fix_removed_clip_too_short": 131,
+        "seg_drop_impossible": 44,
+        "fix_lost_impossible_seg": 195
+      },
+      "idx_anomalies": 0,
+      "duplicate_segments": {
+        "raw": 2,
+        "valid": 0
+      },
+      "before": {
+        "duration_ms": {
+          "count": 34538,
+          "min": 8.0,
+          "p5": 25.0,
+          "p25": 100.0,
+          "median": 233.0,
+          "mean": 318.2335977763623,
+          "p75": 392.0,
+          "p95": 866.0,
+          "max": 11483.0,
+          "std": 421.18937290621045
+        },
+        "segment_total_ms": {
+          "count": 3837,
+          "min": 8.0,
+          "p5": 241.0,
+          "p25": 1755.0,
+          "median": 3015.0,
+          "mean": 2864.5170706280946,
+          "p75": 3688.0,
+          "p95": 5091.199999999997,
+          "max": 23957.0,
+          "std": 1816.3222421680262
+        },
+        "fixations_per_segment": {
+          "count": 3837,
+          "min": 1.0,
+          "p5": 3.0,
+          "p25": 7.0,
+          "median": 9.0,
+          "mean": 9.001303101381287,
+          "p75": 11.0,
+          "p95": 16.0,
+          "max": 25.0,
+          "std": 3.769934193998172
+        },
+        "segments_per_image": {
+          "count": 300,
+          "min": 9.0,
+          "p5": 10.950000000000001,
+          "p25": 12.0,
+          "median": 13.0,
+          "mean": 12.79,
+          "p75": 14.0,
+          "p95": 14.0,
+          "max": 15.0,
+          "std": 1.148578832006464
+        }
+      },
+      "after": {
+        "duration_ms": {
+          "count": 25504,
+          "min": 60.0,
+          "p5": 75.0,
+          "p25": 142.0,
+          "median": 250.0,
+          "mean": 311.66087672521957,
+          "p75": 391.0,
+          "p95": 791.0,
+          "max": 2765.0,
+          "std": 253.85280441877438
+        },
+        "segment_total_ms": {
+          "count": 3324,
+          "min": 225.0,
+          "p5": 749.0,
+          "p25": 1957.0,
+          "median": 2772.0,
+          "mean": 2391.2752707581226,
+          "p75": 3000.0,
+          "p95": 3000.0,
+          "max": 3000.0,
+          "std": 757.8444007302475
+        },
+        "fixations_per_segment": {
+          "count": 3324,
+          "min": 3.0,
+          "p5": 3.0,
+          "p25": 6.0,
+          "median": 7.0,
+          "mean": 7.672683513838749,
+          "p75": 9.0,
+          "p95": 13.0,
+          "max": 22.0,
+          "std": 2.929675116548734
+        },
+        "segments_per_image": {
+          "count": 300,
+          "min": 7.0,
+          "p5": 9.0,
+          "p25": 10.0,
+          "median": 11.0,
+          "mean": 11.08,
+          "p75": 12.0,
+          "p95": 13.0,
+          "max": 14.0,
+          "std": 1.3760813929415656
+        },
+        "images_with_zero_valid": 0
+      },
+      "log_duration_seconds": {
+        "mean": -1.422937326718016,
+        "std": 0.712079680755431
+      }
+    }
+  },
+  "log_duration_seconds_combined": {
+    "mean": -1.4374798137951121,
+    "std": 0.6958990547280988
+  },
+  "integrity_checks": [
+    "fixation accounting identity holds for ASD and TD",
+    "segment accounting identity holds for ASD and TD",
+    "every scanpath has >= 3 fixations",
+    "every x,y lies in [-1, 1]",
+    "every duration >= 0.060 s",
+    "every scanpath total duration <= 3.0 s",
+    "all 600 raw scanpath files unchanged (SHA-256 before == after)"
+  ]
+}

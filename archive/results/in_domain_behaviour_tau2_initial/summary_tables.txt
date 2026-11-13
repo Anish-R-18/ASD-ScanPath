@@ -1,0 +1,29 @@
+PHASE-2 BEHAVIORAL ANALYSIS - AGGREGATE MEANS
+populations: real_ASD=410, real_TD=493, gen_ASD=900, gen_TD=898
+
+metric                    real_ASD     real_TD     gen_ASD      gen_TD
+n_fix                        6.761       7.637      10.864      10.206
+dur_mean                     0.308       0.346       0.294       0.317
+dur_median                   0.272       0.292       0.257       0.272
+total_dur                    1.995       2.404       2.810       2.783
+sacc_amp_mean              187.634     174.829     147.421     144.124
+sacc_amp_median            169.742     161.053     123.639     123.409
+sacc_amp_norm_mean           0.148       0.138       0.117       0.114
+sacc_dir_mean               -0.002       0.005       0.081       0.059
+sacc_dir_std                 1.611       1.671       1.726       1.711
+dispersion                   0.122       0.116       0.114       0.107
+bbox_area_norm               0.069       0.066       0.065       0.059
+revisit_rate                 0.164       0.231       0.322       0.316
+return_offset_mean           3.143       3.271       3.669       3.454
+face_fix_frac                0.002       0.001       0.002       0.001
+face_dwell_frac              0.002       0.001       0.001       0.001
+social_fix_frac              0.028       0.019       0.028       0.030
+social_dwell_frac            0.030       0.020       0.026       0.028
+
+MultiMatch (mean over pairs; 1=identical):
+type                  shape   length  direct. position duration  n_pairs
+RvR_ASD               0.913    0.897    0.598    0.809    0.522     1196
+RvR_TD                0.924    0.909    0.605    0.835    0.527     1344
+RvG_ASD               0.926    0.908    0.592    0.816    0.527     1350
+RvG_TD                0.930    0.914    0.597    0.836    0.517     1350
+GenASD_vs_GenTD       0.938    0.918    0.607    0.847    0.521     1350

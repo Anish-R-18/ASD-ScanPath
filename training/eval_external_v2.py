@@ -219,7 +219,7 @@ def main():
 
     # ---- regression gate: new code must reproduce known results
     reg = {}
-    sal_bank = StimulusBank(OmegaConf.load("training/config_phase2_embonly.yaml").images_dir)
+    sal_bank = StimulusBank(OmegaConf.load("configs/phase2_embedding_only.yaml").images_dir)
     sal_cache = {}
     @torch.no_grad()
     def sal_meta(ids):

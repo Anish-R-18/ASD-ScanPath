@@ -2,7 +2,7 @@
 """
 Gaze4ASD -> TPP-Gaze preprocessing, version 2 (corrected coordinate mapping).
 
-Supersedes the native-size centred mapping in preprocess_gaze4asd.py, which the
+Supersedes the native-size centred mapping in preprocess_gaze4asd.py (now archive/code/), which the
 coordinate audit found to be contradicted by the data. That script and its output
 (external_data/Gaze4ASD_processed/) are left untouched.
 

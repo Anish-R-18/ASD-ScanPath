@@ -1,0 +1,35 @@
+{
+  "evaluated_at": "2026-10-04T11:53:29",
+  "device": "cuda",
+  "checkpoint_evaluated": "<project_root>/training/runs/baseline/best_model.pth",
+  "split_file": "<project_root>/training/runs/baseline/split.json",
+  "test_scanpaths": 903,
+  "test_images": 45,
+  "test_ASD_scanpaths": 410,
+  "test_TD_scanpaths": 493,
+  "batch_size": 128,
+  "train_split_log_inter_time": {
+    "mean": -1.4365682299606377,
+    "std": 0.6936114719391417
+  },
+  "pretrained_native_log_inter_time": {
+    "mean": -1.512609601020813,
+    "std": 0.5891745090484619
+  },
+  "fine_tuned": {
+    "nll": -0.49567162965951356,
+    "nll_duration": -0.46214338548051775,
+    "nll_position": -0.03352824113613397
+  },
+  "pretrained_same_stats": {
+    "nll": -0.16645745227091427,
+    "nll_duration": -0.28489426832206755,
+    "nll_position": 0.11843681932681012
+  },
+  "pretrained_native_stats": {
+    "nll": -0.16264431792442016,
+    "nll_duration": -0.28052165801141793,
+    "nll_position": 0.1178773412677843
+  },
+  "improvement_nll_vs_pretrained_same_stats": 0.32921417738859926
+}

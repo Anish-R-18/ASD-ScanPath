@@ -7,7 +7,7 @@ from the Phase-1 best checkpoint, keeps the same image-level split, same joint
 NLL loss (Eq. 10), AdamW, early stopping, best-checkpoint saving, logging.
 
 Subcommands: smoke | short | train   (same semantics as train_tpp.py)
-  python training/train_tpp_cond.py smoke --config training/config_phase2.yaml
+  python training/train_tpp_cond.py smoke --config configs/phase2_embedding_only.yaml
 """
 from __future__ import annotations
 import argparse, csv, json, os, sys, time
@@ -206,9 +206,15 @@ def cmd_smoke(cfg, args):
     print(f"[smoke-cond] base trainable grads nonzero={base_nonzero} finite={base_finite}  "
           f"frozen-backbone got grad={bb_grad} (expected False)")
 
+    if cfg.get("train_embedding_only"):
+        # Embedding-only Phase 2 (the reported configuration): the base must have NO trainable
+        # parameters, so "base grads non-zero" cannot apply; require the base to be fully frozen.
+        base_ok = pc["base_trainable_postfreeze"] == 0 and not base_grads
+        print(f"[smoke-cond] embedding-only: base fully frozen={base_ok} (expected True)")
+    else:
+        base_ok = base_nonzero and base_finite
     passed = (bool(torch.isfinite(out['nll'])) and abs(nll_asd0 - nll_td0) < 1e-6
-              and abs(nll_asd1 - nll_td1) > 1e-6 and emb_ok and base_nonzero
-              and base_finite and not bb_grad)
+              and abs(nll_asd1 - nll_td1) > 1e-6 and emb_ok and base_ok and not bb_grad)
     print(f"[smoke-cond] RESULT: {'PASS' if passed else 'FAIL'}")
     return 0 if passed else 1
 
@@ -323,7 +329,7 @@ def cmd_train(cfg, args):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["smoke", "short", "train"])
-    ap.add_argument("--config", default=os.path.join(_THIS_DIR, "config_phase2.yaml"))
+    ap.add_argument("--config", default=os.path.join(_ROOT, "configs", "phase2_embedding_only.yaml"))
     ap.add_argument("--epochs", type=int, default=None)
     ap.add_argument("--batch-size", type=int, default=None)
     ap.add_argument("--limit-images", type=int, default=None)

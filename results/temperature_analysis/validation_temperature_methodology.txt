@@ -1,0 +1,95 @@
+TEMPERATURE SENSITIVITY - METHODOLOGY
+
+SCOPE
+Model: training/runs/phase2_embedding_only/best_model_conditioned.pth, frozen, evaluation mode.
+sha256 35319673382378487d23c1871cab0cf05b71b1e7963e180ec024e5d80901a9a4, unchanged after the run.
+Data: Saliency4ASD validation split only (training/runs/baseline/split.json): 45 images, 405 ASD and
+492 TD scanpaths, 2,740 and 3,850 fixations. Train, validation and test sets do not overlap.
+The processed files hold all splits, so they are opened in full, and records outside validation are
+dropped immediately, before anything is computed. Gaze4ASD was not used.
+Normalization: log-duration mean -1.4365682299606377, std 0.6936114719391417, read from
+summary_full.json and not recomputed. No statistic was computed from train or test records.
+
+HOW TEMPERATURE IS IMPLEMENTED
+File: tppgaze/tppgaze/distributions/mixture_same_family.py, line 48:
+    scales = temperature * log_scales if temperature is not None else log_scales
+Then component scale = exp(scales). So, for each mixture component and axis:
+
+    sigma_tau = exp(tau * log sigma) = sigma ^ tau
+
+Means (locs) and mixture weights do not change. Log scales are clamped to [-5, 3] before this step.
+- tau = 1 is the original distribution, numerically identical to no temperature.
+- tau = 2 gives sigma squared. This is NOT the usual "higher temperature = more random".
+  It narrows a component when sigma < 1 and would widen one when sigma > 1.
+- In this model 100% of the mixture weight has sigma < 1 (median RMS sigma 0.131, normalized coordinates).
+  So tau = 2 narrows every component here.
+
+Spatial sampling: directly affected.
+Duration sampling: NOT directly affected. sample_conditioned calls get_inter_time_dist(next_context),
+which passes temperature None, and LogNormalMixture ignores its temperature argument.
+Duration can change only indirectly: tempered positions enter the history, which changes later contexts.
+
+Official code notes
+- TPPGaze.sample() has a temperature argument but ignores it and uses self.temperature (line 101).
+- tppgaze/data/config.yaml sets temperature: 2, so tau = 2 is the official configured default.
+- training/generate_cond.py passes its temperature argument through, so both settings really apply.
+- Loss and NLL use temperature None.
+
+CHECKS BEFORE AND DURING GENERATION (the run aborts if a gate fails)
+- tau = 1 scale identical to no temperature: passed, exact.
+- tau = 2 scale equals sigma squared: max relative error 3.5e-07.
+- Means and weights unchanged by temperature: passed, exact.
+- Duration distribution ignores a temperature argument: passed, exact.
+- Validation joint NLL reproduced: -0.59640 (known best validation -0.5964).
+- Same seed reruns identical: passed.
+- First fixation duration identical across temperatures for the same seed: max difference 0.
+  This proves the pairing works and that temperature cannot affect the first duration.
+
+GENERATION
+Existing sample_conditioned; 3 s window; 20 scanpaths per image per condition; batch of 20, one image and
+one condition per batch, so batch composition is identical across temperatures.
+10 seeds: torch.manual_seed(100000*(rep+1)+1000*(image_rank+1)+group_id). The same seed is used at both
+temperatures, so differences are paired. 36,000 scanpaths; 20 had no fixation inside the window.
+Longest sequence 27 steps (limit 80, never reached).
+Saved in generation_tau1/ and generation_tau2/, one file per seed, unclipped.
+
+COORDINATES
+Primary: pixel coordinates clipped to the image, as the official generate_predictions does. Clipping is
+applied only for measurement and never enters the sampler's history.
+Sensitivity: unclipped, as in our earlier analyses. Off-image fixations are also reported.
+Chosen before seeing results.
+
+METRICS
+training/metrics.py and metric_row in eval_external_v2.py. Saccade amplitude and dispersion divided by the
+image diagonal. Revisit radius 5% of the diagonal. Rate = fixations / summed fixation time.
+Direction: 12-bin direction distribution, horizontal fraction, and mean resultant length (concentration).
+Distances to real (same group, same image): Wasserstein-1 for durations, counts, amplitudes, dispersion,
+revisit rates and positions (mean of x and y, /diagonal); total variation for direction.
+MultiMatch: own implementation, no simplification, at most 30 pairs per image and comparison. Clipped only.
+Pair selection does not depend on temperature.
+
+STATISTICS (exploratory)
+Unit: image (n = 45), one value per image pooled over 10 seeds, paired across temperatures.
+Percentile bootstrap and sign-flip permutation, 10,000 each. Holm within each family and analysis.
+Seed variation: the same comparison per seed (mean, SD, range, number of seeds favouring each side).
+Sampling-noise reference: split-half within one temperature (seeds 1-5 vs 6-10), and SD of seed means.
+Group differences: per-image ASD - TD. Saliency4ASD records have no participant IDs across images, so no
+participant-level analysis is possible here.
+Absolute-gap intervals are bootstrap intervals of a difference of absolute values, and can sit off-centre.
+
+POST HOC, ADDED AFTER SEEING RESULTS
+- Grand-mean absolute bias comparison.
+- Window-matched metrics: generated scanpaths truncated to fixations with onset before the mean real
+  fixation time for that group and image. This removes the excess fixations, but it uses real timing,
+  so it is a diagnostic, not something the model does.
+- Tempered position NLL on real validation fixations was planned before generation and is a diagnostic only.
+
+FILES
+generation_tau1/, generation_tau2/    generated scanpaths per seed
+temperature_comparison.csv            all per-metric tables, all analyses
+behavioural_comparison.json           real means, per-seed means, group differences, distances, MultiMatch, diagnostics
+statistical_comparison.json           full statistical results
+figures/                              1 metrics, 2 mechanism, 3 group differences, 4 MultiMatch, 5 seeds
+raw/                                  per-image summaries, MultiMatch per image, window-matched values, checks
+run_log.txt                           run log
+Code: training/temperature_sensitivity.py

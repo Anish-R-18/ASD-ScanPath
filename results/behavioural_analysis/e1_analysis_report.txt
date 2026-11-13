@@ -1,0 +1,103 @@
+checks: {"max_abs_z": 2.3901373887381014, "checkpoints_unchanged": true} off-image: {"P2_ASD": 0.004239785227867994, "P2_TD": 0.002501172424574019, "P1_s0": 0.004321331510271602, "P1_s1": 0.004372005762337097}
+
+=== gaze4asd contrasts (ASD-TD); conditioning effect = Phase2 contrast - Phase1 seed-null contrast
+ dur_mean               real=-0.0072[-0.0178, 0.0037] P2=-0.0213 P1null=+0.0018 eff=-0.0230[-0.0248, -0.0212] dz=-4.49 p=0.0001 holm=0.0009  seeds+0/10 share=2.943420779904361 gap 0.0090->0.0140 gain=-0.0051[-0.0233, 0.0177] r=0.09/0.10
+ n_fix                  real=-0.1590[-0.3418, 0.0096] P2=+0.5930 P1null=-0.0694 eff=+0.6624[0.6168, 0.7071] dz=+5.13 p=0.0001 holm=0.0009  seeds+10/10 share=-3.7304442929106467 gap 0.0896->0.7520 gain=-0.6624[-0.7049, -0.4558] r=0.09/0.12
+ fix_rate_per_s         real=+0.0527[-0.0327, 0.1356] P2=+0.1899 P1null=-0.0185 eff=+0.2085[0.1945, 0.2219] dz=+5.36 p=0.0001 holm=0.0009  seeds+10/10 share=3.603497265677829 gap 0.0712->0.1372 gain=-0.0660[-0.2086, 0.1024] r=0.23/0.26
+ total_dur              real=-0.0822[-0.1057, -0.0582] P2=+0.0210 P1null=-0.0051 eff=+0.0261[0.02, 0.032] dz=+1.53 p=0.0001 holm=0.0009  seeds+10/10 share=-0.2556849584756538 gap 0.0771->0.1032 gain=-0.0261[-0.0321, -0.02] r=0.17/0.08
+*sacc_amp_norm_mean     real=+0.0151[0.0097, 0.0208] P2=+0.0096 P1null=+0.0018 eff=+0.0078[0.007, 0.0087] dz=+3.11 p=0.0001 holm=0.0009 holmP=0.0006 seeds+10/10 share=0.637061375829098 gap 0.0133->0.0055 gain=+0.0078[0.0067, 0.0087] r=0.03/0.02
+ sacc_horizontal_frac   real=+0.0010[-0.0187, 0.022] P2=+0.0004 P1null=-0.0005 eff=+0.0009[-0.005, 0.0066] dz=+0.05 p=0.7711 holm=0.7711  seeds+6/10 share=0.4171474750401527 gap 0.0015->0.0006 gain=+0.0009[-0.0049, 0.0062] r=0.36/0.20
+*dispersion             real=+0.0169[0.0115, 0.0224] P2=+0.0117 P1null=+0.0009 eff=+0.0107[0.0098, 0.0116] dz=+4.28 p=0.0001 holm=0.0009 holmP=0.0006 seeds+10/10 share=0.6901972354611116 gap 0.0160->0.0052 gain=+0.0107[0.0093, 0.0116] r=-0.21/-0.05
+*revisit_rate           real=-0.0805[-0.0965, -0.0653] P2=-0.0261 P1null=-0.0034 eff=-0.0227[-0.0275, -0.0181] dz=-1.70 p=0.0001 holm=0.0009 holmP=0.0006 seeds+0/10 share=0.32437469114645406 gap 0.0771->0.0544 gain=+0.0227[0.0181, 0.0275] r=-0.17/0.11
+ sacc_dir_resultant     real=+0.0270[0.0124, 0.042] P2=-0.0052 P1null=+0.0033 eff=-0.0086[-0.0123, -0.0049] dz=-0.82 p=0.0002 holm=0.0009  seeds+1/10 share=-0.19327429112607364 gap 0.0237->0.0322 gain=-0.0086[-0.0123, -0.0048] r=0.27/0.31
+--- gaze4asd match to real (MAE; + favours Phase 2)
+  ASD dur_mean               real=0.3388 P1=0.3238 P2=0.3146 MAE 0.0201->0.0267 gain=-0.0065[-0.0086, -0.0041] dz=-1.01 (-32.5%) holm=0.0018 seeds 2/10
+  TD  dur_mean               real=0.3460 P1=0.3221 P2=0.3358 MAE 0.0273->0.0196 gain=+0.0077[0.0035, 0.0115] dz=+0.67 (+28.2%) holm=0.0121 seeds 10/10
+  ASD n_fix                  real=6.2494 P1=9.8817 P2=10.1899 MAE 3.6323->3.9405 gain=-0.3082[-0.3328, -0.2847] dz=-4.53 (-8.5%) holm=0.0018 seeds 0/10
+  TD  n_fix                  real=6.4084 P1=9.9511 P2=9.5969 MAE 3.5427->3.1885 gain=+0.3542[0.3185, 0.3899] dz=+3.51 (+10.0%) holm=0.0018 seeds 10/10
+  ASD fix_rate_per_s         real=3.1762 P1=3.5388 P2=3.6409 MAE 0.3627->0.4647 gain=-0.1021[-0.1088, -0.0954] dz=-5.35 (-28.1%) holm=0.0018 seeds 0/10
+  TD  fix_rate_per_s         real=3.1235 P1=3.5574 P2=3.4510 MAE 0.4342->0.3358 gain=+0.0983[0.0776, 0.1148] dz=+1.85 (+22.6%) holm=0.0018 seeds 10/10
+  ASD total_dur              real=1.9865 P1=2.7809 P2=2.7871 MAE 0.7944->0.8006 gain=-0.0062[-0.0105, -0.002] dz=-0.51 (-0.8%) holm=0.0846 seeds 2/10
+  TD  total_dur              real=2.0687 P1=2.7860 P2=2.7661 MAE 0.7173->0.6974 gain=+0.0199[0.0151, 0.0249] dz=+1.45 (+2.8%) holm=0.0018 seeds 10/10
+  ASD sacc_amp_norm_mean     real=0.1392 P1=0.1281 P2=0.1265 MAE 0.0174->0.0180 gain=-0.0006[-0.0012, 0.0001] dz=-0.30 (-3.2%) holm=0.7909 seeds 3/10
+  TD  sacc_amp_norm_mean     real=0.1241 P1=0.1263 P2=0.1169 MAE 0.0123->0.0134 gain=-0.0011[-0.0042, 0.002] dz=-0.13 (-9.1%) holm=1.0000 seeds 1/10
+  ASD sacc_horizontal_frac   real=0.5639 P1=0.5156 P2=0.5212 MAE 0.0712->0.0715 gain=-0.0003[-0.0035, 0.0029] dz=-0.03 (-0.4%) holm=1.0000 seeds 6/10
+  TD  sacc_horizontal_frac   real=0.5629 P1=0.5160 P2=0.5208 MAE 0.0740->0.0737 gain=+0.0003[-0.0056, 0.0062] dz=+0.02 (+0.4%) holm=1.0000 seeds 6/10
+  ASD dispersion             real=0.1251 P1=0.1127 P2=0.1130 MAE 0.0159->0.0158 gain=+0.0001[-0.0004, 0.0006] dz=+0.07 (+0.7%) holm=1.0000 seeds 6/10
+  TD  dispersion             real=0.1082 P1=0.1118 P2=0.1014 MAE 0.0139->0.0148 gain=-0.0009[-0.0045, 0.0026] dz=-0.09 (-6.5%) holm=1.0000 seeds 4/10
+  ASD revisit_rate           real=0.2095 P1=0.2454 P2=0.2553 MAE 0.0541->0.0605 gain=-0.0064[-0.0097, -0.0029] dz=-0.67 (-11.8%) holm=0.0140 seeds 0/10
+  TD  revisit_rate           real=0.2900 P1=0.2489 P2=0.2814 MAE 0.0586->0.0510 gain=+0.0076[-0.0033, 0.018] dz=+0.25 (+13.0%) holm=1.0000 seeds 7/10
+  ASD sacc_dir_resultant     real=0.3234 P1=0.2289 P2=0.2259 MAE 0.0945->0.0975 gain=-0.0030[-0.005, -0.0008] dz=-0.50 (-3.2%) holm=0.0912 seeds 2/10
+  TD  sacc_dir_resultant     real=0.2964 P1=0.2255 P2=0.2311 MAE 0.0709->0.0653 gain=+0.0056[0.0031, 0.0082] dz=+0.75 (+7.9%) holm=0.0036 seeds 8/10
+
+=== saliency4asd_test contrasts (ASD-TD); conditioning effect = Phase2 contrast - Phase1 seed-null contrast
+ dur_mean               real=-0.0413[-0.0603, -0.0228] P2=-0.0218 P1null=-0.0013 eff=-0.0205[-0.0218, -0.0193] dz=-4.66 p=0.0001 holm=0.0009  seeds+0/10 share=0.5294262446439102 gap 0.0399->0.0194 gain=+0.0205[0.0189, 0.0218] r=-0.09/-0.08
+ n_fix                  real=-0.9040[-1.2944, -0.5104] P2=+0.7188 P1null=+0.0409 eff=+0.6779[0.6447, 0.7109] dz=+5.84 p=0.0001 holm=0.0009  seeds+10/10 share=-0.7951206328270553 gap 0.9450->1.6229 gain=-0.6779[-0.7108, -0.6444] r=-0.02/-0.02
+ fix_rate_per_s         real=+0.4735[0.2436, 0.7029] P2=+0.2252 P1null=+0.0146 eff=+0.2106[0.1979, 0.2231] dz=+4.84 p=0.0001 holm=0.0009  seeds+10/10 share=0.47570856340443063 gap 0.4588->0.2482 gain=+0.2106[0.1948, 0.2233] r=-0.22/-0.25
+ total_dur              real=-0.4296[-0.5533, -0.3094] P2=+0.0222 P1null=-0.0015 eff=+0.0237[0.0189, 0.0288] dz=+1.37 p=0.0001 holm=0.0009  seeds+10/10 share=-0.05176061745151026 gap 0.4281->0.4518 gain=-0.0237[-0.0286, -0.0188] r=-0.00/-0.06
+*sacc_amp_norm_mean     real=+0.0111[0.0039, 0.0184] P2=+0.0060 P1null=-0.0001 eff=+0.0060[0.0053, 0.0068] dz=+2.38 p=0.0001 holm=0.0009 holmP=0.0006 seeds+10/10 share=0.5383860608790281 gap 0.0111->0.0051 gain=+0.0060[0.0012, 0.0067] r=-0.28/-0.20
+ sacc_horizontal_frac   real=-0.0528[-0.088, -0.0182] P2=-0.0087 P1null=+0.0007 eff=-0.0094[-0.0135, -0.0053] dz=-0.65 p=0.0003 holm=0.0009  seeds+0/10 share=0.16490559286278444 gap 0.0535->0.0441 gain=+0.0094[0.0052, 0.0135] r=0.11/-0.20
+*dispersion             real=+0.0058[-0.0001, 0.0118] P2=+0.0103 P1null=+0.0005 eff=+0.0098[0.0092, 0.0105] dz=+4.35 p=0.0001 holm=0.0009 holmP=0.0006 seeds+10/10 share=1.7811537365695596 gap 0.0053->0.0045 gain=+0.0008[-0.0098, 0.0098] r=-0.04/0.01
+*revisit_rate           real=-0.0638[-0.0874, -0.0395] P2=-0.0144 P1null=-0.0003 eff=-0.0141[-0.018, -0.0102] dz=-1.05 p=0.0001 holm=0.0009 holmP=0.0006 seeds+0/10 share=0.22633561571950742 gap 0.0635->0.0494 gain=+0.0141[0.0102, 0.0181] r=0.14/0.08
+ sacc_dir_resultant     real=+0.0295[-0.0004, 0.059] P2=-0.0116 P1null=-0.0011 eff=-0.0105[-0.0129, -0.0081] dz=-1.26 p=0.0001 holm=0.0009  seeds+0/10 share=-0.3943794879697364 gap 0.0307->0.0411 gain=-0.0105[-0.0129, -0.0071] r=-0.44/-0.25
+--- saliency4asd_test match to real (MAE; + favours Phase 2)
+  ASD dur_mean               real=0.3053 P1=0.3042 P2=0.2955 MAE 0.0358->0.0372 gain=-0.0013[-0.0038, 0.0013] dz=-0.15 (-3.7%) holm=1.0000 seeds 4/10
+  TD  dur_mean               real=0.3466 P1=0.3056 P2=0.3174 MAE 0.0507->0.0456 gain=+0.0051[0.0018, 0.0081] dz=+0.47 (+10.0%) holm=0.0585 seeds 10/10
+  ASD n_fix                  real=6.7389 P1=10.4531 P2=10.8172 MAE 3.7142->4.0783 gain=-0.3641[-0.3826, -0.3453] dz=-5.66 (-9.8%) holm=0.0018 seeds 0/10
+  TD  n_fix                  real=7.6429 P1=10.4121 P2=10.0984 MAE 2.7692->2.4555 gain=+0.3138[0.288, 0.3393] dz=+3.50 (+11.3%) holm=0.0018 seeds 10/10
+  ASD fix_rate_per_s         real=3.9317 P1=3.7146 P2=3.8291 MAE 0.4890->0.4784 gain=+0.0107[-0.023, 0.0441] dz=+0.09 (+2.2%) holm=1.0000 seeds 8/10
+  TD  fix_rate_per_s         real=3.4583 P1=3.7000 P2=3.6038 MAE 0.4689->0.4357 gain=+0.0332[0.0057, 0.0595] dz=+0.35 (+7.1%) holm=0.2695 seeds 10/10
+  ASD total_dur              real=1.9804 P1=2.8022 P2=2.8132 MAE 0.8218->0.8328 gain=-0.0110[-0.0144, -0.0078] dz=-0.96 (-1.3%) holm=0.0018 seeds 0/10
+  TD  total_dur              real=2.4100 P1=2.8037 P2=2.7910 MAE 0.4009->0.3896 gain=+0.0114[0.0076, 0.0154] dz=+0.85 (+2.8%) holm=0.0018 seeds 10/10
+  ASD sacc_amp_norm_mean     real=0.1485 P1=0.1427 P2=0.1414 MAE 0.0196->0.0197 gain=-0.0000[-0.0008, 0.0007] dz=-0.01 (-0.1%) holm=1.0000 seeds 5/10
+  TD  sacc_amp_norm_mean     real=0.1375 P1=0.1428 P2=0.1355 MAE 0.0170->0.0154 gain=+0.0017[-0.0004, 0.0037] dz=+0.23 (+9.8%) holm=1.0000 seeds 8/10
+  ASD sacc_horizontal_frac   real=0.4986 P1=0.5404 P2=0.5428 MAE 0.0924->0.0930 gain=-0.0007[-0.0035, 0.0023] dz=-0.07 (-0.7%) holm=1.0000 seeds 5/10
+  TD  sacc_horizontal_frac   real=0.5514 P1=0.5397 P2=0.5515 MAE 0.0780->0.0783 gain=-0.0004[-0.0054, 0.0044] dz=-0.02 (-0.5%) holm=1.0000 seeds 5/10
+  ASD dispersion             real=0.1213 P1=0.1321 P2=0.1327 MAE 0.0175->0.0179 gain=-0.0004[-0.001, 0.0002] dz=-0.20 (-2.4%) holm=1.0000 seeds 6/10
+  TD  dispersion             real=0.1155 P1=0.1316 P2=0.1224 MAE 0.0193->0.0156 gain=+0.0037[0.0013, 0.006] dz=+0.45 (+19.0%) holm=0.0600 seeds 10/10
+  ASD revisit_rate           real=0.1666 P1=0.1990 P2=0.2087 MAE 0.0589->0.0627 gain=-0.0038[-0.007, -0.0005] dz=-0.34 (-6.4%) holm=0.2695 seeds 0/10
+  TD  revisit_rate           real=0.2305 P1=0.1994 P2=0.2231 MAE 0.0635->0.0595 gain=+0.0040[-0.0035, 0.0114] dz=+0.16 (+6.4%) holm=1.0000 seeds 8/10
+  ASD sacc_dir_resultant     real=0.3003 P1=0.2204 P2=0.2138 MAE 0.0848->0.0903 gain=-0.0054[-0.0072, -0.0035] dz=-0.85 (-6.4%) holm=0.0018 seeds 0/10
+  TD  sacc_dir_resultant     real=0.2708 P1=0.2216 P2=0.2254 MAE 0.0651->0.0642 gain=+0.0009[-0.0016, 0.0033] dz=+0.11 (+1.4%) holm=1.0000 seeds 7/10
+
+--- MultiMatch own-other (Gaze4ASD)
+  ASD shape     P2 -0.0024 P1null -0.0008 effect -0.0016[-0.0021, -0.0012] dz=-1.32 holm=0.0010
+  ASD length    P2 -0.0030 P1null -0.0009 effect -0.0021[-0.0029, -0.0014] dz=-0.98 holm=0.0010
+  ASD direction P2 +0.0014 P1null +0.0004 effect +0.0011[-0.0007, 0.003] dz=+0.21 holm=0.4112
+  ASD position  P2 -0.0068 P1null -0.0006 effect -0.0062[-0.0071, -0.0054] dz=-2.48 holm=0.0010
+  ASD duration  P2 +0.0027 P1null -0.0030 effect +0.0056[0.0039, 0.0074] dz=+1.14 holm=0.0010
+  TD  shape     P2 +0.0020 P1null +0.0000 effect +0.0019[0.0016, 0.0023] dz=+1.92 holm=0.0010
+  TD  length    P2 +0.0032 P1null +0.0005 effect +0.0026[0.0019, 0.0034] dz=+1.26 holm=0.0010
+  TD  direction P2 -0.0021 P1null -0.0007 effect -0.0014[-0.0034, 0.0007] dz=-0.24 holm=0.4112
+  TD  position  P2 +0.0080 P1null +0.0007 effect +0.0074[0.0062, 0.0085] dz=+2.29 holm=0.0010
+  TD  duration  P2 -0.0056 P1null -0.0006 effect -0.0050[-0.0066, -0.0034] dz=-1.10 holm=0.0010
+
+--- tau=2 reference (Gaze4ASD, clipped; Phase 1 = one independent-seed set)
+  dur_mean               real=-0.0072 P2 contrast tau2=-0.0182[-0.0234, -0.0132] share=2.5274215067693553 | tau1=-0.0213 share=2.943420779904361
+  n_fix                  real=-0.1590 P2 contrast tau2=+0.6066[0.476, 0.7392] share=-3.8158102873359345 | tau1=+0.5930 share=-3.7304442929106467
+  fix_rate_per_s         real=+0.0527 P2 contrast tau2=+0.1882[0.1458, 0.2319] share=3.5713537533987822 | tau1=+0.1899 share=3.603497265677829
+  total_dur              real=-0.0822 P2 contrast tau2=+0.0250[0.0148, 0.035] share=-0.3045054031490112 | tau1=+0.0210 share=-0.2556849584756538
+  sacc_amp_norm_mean     real=+0.0151 P2 contrast tau2=+0.0049[0.0033, 0.0065] share=0.3258973693529354 | tau1=+0.0096 share=0.637061375829098
+  sacc_horizontal_frac   real=+0.0010 P2 contrast tau2=-0.0002[-0.0114, 0.012] share=-0.14819458934382468 | tau1=+0.0004 share=0.4171474750401527
+  dispersion             real=+0.0169 P2 contrast tau2=+0.0078[0.0065, 0.0091] share=0.4613134478898412 | tau1=+0.0117 share=0.6901972354611116
+  revisit_rate           real=-0.0805 P2 contrast tau2=-0.0124[-0.021, -0.004] share=0.15357669448029396 | tau1=-0.0261 share=0.32437469114645406
+  sacc_dir_resultant     real=+0.0270 P2 contrast tau2=-0.0091[-0.0133, -0.0047] share=-0.33759132310477313 | tau1=-0.0052 share=-0.19327429112607364
+  ASD dur_mean               tau2 MAE 0.0193->0.0252 gain=-0.0059[-0.0106, -0.0014] (-30.7%) holm=0.1800 | tau1 gain=-0.0065 (-32.5%) holm=0.0018
+  TD  dur_mean               tau2 MAE 0.0256->0.0210 gain=+0.0046[-0.0009, 0.0102] (+18.1%) holm=0.8266 | tau1 gain=+0.0077 (+28.2%) holm=0.0121
+  ASD n_fix                  tau2 MAE 3.6283->3.9672 gain=-0.3389[-0.4531, -0.223] (-9.3%) holm=0.0042 | tau1 gain=-0.3082 (-8.5%) holm=0.0018
+  TD  n_fix                  tau2 MAE 3.4694->3.2017 gain=+0.2677[0.1076, 0.4247] (+7.7%) holm=0.0396 | tau1 gain=+0.3542 (+10.0%) holm=0.0018
+  ASD fix_rate_per_s         tau2 MAE 0.3650->0.4781 gain=-0.1131[-0.1544, -0.0702] (-31.0%) holm=0.0018 | tau1 gain=-0.1021 (-28.1%) holm=0.0018
+  TD  fix_rate_per_s         tau2 MAE 0.4194->0.3532 gain=+0.0662[0.0131, 0.1182] (+15.8%) holm=0.1800 | tau1 gain=+0.0983 (+22.6%) holm=0.0018
+  ASD total_dur              tau2 MAE 0.7921->0.7986 gain=-0.0065[-0.0148, 0.002] (-0.8%) holm=0.8525 | tau1 gain=-0.0062 (-0.8%) holm=0.0846
+  TD  total_dur              tau2 MAE 0.7100->0.6915 gain=+0.0185[0.008, 0.0284] (+2.6%) holm=0.0260 | tau1 gain=+0.0199 (+2.8%) holm=0.0018
+  ASD sacc_amp_norm_mean     tau2 MAE 0.0370->0.0377 gain=-0.0008[-0.0026, 0.001] (-2.1%) holm=1.0000 | tau1 gain=-0.0006 (-3.2%) holm=0.7909
+  TD  sacc_amp_norm_mean     tau2 MAE 0.0220->0.0276 gain=-0.0056[-0.0073, -0.0039] (-25.5%) holm=0.0018 | tau1 gain=-0.0011 (-9.1%) holm=1.0000
+  ASD sacc_horizontal_frac   tau2 MAE 0.1092->0.1105 gain=-0.0013[-0.0094, 0.0073] (-1.2%) holm=1.0000 | tau1 gain=-0.0003 (-0.4%) holm=1.0000
+  TD  sacc_horizontal_frac   tau2 MAE 0.1119->0.1174 gain=-0.0055[-0.0172, 0.006] (-4.9%) holm=1.0000 | tau1 gain=+0.0003 (+0.4%) holm=1.0000
+  ASD dispersion             tau2 MAE 0.0321->0.0315 gain=+0.0006[-0.001, 0.002] (+1.8%) holm=1.0000 | tau1 gain=+0.0001 (+0.7%) holm=1.0000
+  TD  dispersion             tau2 MAE 0.0179->0.0237 gain=-0.0058[-0.0076, -0.004] (-32.5%) holm=0.0018 | tau1 gain=-0.0009 (-6.5%) holm=1.0000
+  ASD revisit_rate           tau2 MAE 0.1576->0.1681 gain=-0.0105[-0.0168, -0.004] (-6.7%) holm=0.0396 | tau1 gain=-0.0064 (-11.8%) holm=0.0140
+  TD  revisit_rate           tau2 MAE 0.0850->0.1032 gain=-0.0182[-0.0265, -0.0097] (-21.4%) holm=0.0030 | tau1 gain=+0.0076 (+13.0%) holm=1.0000
+  ASD sacc_dir_resultant     tau2 MAE 0.0855->0.0923 gain=-0.0069[-0.0123, -0.0016] (-8.0%) holm=0.1800 | tau1 gain=-0.0030 (-3.2%) holm=0.0912
+  TD  sacc_dir_resultant     tau2 MAE 0.0582->0.0562 gain=+0.0020[-0.0034, 0.0071] (+3.5%) holm=1.0000 | tau1 gain=+0.0056 (+7.9%) holm=0.0036
+ANALYZE_DONE

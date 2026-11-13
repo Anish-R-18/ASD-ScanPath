@@ -1,0 +1,2 @@
+# Keep the upstream manifest byte-stable on every platform.
+tests/data/*.sha256 text eol=lf

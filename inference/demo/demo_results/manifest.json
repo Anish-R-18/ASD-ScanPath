@@ -1,0 +1,160 @@
+{
+ "note": "Model-generated research sample. Not a diagnostic or clinical tool.",
+ "selection_rule": "(fixed before any demo output was generated, from saved E1 results only):\n  two Saliency4ASD held-out test images drawn at random (numpy default_rng(2026)); the test image\n  whose generated ASD-TD dispersion contrast is closest to the real contrast (best agreement), and\n  the one where it is furthest (worst agreement); and a synthetic image drawn by this script.",
+ "selection_summary": {
+  "generated_contrast_range": [
+   0.0017,
+   0.0196
+  ],
+  "real_contrast_range": [
+   -0.0473,
+   0.0576
+  ],
+  "images_with_positive_generated_contrast": 45,
+  "images": 45
+ },
+ "examples": [
+  {
+   "name": "s4a_random_60",
+   "image_id": 60,
+   "role": "random held-out test image (typical case)",
+   "real_asd_minus_td_dispersion": 0.0017,
+   "e1_generated_asd_minus_td_dispersion": 0.0113,
+   "image": "TrainingData/TrainingData/Images/60.png",
+   "dataset": "Saliency4ASD (held-out test split; not used for training or model selection)"
+  },
+  {
+   "name": "s4a_random_246",
+   "image_id": 246,
+   "role": "random held-out test image (typical case)",
+   "real_asd_minus_td_dispersion": -0.0291,
+   "e1_generated_asd_minus_td_dispersion": 0.0099,
+   "image": "TrainingData/TrainingData/Images/246.png",
+   "dataset": "Saliency4ASD (held-out test split; not used for training or model selection)"
+  },
+  {
+   "name": "s4a_best_102",
+   "image_id": 102,
+   "role": "best agreement of generated and real ASD-TD dispersion contrast",
+   "real_asd_minus_td_dispersion": 0.0133,
+   "e1_generated_asd_minus_td_dispersion": 0.014,
+   "image": "TrainingData/TrainingData/Images/102.png",
+   "dataset": "Saliency4ASD (held-out test split; not used for training or model selection)"
+  },
+  {
+   "name": "s4a_worst_116",
+   "image_id": 116,
+   "role": "worst agreement of generated and real ASD-TD dispersion contrast (limitation)",
+   "real_asd_minus_td_dispersion": -0.0473,
+   "e1_generated_asd_minus_td_dispersion": 0.0151,
+   "image": "TrainingData/TrainingData/Images/116.png",
+   "dataset": "Saliency4ASD (held-out test split; not used for training or model selection)"
+  },
+  {
+   "name": "synthetic_scene",
+   "image_id": null,
+   "image": "demo/inputs/synthetic_scene.png",
+   "role": "self-made synthetic image, outside the training distribution (limitation)",
+   "dataset": "none: drawn by demo/run_demo.py, no third-party content"
+  }
+ ],
+ "checkpoints": {
+  "phase1": {
+   "path": "training/runs/baseline/best_model.pth",
+   "sha256": "b613413027e775b98e449cbdbc9afa0253d6bd40f0cb2502230ed5bf1000b0bb"
+  },
+  "phase2": {
+   "path": "training/runs/phase2_embedding_only/best_model_conditioned.pth",
+   "sha256": "35319673382378487d23c1871cab0cf05b71b1e7963e180ec024e5d80901a9a4"
+  }
+ },
+ "settings": {
+  "seed": 0,
+  "seeds_grid": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "temperatures": [
+   1.0,
+   2.0
+  ],
+  "t_end_s": 3.0,
+  "n_sim": 1,
+  "device": "cpu"
+ },
+ "environment": {
+  "python": "3.12.4",
+  "torch": "2.3.1+cpu",
+  "numpy": "1.26.4",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "validation": {
+  "s4a_random_60": {
+   "problems": [],
+   "scanpaths": 13,
+   "fixations": 136,
+   "clipped": 0,
+   "duration_min_s": 0.0582,
+   "duration_median_s": 0.20805,
+   "duration_max_s": 1.1247,
+   "fixations_per_scanpath": [
+    6,
+    14
+   ]
+  },
+  "s4a_random_246": {
+   "problems": [],
+   "scanpaths": 3,
+   "fixations": 35,
+   "clipped": 0,
+   "duration_min_s": 0.0595,
+   "duration_median_s": 0.1204,
+   "duration_max_s": 0.9124,
+   "fixations_per_scanpath": [
+    11,
+    12
+   ]
+  },
+  "s4a_best_102": {
+   "problems": [],
+   "scanpaths": 3,
+   "fixations": 40,
+   "clipped": 0,
+   "duration_min_s": 0.0572,
+   "duration_median_s": 0.13715,
+   "duration_max_s": 0.8346,
+   "fixations_per_scanpath": [
+    13,
+    14
+   ]
+  },
+  "s4a_worst_116": {
+   "problems": [],
+   "scanpaths": 3,
+   "fixations": 35,
+   "clipped": 0,
+   "duration_min_s": 0.0575,
+   "duration_median_s": 0.1338,
+   "duration_max_s": 0.8531,
+   "fixations_per_scanpath": [
+    11,
+    12
+   ]
+  },
+  "synthetic_scene": {
+   "problems": [],
+   "scanpaths": 13,
+   "fixations": 137,
+   "clipped": 0,
+   "duration_min_s": 0.0573,
+   "duration_median_s": 0.192,
+   "duration_max_s": 1.2023,
+   "fixations_per_scanpath": [
+    6,
+    13
+   ]
+  }
+ }
+}
