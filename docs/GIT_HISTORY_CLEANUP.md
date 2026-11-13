@@ -1,15 +1,19 @@
-# Git History Cleanup (local rewrite, 2026-11-13)
+# Git History Cleanup (2026-11-13)
 
-**Status.**
-- **Done locally:** the history of `main` was rewritten, in two passes:
+**Status: published.** The rewritten history is live on GitHub.
+
+- **Rewrite.** The history of `main` was rewritten locally in two passes:
   - **Pass 1:** restricted dataset material and the paper PDF.
   - **Pass 2:** the upstream TPP-Gaze sample photo `tppgaze/data/1009.jpg`.
-- **Not done:** the rewritten history has **not** been pushed. The public GitHub repository still holds the old history until the owner approves a force-push (Section 7).
-- **Unchanged:** the staged reorganisation for the handover was not committed and remains staged on top of the rewritten history.
-  - **Unchanged by the rewrite:** each rewrite left the index tree untouched.
-  - **Changed afterwards, on purpose:** two edits were made after the rewrites:
-    - this document was added;
-    - `1009.jpg` was taken out of the staged tree.
+- **Commit.** The handover reorganisation was committed on top of the rewritten history as `c2345136e1551d16976bfe67f53ed86448ee2cea` ("Reorganise repository for research handover"; parent `3707633`).
+- **Publication.** On 2026-11-13 it was published to https://github.com/Anish-R-18/ASD-ScanPath with a guarded force-push (Section 7).
+  - **Guard.** The push used `--force-with-lease` against `bca2af03…`, which a fresh fetch confirmed was still the remote `main`.
+  - **Result.** `+ bca2af0...c234513 main -> main (forced update)`.
+- **Published branch.** The previous restricted history is no longer part of the active published branch.
+  - **Remote refs.** GitHub's `main` and `HEAD` point to `c234513`, and there are no other branches, tags or pull-request refs.
+  - **Verified on a fresh clone.** A fresh clone from GitHub has 8 commits and 278 files. None of the removed paths or blobs appears in any commit.
+- **Still pending: GitHub cache removal.** GitHub still serves the old commits when they are requested directly by their SHA (Section 5).
+- **Not recallable.** Copies downloaded or cloned before the force-push cannot be recalled automatically, so collaborators must make a fresh clone (Section 6).
 
 ## 1. Why the history had to be rewritten
 
@@ -128,28 +132,35 @@ The full test, demo, consistency and link checks after the rewrite are recorded 
 - **Existing copies.** Rewriting history does not remove copies that already exist elsewhere. The old history, with the restricted files, has been public since 2026-10-04, so it may exist in:
   - clones and downloaded ZIP archives on other machines;
   - forks of the GitHub repository (forks keep their own history);
-  - GitHub's caches. Old commits stay viewable by their SHA until GitHub garbage-collects them, and pull-request refs are not removed by a force-push. GitHub Support can be asked to purge cached views and unreachable objects after the force-push.
+  - GitHub's caches. Old commits stay viewable by their SHA until GitHub garbage-collects them; there were no forks or pull requests at publication.
   - third-party archives and mirrors, for example Software Heritage, search-engine caches and package or code-search indexes.
 
-**Local copies of the old history.** The old history still exists locally, deliberately:
-- `refs/remotes/origin/main` still points to `bca2af0`, because it mirrors the remote, which is unchanged;
-- the reflog and the old objects remain in `.git`;
-- the full backup is outside the repository.
+**GitHub cache removal: still pending.**
+- **Checked after publication.** The old commit page and the old raw file addresses still respond when requested directly by SHA, for example `…/commit/bca2af03a91209a305eafa1c3dc2197fe42a41c2`.
+- **What is needed.** Only GitHub Support can purge these cached views and garbage-collect the unreachable objects.
+- **The request** (at https://support.github.com/contact) should name:
+  - the repository, `Anish-R-18/ASD-ScanPath`;
+  - the old commits: `d48d165`, `d28e69b`, `3de7383`, `be5989e`, `a60926f`, `654d11a`, `bca2af03a91209a305eafa1c3dc2197fe42a41c2`;
+  - the reason: the removed files include dataset stimulus photographs of children.
+- **Afterwards,** check that the old commit URL returns "not found".
+
+**Local copies of the old history.** These are kept deliberately until GitHub Support confirms the cleanup:
+- the reflog and the old objects in the original working copy's `.git`;
+- the private backups outside the repository.
 
 None of this is pushed by `git push origin main`.
 
-**After an approved force-push**, the local copy can be purged:
+**When GitHub Support confirms the cleanup**, the local copy can be purged:
 ```bash
-git fetch origin                                  # origin/main now points to the rewritten history
 git reflog expire --expire=now --all
 git gc --prune=now
 ```
 
 **The backup keeps everything.** It contains the restricted material, so keep it private and local.
 
-## 6. Instructions for collaborators (after the force-push)
+## 6. Instructions for collaborators
 
-Anyone who cloned or downloaded the repository before the force-push should:
+The force-push was made on 2026-11-13. Anyone who cloned or downloaded the repository before then must make a fresh clone. Existing downloaded copies and old clones cannot be updated or recalled automatically. They should:
 
 1. **Make a fresh clone instead of pulling.** Pulling or merging would bring the old history back:
    ```bash
@@ -165,24 +176,29 @@ Anyone who cloned or downloaded the repository before the force-push should:
 3. **Delete the old clone and any downloaded archives** of the old repository.
 4. **Never push from an old clone.** A push from an old clone would re-publish the removed material.
 
-## 7. Publishing the rewritten history (only after the owner approves)
+## 7. Publication (done on 2026-11-13, with the owner's approval)
 
 ```bash
-# 1. commit the staged handover reorganisation on top of the rewritten history
-git commit -m "Reorganise repository for research handover"
-
-# 2. confirm that the remote has not changed since the audit
+git commit -m "Reorganise repository for research handover"   # -> c2345136e1551d16976bfe67f53ed86448ee2cea
 git fetch origin
-git rev-parse origin/main        # must print bca2af03a91209a305eafa1c3dc2197fe42a41c2
-
-# 3. replace the remote history; this fails if someone pushed in the meantime
+git rev-parse origin/main        # printed bca2af03a91209a305eafa1c3dc2197fe42a41c2 (remote unchanged)
 git push --force-with-lease=main:bca2af03a91209a305eafa1c3dc2197fe42a41c2 origin main
+#   + bca2af0...c234513 main -> main (forced update)
 ```
 
-**Branch protection.** If branch protection on GitHub blocks force-pushes, allow it temporarily in *Settings → Branches* and re-enable it afterwards.
+**Verification after the push:**
 
-**After pushing:**
-1. Purge the local old objects (Section 5).
-2. Check the forks on GitHub.
-3. Ask GitHub Support to remove cached views of the old commits.
-4. Tell collaborators to re-clone (Section 6).
+| Check | Result |
+|---|---|
+| `git ls-remote origin` | `HEAD` and `refs/heads/main` point to `c234513`; no other refs |
+| Fresh clone from GitHub | 8 commits and 278 files; the tree is identical to the local commit |
+| Removed paths and blobs in the fresh clone | None present in any commit or in the object store |
+| Tests in the fresh clone | 33 run: 30 pass, 3 checkpoint tests skipped because the checkpoints are not distributed |
+| Forks of the repository | 0 |
+
+**Follow-up, in this order:**
+1. Ask GitHub Support to remove the cached views (Section 5). **Pending.**
+2. Tell collaborators to re-clone (Section 6).
+3. After GitHub confirms, purge the old objects locally (Section 5) and decide when to delete the private backups.
+
+All later updates to `main` are normal pushes, without force.

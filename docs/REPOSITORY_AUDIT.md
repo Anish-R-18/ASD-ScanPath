@@ -2,8 +2,8 @@
 
 **Scope.** The whole local project and the public repository (`github.com/Anish-R-18/ASD-ScanPath`, `main` at `bca2af0`) were audited and reorganised for handover.
 - **What was not changed.** No model was retrained, and no checkpoint, dataset, experiment output or manuscript file was modified.
-- **Git history.** Rewritten **locally** on 2026-11-13 to remove restricted material from every past commit; see [`GIT_HISTORY_CLEANUP.md`](GIT_HISTORY_CLEANUP.md). It is not pushed.
-- **Commits.** No new commits were made. The reorganisation is staged on top of the rewritten history (`main` = `3707633`, formerly `bca2af0`; two rewrite passes).
+- **Git history.** Rewritten on 2026-11-13 to remove restricted material from every past commit, and **published to GitHub** with a guarded force-push; see [`GIT_HISTORY_CLEANUP.md`](GIT_HISTORY_CLEANUP.md).
+- **Published commit.** The reorganisation is commit `c2345136e1551d16976bfe67f53ed86448ee2cea` ("Reorganise repository for research handover"). It sits on top of the rewritten history: parent `3707633`, which replaces `bca2af0` after two rewrite passes.
 
 ## 1. Files removed from the tracked tree
 
@@ -125,20 +125,24 @@
 - the TPP-Gaze paper PDF;
 - the unredacted `docs/dataset_audit.txt` and `docs/duration_audit.txt`.
 
-**What has been done.** The local history was rewritten to remove the figures, the agreement and the PDF, and to redact the two audits in every commit. Verification found none of this material reachable from `main` or the staged tree ([`GIT_HISTORY_CLEANUP.md`](GIT_HISTORY_CLEANUP.md)).
+**What has been done.**
+- **Rewrite.** The history was rewritten to remove the figures, the agreement, the PDF and the upstream sample photo `tppgaze/data/1009.jpg`, and to redact the two audits, in every commit.
+- **Publication.** On 2026-11-13 the result was published to GitHub: `main` = `c2345136e1551d16976bfe67f53ed86448ee2cea`.
+- **Verification.** A fresh clone from GitHub contains none of the removed material in any commit, and the previous restricted history is no longer part of the active published branch ([`GIT_HISTORY_CLEANUP.md`](GIT_HISTORY_CLEANUP.md)).
 
 **What remains.**
-- **Still public.** The **public GitHub history still contains the material** until the owner approves a force-push.
-- **Earlier copies.** Copies made before then (clones, forks, caches, archives) cannot be recalled.
+- **GitHub cache removal: pending.** GitHub still serves the old commits when requested directly by SHA until GitHub Support purges its cached views; the request is described in [`GIT_HISTORY_CLEANUP.md`](GIT_HISTORY_CLEANUP.md), Section 5.
+- **Earlier copies.** Clones, downloaded archives and third-party copies made before the force-push cannot be recalled automatically. There were no forks.
+- **Collaborators.** Anyone with an older copy must make a fresh clone, not pull (Section 6 of that document).
 
-**Staged diff after the rewrite.** The restricted files no longer exist in HEAD, so the staged diff now shows 243 changed files: 163 added, including `docs/GIT_HISTORY_CLEANUP.md`; 67 moved; 11 modified; and 2 deleted (`inference.py`, moved with changes, and `test/README.md`, merged). The staged tree has 279 files: the 278-file handover plus that document.
+**Published commit.** Relative to the previous rewritten commit, it changes 243 files: 163 added, 67 moved, 11 modified and 2 deleted (`inference.py`, moved with changes, and `test/README.md`, merged). The published tree has 278 files.
 
 **Decisions pending (owner):**
 - the licence for the project's own code (none has been added; `tppgaze/` stays MIT);
 - `CITATION.cff` (needs the manuscript authorship);
 - publishing the manuscript (`paper/` is Git-ignored);
 - releasing the trained checkpoints;
-- force-pushing the rewritten history.
+- requesting GitHub Support removal of the cached old commits.
 
 **Research questions that remain open** (see [`limitations.md`](limitations.md)):
 - Saliency4ASD vs Gaze4ASD data terms;
